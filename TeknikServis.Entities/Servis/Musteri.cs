@@ -20,5 +20,6 @@ namespace TeknikServis.Entities.Servis
 		[StringLength(255)]
         public string Eposta { get; set; }
         public bool Aktif { get; set; }
+		public List<IsEmriTeslim> IsEmriTeslim { get; set; }
     }
 }

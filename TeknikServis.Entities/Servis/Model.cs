@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace TeknikServis.Entities.Servis
 {
-	internal class Model
+	public class Model
 	{
-        //[Key]
-        //public int ModelId { get; set; }
-        //public string ModelAd { get; set; }
-        //public int MarkaId { get; set; }
-        //public virtual Marka Marka { get; set; }
+        [Key]
+        public int ModelId { get; set; }
+        public string ModelAd { get; set; }
+
+    
     }
 }

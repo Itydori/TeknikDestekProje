@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace TeknikServis.Entities.Servis
 {
-	internal class Marka
-	{
-        //[Key]
-        //public  int  MarkaId { get; set; }
-        //public string MarkaAd { get; set; }
+	public class Marka
+    {
+        [Key]
+        public int MarkaId { get; set; }
+        public string MarkaAd { get; set; }
+		//public List<Model> Models { get; set; } // Marka sınıfına baglı model kullanmıyoruz.
 
-    }
+
+	}
 }

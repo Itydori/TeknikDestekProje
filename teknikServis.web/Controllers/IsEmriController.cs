@@ -12,12 +12,10 @@ namespace teknikServis.web.Controllers
         private readonly IRepository<Musteri> repository;
 
         public IsEmriController(IRepository<Musteri> repository)
-        {
-            this.repository = repository;
-        }
-
-
-        public IActionResult Index(string ara)
+		{
+			this.repository = repository;
+		}
+		public IActionResult Index(string ara)
         {
             if (ara == "" || ara == null)
             {
@@ -30,7 +28,7 @@ namespace teknikServis.web.Controllers
         }
 		public IActionResult IsEmriOlustur(int MusteriId)
         {
-
+            ViewBag.MusteriId = MusteriId;
             return View();
         }
 	}

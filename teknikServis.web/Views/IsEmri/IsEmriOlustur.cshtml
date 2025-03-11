@@ -13,52 +13,51 @@
 			<form id="serviceOrderForm">
 				<div class="row mb-4">
 					<div class="col-md-6 mb-3">
-						<label for="marka" class="form-label fw-bold">Marka Seç</label>
-						<select class="form-select" id="marka" name="marka">
-							<optgroup label="Markalar">
-								<option value="1">Apple</option>
-								<option value="2">Samsung</option>
-								<option value="3">Huawei</option>
-								<option value="4">Xiaomi</option>
-								<option value="5">Oppo</option>
-								<option value="6">Vestel</option>
-								<option value="7">Asus</option>
-								<option value="8">Casper</option>
-								<option value="9">Lenovo</option>
-								<option value="10">HP</option>
-								<option value="11">Dell</option>
-								<option value="12">Monster</option>
-								<option value="13">MSI</option>
-								<option value="14">Acer</option>
-								<option value="15">Sony</option>
-								<option value="16">LG</option>
-								<option value="17">Philips</option>
-								<option value="18">Beko</option>
-								<option value="19">Arçelik</option>
-								<option value="20">Regal</option>
-								<option value="21">Bosch</option>
-								<option value="22">Siemens</option>
-								<option value="23">Electrolux</option>
-								<option value="24">Profilo</option>
-							</optgroup>
-						</select>
+						<label for="Marka " class="form-label fw-bold">Marka Seç</label>
+						<input list="markalar" class="form-control" id="Marka " name="Marka " placeholder="Marka seç veya yaz">
+						<datalist id="markalar">
+							<option value="Apple"></option>
+							<option value="Samsung"></option>
+							<option value="Huawei"></option>
+							<option value="Xiaomi"></option>
+							<option value="Oppo"></option>
+							<option value="Vestel"></option>
+							<option value="Asus"></option>
+							<option value="Casper"></option>
+							<option value="Lenovo"></option>
+							<option value="HP"></option>
+							<option value="Dell"></option>
+							<option value="Monster"></option>
+							<option value="MSI"></option>
+							<option value="Acer"></option>
+							<option value="Sony"></option>
+							<option value="LG"></option>
+							<option value="Philips"></option>
+							<option value="Beko"></option>
+							<option value="Arçelik"></option>
+							<option value="Regal"></option>
+							<option value="Bosch"></option>
+							<option value="Siemens"></option>
+							<option value="Electrolux"></option>
+							<option value="Profilo"></option>
+						</datalist>
 					</div>
 					<div class="col-md-6 mb-3">
-						<label for="model" class="form-label fw-bold">Model Gir</label>
-						<input type="text" class="form-control" id="model" name="model" placeholder="Model" />
+						<label for="Model" class="form-label fw-bold">Model Gir</label>
+						<input type="text" class="form-control" id="Model" name="Model" placeholder="Model" />
 					</div>
 				</div>
 
 				<div class="row mb-4">
 					<div class="col-md-6 mb-3">
-						<label for="kusur" class="form-label fw-bold">Ürün Arızası</label>
-						<input type="text" class="form-control" id="kusur" name="kusur" placeholder="Ürün Arızası" />
+						<label for="ArizaDurumu " class="form-label fw-bold">Ürün Arızası</label>
+						<input type="text" class="form-control" id="ArizaDurumu " name="ArizaDurumu " placeholder="Ürün Arızası" />
 					</div>
 					<div class="col-md-6 mb-3">
-						<label for="yıl" class="form-label fw-bold">Model Yılı</label>
+						<label for="Yil" class="form-label fw-bold">Model Yılı</label>
 						@{
 							var deger = DateTime.Now.Year;
-							<select class="form-select" id="yıl" name="yıl">
+							<select class="form-select" id="Yil" name="Yil">
 								@for (int i = 1; i <= 10; i++)
 								{
 									deger = deger - 1;
@@ -71,15 +70,15 @@
 
 				<div class="row mb-4">
 					<div class="col-md-6 mb-3">
-						<label for="garanti" class="form-label fw-bold">Ürün Garanti Durumu</label>
-						<select class="form-select" id="garanti" name="garanti">
+						<label for="GarantiDurumu" class="form-label fw-bold">Ürün Garanti Durumu</label>
+						<select class="form-select" id="GarantiDurumu" name="GarantiDurumu">
 							<option value="1">Garantili</option>
 							<option value="2">Garantisiz</option>
 						</select>
 					</div>
 					<div class="col-md-6 mb-3">
-						<label for="sebep" class="form-label fw-bold">Ürün Geliş Sebebi</label>
-						<select class="form-select" id="sebep" name="sebep">
+						<label for="ServisTalebi" class="form-label fw-bold">Ürün Geliş Sebebi</label>
+						<select class="form-select" id="ServisTalebi" name="ServisTalebi">
 							<option value="1">Arızalı Ürün</option>
 							<option value="2">Yedek Parça Sipariş</option>
 						</select>
@@ -87,8 +86,13 @@
 				</div>
 				<div class="row mb-4">
 					<div class="col-md-6 mb-3">
-						<label for="gtarih" class="form-label fw-bold">Ürün Geliş Tarihi</label>
-						<input type="date" class="form-control" id="gtarih" name="gtarih" />
+						<label for="GelisTarih" class="form-label fw-bold">Ürün Geliş Tarihi</label>
+						<input type="date" class="form-control" id="GelisTarih" name="GelisTarih" />
+					</div>
+					<div class="col-md-6 mb-3">
+						<label for="FisNo" class="form-label fw-bold">Fiş No</label>
+						<input type="text" class="form-control" id="FisNo" name="FisNo" placeholder="Fiş No" />
+						
 					</div>
 				</div>
 

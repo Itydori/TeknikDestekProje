@@ -17,6 +17,8 @@ namespace TeknikServis.DataAccess
         public DbSet<Kullanici> Kullanicilar { get; set; }
         public DbSet<Roles> Roller { get; set; }
 
+        public DbSet<Marka> Markalar { get; set; }
+        public DbSet<Model> Modeller { get; set; }
         
     }
 
