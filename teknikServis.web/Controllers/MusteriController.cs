@@ -59,5 +59,22 @@ namespace teknikServis.web.Controllers
 			TempData["Ok"] = edit.Ad + " isimli müşteri başarıyla güncellendi";
 			return RedirectToAction("Index");
 		}
+		public IActionResult Delete(int MusteriId)
+		{
+			var musteri = repository.GetById(MusteriId);
+			if (musteri == null)
+			{
+				return NotFound();
+			}
+			repository.Delete(musteri);
+			TempData["Ok"] = musteri.Ad + " isimli müşteri başarıyla silindi";
+			return RedirectToAction("Index");
+		}
+		[HttpPost]
+		public IActionResult Delete(Musteri musteri)
+		{
+			repository.Delete(musteri);
+			return RedirectToAction("Index");
+		}
 	}
 }

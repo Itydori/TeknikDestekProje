@@ -1,6 +1,6 @@
 ﻿@model TeknikServis.Entities.Servis.Musteri
 @{
-    ViewBag.title = "Müşteri Düzenle";
+    ViewBag.title = "Müşteri ";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -9,49 +9,58 @@
     <div class="alert alert-success">@TempData["Ok"]</div>
 }
 
-@using (Html.BeginForm("Update", "Musteri", FormMethod.Post)) // ✅ DÜZELTİLDİ
+@using (Html.BeginForm("Update", "Musteri", FormMethod.Post))
 {
-    <div class="form-horizontal mt-3 mb-3">
-        <h4>Müşteri</h4>
+    <div class="form-horizontal mt-4 mb-4">
+        <h4>Müşteri Düzenle</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.MusteriId)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Ad, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <!-- Adı Girişi -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Ad, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
                 @Html.EditorFor(model => model.Ad, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Ad, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Telefon, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <!-- Telefon Girişi -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Telefon, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
                 @Html.EditorFor(model => model.Telefon, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Telefon, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Adres, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <!-- Adres Girişi -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Adres, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
                 @Html.EditorFor(model => model.Adres, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Adres, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Eposta, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <!-- Eposta Girişi -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Eposta, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
                 @Html.EditorFor(model => model.Eposta, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Eposta, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group d-flex justify-content-center mt-3">
-            <input type="submit" value="Kaydet" class="btn btn-primary me-2" />
-            <a href="@Url.Action("Index", "Musteri")" class="btn btn-secondary">Listeye Geri Dön</a>
+        <!-- Butonlar -->
+        <div class="form-group d-flex justify-content-between mt-4">
+            <div>
+                <input type="submit" value="Kaydet" class="btn btn-success" />
+            </div>
+            <div>
+                <a href="@Url.Action("Index", "Musteri")" class="btn btn-secondary">Listeye Geri Dön</a>
+            </div>
         </div>
     </div>
 }

@@ -1,0 +1,104 @@
+﻿@model IEnumerable<TeknikServis.Entities.Servis.Musteri>
+@{
+	ViewBag.title = "İş Emri Oluşturma";
+	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mt-4">
+	<div class="card shadow-sm">
+		<div class="card-header bg-primary text-white">
+			<h4 class="mb-0"><i class="fas fa-tools mr-2"></i> İş Emri Oluşturma</h4>
+		</div>
+		<div class="card-body">
+			<form id="serviceOrderForm">
+				<div class="row mb-4">
+					<div class="col-md-6 mb-3">
+						<label for="marka" class="form-label fw-bold">Marka Seç</label>
+						<select class="form-select" id="marka" name="marka">
+							<optgroup label="Markalar">
+								<option value="1">Apple</option>
+								<option value="2">Samsung</option>
+								<option value="3">Huawei</option>
+								<option value="4">Xiaomi</option>
+								<option value="5">Oppo</option>
+								<option value="6">Vestel</option>
+								<option value="7">Asus</option>
+								<option value="8">Casper</option>
+								<option value="9">Lenovo</option>
+								<option value="10">HP</option>
+								<option value="11">Dell</option>
+								<option value="12">Monster</option>
+								<option value="13">MSI</option>
+								<option value="14">Acer</option>
+								<option value="15">Sony</option>
+								<option value="16">LG</option>
+								<option value="17">Philips</option>
+								<option value="18">Beko</option>
+								<option value="19">Arçelik</option>
+								<option value="20">Regal</option>
+								<option value="21">Bosch</option>
+								<option value="22">Siemens</option>
+								<option value="23">Electrolux</option>
+								<option value="24">Profilo</option>
+							</optgroup>
+						</select>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label for="model" class="form-label fw-bold">Model Gir</label>
+						<input type="text" class="form-control" id="model" name="model" placeholder="Model" />
+					</div>
+				</div>
+
+				<div class="row mb-4">
+					<div class="col-md-6 mb-3">
+						<label for="kusur" class="form-label fw-bold">Ürün Arızası</label>
+						<input type="text" class="form-control" id="kusur" name="kusur" placeholder="Ürün Arızası" />
+					</div>
+					<div class="col-md-6 mb-3">
+						<label for="yıl" class="form-label fw-bold">Model Yılı</label>
+						@{
+							var deger = DateTime.Now.Year;
+							<select class="form-select" id="yıl" name="yıl">
+								@for (int i = 1; i <= 10; i++)
+								{
+									deger = deger - 1;
+									<option>@deger</option>
+								}
+							</select>
+						}
+					</div>
+				</div>
+
+				<div class="row mb-4">
+					<div class="col-md-6 mb-3">
+						<label for="garanti" class="form-label fw-bold">Ürün Garanti Durumu</label>
+						<select class="form-select" id="garanti" name="garanti">
+							<option value="1">Garantili</option>
+							<option value="2">Garantisiz</option>
+						</select>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label for="sebep" class="form-label fw-bold">Ürün Geliş Sebebi</label>
+						<select class="form-select" id="sebep" name="sebep">
+							<option value="1">Arızalı Ürün</option>
+							<option value="2">Yedek Parça Sipariş</option>
+						</select>
+					</div>
+				</div>
+				<div class="row mb-4">
+					<div class="col-md-6 mb-3">
+						<label for="gtarih" class="form-label fw-bold">Ürün Geliş Tarihi</label>
+						<input type="date" class="form-control" id="gtarih" name="gtarih" />
+					</div>
+				</div>
+
+				<div class="d-flex justify-content-end mt-4">
+					<button type="button" class="btn btn-secondary me-2">İptal</button>
+					<button type="submit" class="btn btn-success">
+						<i class="fas fa-save me-1"></i> İş Emri Oluştur
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

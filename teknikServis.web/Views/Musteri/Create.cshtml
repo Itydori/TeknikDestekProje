@@ -1,50 +1,59 @@
 ﻿@model TeknikServis.Entities.Servis.Musteri
 @{
-    ViewBag.title = "Müşteri Ekleme";
+    ViewBag.title = "Müşteri";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Create", "Musteri", FormMethod.Post))
 {
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    
-    <div class="form-horizontal">
+
+    <div class="form-horizontal mt-4 mb-4">
+        <h4>Müşteri Ekle</h4>
         <hr />
-        <div class="form-group">
-            @Html.LabelFor(model => model.Ad, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+
+        <!-- Adı Girişi -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Ad, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
                 @Html.EditorFor(model => model.Ad, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                 @Html.ValidationMessageFor(model => model.Ad, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Telefon, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <!-- Telefon Girişi -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Telefon, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
                 @Html.EditorFor(model => model.Telefon, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                 @Html.ValidationMessageFor(model => model.Telefon, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Adres, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <!-- Adres Girişi -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Adres, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
                 @Html.EditorFor(model => model.Adres, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                 @Html.ValidationMessageFor(model => model.Adres, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Eposta, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <!-- Eposta Girişi -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Eposta, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
                 @Html.EditorFor(model => model.Eposta, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                 @Html.ValidationMessageFor(model => model.Eposta, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group ">
-            <div class="col-md-offset-5 col-md-8">
-                <input type="submit" value="Kaydet" class="btn btn-primary" />
+        <!-- Butonlar -->
+        <div class="form-group d-flex justify-content-between mt-4">
+            <div>
+                <input type="submit" value="Kaydet" class="btn btn-success" />
+            </div>
+            <div>
                 <a href="@Url.Action("Index", "Musteri")" class="btn btn-secondary">Listeye Geri Dön</a>
             </div>
         </div>
