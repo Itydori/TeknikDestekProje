@@ -12,17 +12,17 @@ namespace TeknikServis.Entities.Servis
 		[Key]
 		public int IsEmriTeslimId { get; set; }
 		public int MusteriId { get; set; }
-		public int Id { get; set; }
-		public string Marka { get; set; }
+
+        public Musteri Musteri { get; set; }
+        public string Marka { get; set; }
 		public string Model { get; set; }
 		public DateTime GelisTarih { get; set; }
 		public string ArizaDurumu { get; set; }
 		public int Yil { get; set; }
 		public GarantiDurumuEnum GarantiDurumu { get; set; }
 		public ServisTalebiEnum ServisTalebi { get; set; }
-		public string FisNo { get; set; }
 		public bool Kapali { get; set; }
-		public virtual Musteri Musteri { get; set; }
+		public string FisNo { get; set; }
 	}
 	public enum GarantiDurumuEnum
 	{

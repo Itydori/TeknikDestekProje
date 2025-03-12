@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeknikServis.DataAccess;
 
@@ -11,9 +12,11 @@ using TeknikServis.DataAccess;
 namespace TeknikServis.DataAccess.Migrations
 {
     [DbContext(typeof(TeknikServisDbContext))]
-    partial class TeknikServisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250312073939_Initial5")]
+    partial class Initial5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,9 +152,6 @@ namespace TeknikServis.DataAccess.Migrations
 
                     b.Property<DateTime>("GelisTarih")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("Kapali")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Marka")
                         .IsRequired()

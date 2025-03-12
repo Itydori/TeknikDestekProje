@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeknikServis.DataAccess;
 
@@ -11,9 +12,11 @@ using TeknikServis.DataAccess;
 namespace TeknikServis.DataAccess.Migrations
 {
     [DbContext(typeof(TeknikServisDbContext))]
-    partial class TeknikServisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250312065213_Initial4")]
+    partial class Initial4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,6 +168,9 @@ namespace TeknikServis.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ServisTalebi")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeslimId")
                         .HasColumnType("int");
 
                     b.Property<int>("Yil")
@@ -402,11 +408,13 @@ namespace TeknikServis.DataAccess.Migrations
 
             modelBuilder.Entity("TeknikServis.Entities.Servis.IsEmriTeslim", b =>
                 {
-                    b.HasOne("TeknikServis.Entities.Servis.Musteri", null)
+                    b.HasOne("TeknikServis.Entities.Servis.Musteri", "Musteri")
                         .WithMany("IsEmriTeslim")
                         .HasForeignKey("MusteriId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Musteri");
                 });
 
             modelBuilder.Entity("TeknikServis.Entities.Servis.Musteri", b =>

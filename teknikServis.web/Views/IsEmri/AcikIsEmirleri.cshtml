@@ -1,0 +1,33 @@
+﻿@model IEnumerable<IsEmriTeslim>
+@{
+	ViewBag.title = "Açık İş Emirleri";
+	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<table class="table table-sm table-responsive">
+	<thead>
+		<tr>
+			<th>İş Emri No</th>
+			<th>Müşteri</th>
+			<th>Marka</th>
+			<th>Model</th>
+			<th>Arıza</th>
+			<th>İşlem</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>@item.IsEmriTeslimId</td>
+				<td>@item.Musteri.Ad</td>
+				<td>@item.Marka</td>
+				<td>@item.Model</td>
+				<td>@item.ArizaDurumu</td>
+				<td>
+					<a href="@Url.Action("IsEmriDetay", "IsEmri", new { id = item.IsEmriTeslimId })" class="btn btn-sm btn-primary">Detay</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+

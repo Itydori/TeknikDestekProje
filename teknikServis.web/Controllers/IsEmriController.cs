@@ -10,10 +10,12 @@ namespace teknikServis.web.Controllers
     public class IsEmriController : Controller
     {
         private readonly IRepository<Musteri> repository;
+        private readonly IRepository<IsEmriTeslim> isEmriTeslimRepository;
 
-        public IsEmriController(IRepository<Musteri> repository)
+		public IsEmriController(IRepository<Musteri> repository, IRepository<IsEmriTeslim> isEmriTeslimRepository)
 		{
 			this.repository = repository;
+			this.isEmriTeslimRepository = isEmriTeslimRepository;
 		}
 		public IActionResult Index(string ara)
         {
@@ -28,8 +30,22 @@ namespace teknikServis.web.Controllers
         }
 		public IActionResult IsEmriOlustur(int MusteriId)
         {
-            ViewBag.MusteriId = MusteriId;
+            TempData["MusteriId"] = MusteriId;
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult IsEmriKaydet(IsEmriTeslim isEmriTeslim)
+		{
+            var deger = TempData["MusteriId"];
+            isEmriTeslim.MusteriId = (int)deger;
+
+			isEmriTeslimRepository.Create(isEmriTeslim);
+			return RedirectToAction("AcikIsEmirleri");
+		}
+        public IActionResult AcikIsEmirleri()
+        {
+            return View(isEmriTeslimRepository.Get(i => i.Kapali == false,includeProperties:"Musteri").ToList());
         }
 	}
 }
