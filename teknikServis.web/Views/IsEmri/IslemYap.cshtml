@@ -1,0 +1,57 @@
+﻿@{
+	ViewBag.Title = "İşlem Yap";
+	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@using (Html.BeginForm("OnarimIslemiKaydet", "OnarimIslemi"))
+{
+	<div class="container mt-4">
+		<div class="card shadow-sm">
+			<div class="card-header bg-primary text-white">
+				<h4 class="mb-0"><i class="fas fa-cogs mr-2"></i> Onarım İşlemi</h4>
+			</div>
+			<div class="card-body">
+				<form id="repairOrderForm">
+					<div class="row mb-4">
+						<div class="col-md-6 mb-3">
+							<label for="OnarimYapan" class="form-label fw-bold">Onarımı Yapan Kişi</label>
+							<input type="text" class="form-control" id="OnarimYapan" name="OnarimYapan" placeholder="Onarımı Yapan Kişi" />
+						</div>
+						<div class="col-md-6 mb-3">
+							<label for="OnarimTarihi" class="form-label fw-bold">Onarım Tarihi</label>
+							<input type="date" class="form-control" id="OnarimTarihi" name="OnarimTarihi" />
+						</div>
+					</div>
+
+					<div class="row mb-4">
+						<div class="col-md-6 mb-3">
+							<label for="StokYeri" class="form-label fw-bold">Stok Yeri</label>
+							<input type="text" class="form-control" id="StokYeri" name="StokYeri" placeholder="Stok Yeri" />
+						</div>
+						<div class="col-md-6 mb-3">
+							<label for="YapilanIslemler" class="form-label fw-bold">Yapılan İşlemler</label>
+							<textarea class="form-control" id="YapilanIslemler" name="YapilanIslemler" placeholder="Yapılan işlemleri açıklayınız" rows="3"></textarea>
+						</div>
+					</div>
+
+					<div class="row mb-4">
+						<div class="col-md-6 mb-3">
+							<label for="Ucret" class="form-label fw-bold">Ücret Bilgisi</label>
+							<input type="number" class="form-control" id="Ucret" name="Ucret" placeholder="Ücret" step="0.01" />
+						</div>
+						<div class="col-md-6 mb-3">
+							<label for="Aciklama" class="form-label fw-bold">Açıklama</label>
+							<textarea class="form-control" id="Aciklama" name="Aciklama" placeholder="Ekstra açıklamalar" rows="3"></textarea>
+						</div>
+					</div>
+
+					<div class="d-flex justify-content-end mt-4">
+						<button type="button" class="btn btn-secondary me-2">İptal</button>
+						<button type="submit" class="btn btn-success">
+							<i class="fas fa-save me-1"></i> Onarım İşlemi Kaydet
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+}

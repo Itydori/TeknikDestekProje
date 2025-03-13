@@ -2,32 +2,46 @@
 @{
 	ViewBag.title = "Açık İş Emirleri";
 	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-}
-<table class="table table-sm table-responsive">
-	<thead>
-		<tr>
-			<th>İş Emri No</th>
-			<th>Müşteri</th>
-			<th>Marka</th>
-			<th>Model</th>
-			<th>Arıza</th>
-			<th>İşlem</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in Model)
-		{
-			<tr>
-				<td>@item.IsEmriTeslimId</td>
-				<td>@item.Musteri.Ad</td>
-				<td>@item.Marka</td>
-				<td>@item.Model</td>
-				<td>@item.ArizaDurumu</td>
-				<td>
-					<a href="@Url.Action("IsEmriDetay", "IsEmri", new { id = item.IsEmriTeslimId })" class="btn btn-sm btn-primary">Detay</a>
-				</td>
-			</tr>
-		}
-	</tbody>
-</table>
+    }
+    <div class="container mt-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-black d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-list mr-2"></i> Açık İş Emirleri</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>İş Emri No</th>
+                            <th>Müşteri</th>
+                            <th>Marka</th>
+                            <th>Model</th>
+                            <th>Arıza / Hizmet Talebi</th>
+@*                             <th>Servis Talebi</th>
+ *@                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.IsEmriTeslimId</td>
+                                <td>@item.Musteri.Ad</td>
+                                <td>@item.Marka</td>
+                                <td>@item.Model</td>
+@*                                 <td>@item.ArizaDurumu</td>
+                        *@
+                            <td>@item.ArizaDurumu / @item.ServisTalebi</td>
+                                <td>
+                                <a href="@Url.Action("IslemYap", "IsEmri", new { id = item.IsEmriTeslimId })" class="btn btn-sm btn-primary">
+                                        İşlem Yap
+                                    </a>
 
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>

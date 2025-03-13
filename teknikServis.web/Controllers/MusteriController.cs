@@ -50,7 +50,7 @@ namespace teknikServis.web.Controllers
 			}
 		}
 		public IActionResult Edit(int MusteriId)
-		{
+		{	
 			var musteri = repository.GetById(MusteriId);
 			if (musteri == null)
 			{

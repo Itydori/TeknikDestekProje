@@ -51,5 +51,9 @@ namespace teknikServis.web.Controllers
         {
             return View(isEmriTeslimRepository.Get(i => i.Kapali == false,includeProperties:"Musteri").ToList());
         }
+        public IActionResult IslemYap()
+        {
+            return View(isEmriTeslimRepository.Get(i => i.Kapali == false, includeProperties: "Musteri").ToList());
+        }
 	}
 }

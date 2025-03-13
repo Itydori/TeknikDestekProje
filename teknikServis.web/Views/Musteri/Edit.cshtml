@@ -2,6 +2,10 @@
 @{
     ViewBag.title = "Müşteri ";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+
+
+
 }
 
 @if (TempData["Ok"] != null)
@@ -59,8 +63,13 @@
                 <input type="submit" value="Kaydet" class="btn btn-success" />
             </div>
             <div>
-                <a href="@Url.Action("Index", "Musteri")" class="btn btn-secondary">Listeye Geri Dön</a>
+              @*   <a href="@Url.Action("Index", "Musteri")" class="btn btn-secondary">Listeye Geri Dön</a> *@
+
+                <a class="btn btn-secondary" onclick="history.back()">Listeye Geri Dön</a>
             </div>
         </div>
     </div>
 }
+
+
+                
