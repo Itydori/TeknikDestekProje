@@ -1,7 +1,64 @@
-﻿@model IsEmriTeslim
+﻿@model  List<TeknikServis.Entities.Servis.IsEmriTeslim>
+
 @{
-	ViewBag.title = "İş Emri Oluşturma";
+	
 	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@if (ViewBag.AcikIsEmirleri != null)
+{
+	var acik = (List<IsEmriTeslim>)ViewBag.AcikIsEmirleri;
+	<div class="container mt-4">
+		<div class="card shadow-sm">
+			<div class="card-header bg-primary  text-dark d-flex justify-content-between align-items-center">
+				<h4 class="mb-0"><i class="fas fa-list mr-2"></i> Açık İş Emirleri</h4>
+				@if (!acik.Any())
+				{
+					<span class="text-danger fw-bold">Müşterinin açık iş emri yok</span>
+				}
+			</div>
+			<div class="card-body">
+				@if (acik.Any())
+				{
+					<table class="table table-striped table-hover">
+						<thead class="table-dark">
+							<tr>
+								<th>Müşteri Adı</th>
+								<th>Marka</th>
+								<th>Model</th>
+								<th>Arıza Durumu</th>
+								<th>Model Yılı</th>
+								<th>Garanti Durumu</th>
+								<th>Servis Talebi</th>
+								<th>Geliş Tarihi</th>
+								<th>Fiş No</th>
+								<th>İşlemler</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in acik)
+							{
+								<tr>
+									<td>@item.Musteri.Ad</td>
+									<td>@item.Marka</td>
+									<td>@item.Model</td>
+									<td>@item.ArizaDurumu</td>
+									<td>@item.Yil</td>
+									<td>@Enum.GetName(typeof(GarantiDurumuEnum), item.GarantiDurumu)</td>
+									<td>@Enum.GetName(typeof(ServisTalebiEnum), item.ServisTalebi)</td>
+									<td>@item.GelisTarih.ToString("dd.MM.yyyy")</td>
+									<td>@item.FisNo</td>
+									<td>
+										<button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Düzenle</button>
+										<button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Sil</button>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				}
+			</div>
+		</div>
+	</div>
 }
 @using (Html.BeginForm("IsEmriKaydet", "IsEmri"))
 {
@@ -16,7 +73,7 @@
 					<div class="row mb-4">
 						<div class="col-md-6 mb-3">
 							<label for="Marka " class="form-label fw-bold">Marka Seç</label>
-							<input list="markalar" class="form-control" id="Marka"  placeholder="Marka seç veya yaz" name="Marka"  asp-for="Marka">
+							<input list="markalar" class="form-control" id="Marka"  placeholder="Marka seç veya yaz" name="Marka" @*  asp-for="Marka" *@>
 							<datalist id="markalar">
 								<option value="Apple"></option>
 								<option value="Samsung"></option>
@@ -109,6 +166,58 @@
 		</div>
 	</div>
 }
+@if (Model != null && Model.Any())
+{
+	<div class="container mt-4">
+		<div class="card shadow-sm">
+			<div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+				<h4 class="mb-0"><i class="fas fa-archive mr-2"></i> Kapalı İş Emirleri</h4>
+				@if (!Model.Any())
+				{
+					<span class="text-danger fw-bold">Müşterinin kapalı iş emri yok</span>
+				}
+			</div>
+			<div class="card-body">
+				@if (Model.Any())
+				{
+					<table class="table table-striped table-hover">
+						<thead class="table-dark">
+							<tr>
+								<th>Müşteri Adı</th>
+								<th>Marka</th>
+								<th>Model</th>
+								<th>Arıza Durumu</th>
+								<th>Model Yılı</th>
+								<th>Garanti Durumu</th>
+								<th>Servis Talebi</th>
+								<th>Geliş Tarihi</th>
+								<th>Fiş No</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in Model)
+							{
+								<tr>
+									<td>@item.Musteri.Ad</td>
+									<td>@item.Marka</td>
+									<td>@item.Model</td>
+									<td>@item.ArizaDurumu</td>
+									<td>@item.Yil</td>
+									<td>@Enum.GetName(typeof(GarantiDurumuEnum), item.GarantiDurumu)</td>
+									<td>@Enum.GetName(typeof(ServisTalebiEnum), item.ServisTalebi)</td>
+									<td>@item.GelisTarih.ToString("dd.MM.yyyy")</td>
+@* 									<td>@item.Tes.ToString("dd.MM.yyyy")</td>
+ *@									<td>@item.FisNo</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				}
+			</div>
+		</div>
+	</div>
+}
+
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
 		var form = document.getElementById("serviceOrderForm");

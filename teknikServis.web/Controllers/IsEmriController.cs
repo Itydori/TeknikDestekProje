@@ -30,8 +30,12 @@ namespace teknikServis.web.Controllers
         }
 		public IActionResult IsEmriOlustur(int MusteriId)
         {
+            var musteri = repository.GetById(MusteriId);
             TempData["MusteriId"] = MusteriId;
-            return View();
+            ViewBag.MusteriId = MusteriId;
+            ViewBag.AcikIsEmirleri = isEmriTeslimRepository.Get(i => i.MusteriId == MusteriId && i.Kapali == false).ToList();
+            ViewBag.Title = "İş Emri Oluştur -" + musteri.Ad;
+			return View(isEmriTeslimRepository.Get(i => i.Kapali == true && i.MusteriId == MusteriId).OrderByDescending(i=>i.GelisTarih).ToList());
         }
 
         [HttpPost]
