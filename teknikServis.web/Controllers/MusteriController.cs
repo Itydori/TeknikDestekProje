@@ -29,14 +29,25 @@ namespace teknikServis.web.Controllers
 		[HttpPost]
 		public IActionResult Create(Musteri musteri)
 		{
-			if (ModelState.IsValid)
+			try
 			{
-				repository.Create(musteri);
-				return RedirectToAction("Index");
+				if (ModelState.IsValid)
+				{
+					// Set default values for properties not included in the form
+					musteri.Aktif = true; // Set to true by default
 
+					repository.Create(musteri);
+					return RedirectToAction("Index");
+				}
+				// If we get here, something failed, redisplay form
+				return View(musteri);
 			}
-			return View(musteri);
-
+			catch (Exception ex)
+			{
+				// Log the exception
+				ModelState.AddModelError("", "Kayıt sırasında bir hata oluştu: " + ex.Message);
+				return View(musteri);
+			}
 		}
 		public IActionResult Edit(int MusteriId)
 		{

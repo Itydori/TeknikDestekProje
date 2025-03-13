@@ -35,7 +35,7 @@ namespace teknikServis.web.Controllers
             ViewBag.MusteriId = MusteriId;
             ViewBag.AcikIsEmirleri = isEmriTeslimRepository.Get(i => i.MusteriId == MusteriId && i.Kapali == false).ToList();
             ViewBag.Title = "İş Emri Oluştur -" + musteri.Ad;
-			return View(isEmriTeslimRepository.Get(i => i.Kapali == true && i.MusteriId == MusteriId).OrderByDescending(i=>i.GelisTarih).ToList());
+			return View(isEmriTeslimRepository.Get(i => i.Kapali == true && i.MusteriId == MusteriId).OrderByDescending(i=> i.GelisTarih).ToList());
         }
 
         [HttpPost]
