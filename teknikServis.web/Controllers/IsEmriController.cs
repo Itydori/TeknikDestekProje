@@ -11,11 +11,12 @@ namespace teknikServis.web.Controllers
     {
         private readonly IRepository<Musteri> repository;
         private readonly IRepository<IsEmriTeslim> isEmriTeslimRepository;
-
-		public IsEmriController(IRepository<Musteri> repository, IRepository<IsEmriTeslim> isEmriTeslimRepository)
+        private readonly IRepository<İslem> isEmriIslemRepository;
+		public IsEmriController(IRepository<Musteri> repository, IRepository<IsEmriTeslim> isEmriTeslimRepository, IRepository<İslem> isEmriIslemRepository)
 		{
 			this.repository = repository;
 			this.isEmriTeslimRepository = isEmriTeslimRepository;
+			this.isEmriIslemRepository = isEmriIslemRepository;
 		}
 		public IActionResult Index(string ara)
         {
@@ -51,9 +52,40 @@ namespace teknikServis.web.Controllers
         {
             return View(isEmriTeslimRepository.Get(i => i.Kapali == false,includeProperties:"Musteri").ToList());
         }
-        public IActionResult IslemYap()
+        public IActionResult IslemYap(int isEmriTeslim)
         {
-            return View(isEmriTeslimRepository.Get(i => i.Kapali == false, includeProperties: "Musteri").ToList());
+            var baslik = isEmriTeslimRepository.Get(x => x.IsEmriTeslimId == isEmriTeslim,includeProperties:"Musteri").FirstOrDefault();
+
+			//if (baslik == null || baslik.Musteri == null)
+			//{
+			//	// Redirect to AcikIsEmirleri if data is null
+			//	return RedirectToAction("AcikIsEmirleri");
+			//}
+			ViewBag.Title = "İş Emri İşlem Yap -" + baslik.Musteri.Ad +" " + baslik.Marka + " " + baslik.Model + " " + baslik.GelisTarih.ToString("dd/MM/yyyy") + " " + baslik.FisNo;
+			ViewBag.IsEmriTeslimId = isEmriTeslim;
+			return View(isEmriIslemRepository.Get(x=>x.IsEmriId== isEmriTeslim).OrderByDescending(x=>x.IslemId).ToList());
         }
+        public IActionResult IslemKaydet(İslem islem)
+        {
+			// IsEmriTeslimId değerinin işlem nesnesine aktarılması
+
+			islem.IsEmriTeslimId = islem.IsEmriId;
+			isEmriIslemRepository.Create(islem);
+			return RedirectToAction(nameof(IslemYap),new { isEmriTeslim = islem.IsEmriId });
+        }
+
+		[HttpGet]
+		public IActionResult Delete(int isEmriTeslimId)
+		{
+			var isEmriTeslim = repository.GetById(isEmriTeslimId);
+			if (isEmriTeslim == null)
+			{
+				return NotFound();
+			}
+
+			repository.Delete(isEmriTeslim);
+			TempData["Ok"] = "İş Emri başarıyla silindi.";
+			return View(isEmriTeslim);
+		}
 	}
 }

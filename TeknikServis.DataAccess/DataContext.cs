@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TeknikServis.DataAccess.Configuration;
 using TeknikServis.Entities;
 using TeknikServis.Entities.Servis;
 
@@ -19,8 +20,21 @@ namespace TeknikServis.DataAccess
 
         public DbSet<Marka> Markalar { get; set; }
         public DbSet<Model> Modeller { get; set; }
-        
+
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+
+            //builder.ApplyConfiguration(new IslemConfiguration());
+
+            builder.ApplyConfigurationsFromAssembly(typeof(TeknikServisDbContext).Assembly);
+            base.OnModelCreating(builder);
+        }
+
     }
+
+
+ 
 
 }
 

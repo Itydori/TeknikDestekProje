@@ -19,11 +19,11 @@ namespace TeknikServis.Entities.Servis
 		public DateTime GelisTarih { get; set; }
 		public string ArizaDurumu { get; set; }
 		public int Yil { get; set; }
-		
 		public bool Kapali { get; set; }
 		public string FisNo { get; set; }
 		public GarantiDurumuEnum GarantiDurumu { get; set; }
 		public ServisTalebiEnum ServisTalebi { get; set; }
+		public List<İslem> Islems{ get; set; }
 	}
 	public enum GarantiDurumuEnum
 	{
