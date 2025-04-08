@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeknikServis.DataAccess;
 
@@ -11,9 +12,11 @@ using TeknikServis.DataAccess;
 namespace TeknikServis.DataAccess.Migrations
 {
     [DbContext(typeof(TeknikServisDbContext))]
-    partial class TeknikServisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250408074836_Ekleme5")]
+    partial class Ekleme5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,11 +165,11 @@ namespace TeknikServis.DataAccess.Migrations
                     b.Property<TimeSpan?>("KapatmaSaati")
                         .HasColumnType("time");
 
-                    b.Property<DateTime?>("KapatmaTarihi")
+                    b.Property<string>("KapatmaTarihi")
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasMaxLength(20)
-                        .HasColumnType("datetime2")
+                        .HasColumnType("nvarchar(20)")
                         .HasComputedColumnSql("CONVERT(varchar(10), KapatmaGunu, 104) + ' ' + CONVERT(varchar(5), KapatmaSaati, 108)", true);
 
                     b.Property<string>("Marka")

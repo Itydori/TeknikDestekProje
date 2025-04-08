@@ -17,6 +17,5 @@ namespace TeknikServis.Business.Abstract
         void Delete(T entity);
         void Save();
         IEnumerable<T> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "");
-		
 	}
 }

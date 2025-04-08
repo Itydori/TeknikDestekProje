@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeknikServis.DataAccess;
 
@@ -11,9 +12,11 @@ using TeknikServis.DataAccess;
 namespace TeknikServis.DataAccess.Migrations
 {
     [DbContext(typeof(TeknikServisDbContext))]
-    partial class TeknikServisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250408071259_Ekleme3")]
+    partial class Ekleme3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,7 +139,7 @@ namespace TeknikServis.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IsEmriTeslimId"));
 
-                    b.Property<int?>("AlinanOdeme")
+                    b.Property<int>("AlinanOdeme")
                         .HasColumnType("int");
 
                     b.Property<string>("ArizaDurumu")
@@ -156,17 +159,17 @@ namespace TeknikServis.DataAccess.Migrations
                     b.Property<bool>("Kapali")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("KapatmaGunu")
+                    b.Property<DateTime>("KapatmaGunu")
                         .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan?>("KapatmaSaati")
+                    b.Property<TimeSpan>("KapatmaSaati")
                         .HasColumnType("time");
 
-                    b.Property<DateTime?>("KapatmaTarihi")
+                    b.Property<string>("KapatmaTarihi")
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasMaxLength(20)
-                        .HasColumnType("datetime2")
+                        .HasColumnType("nvarchar(20)")
                         .HasComputedColumnSql("CONVERT(varchar(10), KapatmaGunu, 104) + ' ' + CONVERT(varchar(5), KapatmaSaati, 108)", true);
 
                     b.Property<string>("Marka")
@@ -181,15 +184,18 @@ namespace TeknikServis.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("OdemeSekli")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ServisTalebi")
                         .HasColumnType("int");
 
                     b.Property<string>("SiparisDurumu")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TeslimatAciklama")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Yil")
