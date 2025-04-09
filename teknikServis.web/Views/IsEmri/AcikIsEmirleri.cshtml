@@ -22,21 +22,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.IsEmriTeslimId</td>
-                                <td>@item.Musteri.Ad</td>
-                                <td>@item.Marka</td>
-                                <td>@item.Model</td>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.IsEmriTeslimId</td>
+                            <td>@(item.Musteri != null ? item.Musteri.Ad : "Müşteri Yok")</td>
+                            <td>@item.Marka</td>
+                            <td>@item.Model</td>
 @*                                 <td>@item.ArizaDurumu</td>
                         *@
                             <td>@item.ArizaDurumu / @item.ServisTalebi</td>
                                 <td>
+                                    
                                 <a href="@Url.Action("IslemYap", "IsEmri", new { isEmriTeslim = item.IsEmriTeslimId })" class="btn btn-sm btn-primary">
                                         İşlem Yap
                                     </a>
-
+                                <form action="@Url.Action("IsEmriSil", "IsEmri")" method="post" style="display:inline;" onsubmit="return confirm('Bu iş emrini silmek istediğinize emin misiniz?');">
+                                    <input type="hidden" name="id" value="@item.IsEmriTeslimId" />
+                                    <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                                </form>
                                 </td>
                             </tr>
                         }

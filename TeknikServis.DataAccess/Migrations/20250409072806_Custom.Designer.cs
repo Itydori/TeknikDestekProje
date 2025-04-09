@@ -12,8 +12,8 @@ using TeknikServis.DataAccess;
 namespace TeknikServis.DataAccess.Migrations
 {
     [DbContext(typeof(TeknikServisDbContext))]
-    [Migration("20250408080550_Ekleme6")]
-    partial class Ekleme6
+    [Migration("20250409072806_Custom")]
+    partial class Custom
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,7 +140,9 @@ namespace TeknikServis.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IsEmriTeslimId"));
 
                     b.Property<int?>("AlinanOdeme")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("ArizaDurumu")
                         .IsRequired()
@@ -154,23 +156,31 @@ namespace TeknikServis.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("GelisTarih")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<bool>("Kapali")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("KapatmaGunu")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<TimeSpan?>("KapatmaSaati")
-                        .HasColumnType("time");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("time")
+                        .HasDefaultValueSql("CAST(GETDATE() AS time)");
 
                     b.Property<DateTime?>("KapatmaTarihi")
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasMaxLength(20)
                         .HasColumnType("datetime2")
-                        .HasComputedColumnSql("CONVERT(varchar(10), KapatmaGunu, 104) + ' ' + CONVERT(varchar(5), KapatmaSaati, 108)", true);
+                        .HasComputedColumnSql("CASE WHEN KapatmaGunu IS NULL OR KapatmaSaati IS NULL THEN CONVERT(varchar(10), GETDATE(), 104) + ' ' + CONVERT(varchar(5), CAST(GETDATE() AS time), 108) ELSE CONVERT(varchar(10), KapatmaGunu, 104) + ' ' + CONVERT(varchar(5), KapatmaSaati, 108) END", false);
 
                     b.Property<string>("Marka")
                         .IsRequired()
@@ -184,16 +194,22 @@ namespace TeknikServis.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("OdemeSekli")
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Nakit");
 
                     b.Property<int>("ServisTalebi")
                         .HasColumnType("int");
 
                     b.Property<string>("SiparisDurumu")
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Sipariş verilmedi");
 
                     b.Property<string>("TeslimatAciklama")
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Teslimat yapılmadı");
 
                     b.Property<int>("Yil")
                         .HasColumnType("int");

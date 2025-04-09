@@ -27,7 +27,7 @@ namespace TeknikServis.Entities.Servis
         public int? AlinanOdeme { get; set; }
         public DateTime? KapatmaGunu { get; set; }
         public TimeSpan? KapatmaSaati { get; set; }
-        public DateTime? KapatmaTarihi { get; set; }
+        public string? KapatmaTarihi { get; set; }
         public string? SiparisDurumu { get; set; }
         public  string? TeslimatAciklama { get; set; }
         public List<İslem> Islems{ get; set; }

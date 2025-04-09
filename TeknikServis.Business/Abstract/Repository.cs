@@ -35,20 +35,31 @@ namespace TeknikServis.Business.Abstract
         }
         public IEnumerable<T> Get(System.Linq.Expressions.Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "")
         {
-            IQueryable<T> query = _context.Set<T>();
-            if (filter != null)
+
+            try
             {
-                query = query.Where(filter);
+                IQueryable<T> query = _context.Set<T>();
+                if (filter != null)
+                {
+                    query = query.Where(filter);
+                }
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+                if (orderBy != null)
+                {
+                    return orderBy(query).ToList();
+                }
+                return query.ToList();
+
             }
-            foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            catch (Exception ex)
             {
-                query = query.Include(includeProperty);
+
+                throw new Exception(ex.Message.ToString());
             }
-            if (orderBy != null)
-            {
-                return orderBy(query).ToList();
-            }
-            return query.ToList();
+           
         }
         public T GetById(int id)
         {

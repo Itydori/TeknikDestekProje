@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeknikServis.DataAccess;
 
@@ -11,9 +12,11 @@ using TeknikServis.DataAccess;
 namespace TeknikServis.DataAccess.Migrations
 {
     [DbContext(typeof(TeknikServisDbContext))]
-    partial class TeknikServisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250408135731_MakeNullDegerDefaultAtama2")]
+    partial class MakeNullDegerDefaultAtama2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,7 +158,7 @@ namespace TeknikServis.DataAccess.Migrations
                     b.Property<DateTime>("GelisTarih")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValue(new DateTime(2025, 4, 8, 16, 57, 30, 670, DateTimeKind.Local).AddTicks(6341));
 
                     b.Property<bool>("Kapali")
                         .ValueGeneratedOnAdd()
@@ -165,19 +168,19 @@ namespace TeknikServis.DataAccess.Migrations
                     b.Property<DateTime?>("KapatmaGunu")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValue(new DateTime(2025, 4, 8, 16, 57, 30, 670, DateTimeKind.Local).AddTicks(3734));
 
                     b.Property<TimeSpan?>("KapatmaSaati")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("time")
-                        .HasDefaultValueSql("CAST(GETDATE() AS time)");
+                        .HasDefaultValue(new TimeSpan(610506704251));
 
                     b.Property<DateTime?>("KapatmaTarihi")
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasMaxLength(20)
                         .HasColumnType("datetime2")
-                        .HasComputedColumnSql("CASE WHEN KapatmaGunu IS NULL OR KapatmaSaati IS NULL THEN CONVERT(varchar(10), GETDATE(), 104) + ' ' + CONVERT(varchar(5), CAST(GETDATE() AS time), 108) ELSE CONVERT(varchar(10), KapatmaGunu, 104) + ' ' + CONVERT(varchar(5), KapatmaSaati, 108) END", true);
+                        .HasComputedColumnSql("CONVERT(varchar(10), KapatmaGunu, 104) + ' ' + CONVERT(varchar(5), KapatmaSaati, 108)", true);
 
                     b.Property<string>("Marka")
                         .IsRequired()

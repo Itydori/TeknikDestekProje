@@ -123,11 +123,12 @@ namespace teknikServis.web.Controllers
 				// Sorgunuzun direkt olarak ihtiyaç duyduğunuz alanları seçtiğinden emin olun
 
 
-				var acikIsEmirleri1 = isEmriTeslimRepository.Get(null,null,"Musteri").ToList();
+				var acikIsEmirleri1 = isEmriTeslimRepository.Get(null, null, "Musteri").ToList();
 				var acikIsEmirleri = isEmriTeslimRepository.Get()
+					// Kapalı olmayan iş emirlerini filtreleyin
 					.Where(i => i.Kapali == false)
-					 // Musteri ilişkisini include edin
-					
+					// Musteri ilişkisini include edin
+
 					.ToList();
 
 				// Verileri doğrudan görünüme gönderin
@@ -137,7 +138,7 @@ namespace teknikServis.web.Controllers
 			{
 				// Hata yönetimi
 				// Örneğin: TempData["Error"] = ex.Message;
-				return View(new List<object>()); // Boş liste dönün
+				return View(new List<IsEmriTeslim>()); // Boş liste dönün
 			}
 			//return View(isEmriTeslimRepository.Get(i => i.Kapali == false, includeProperties: "Musteri").ToList());
 		}
@@ -183,36 +184,109 @@ namespace teknikServis.web.Controllers
 			return RedirectToAction(nameof(IslemYap), new { isEmriTeslim = islem.IsEmriId });
 		}
 
-		[HttpGet]
-		public IActionResult Delete(int isEmriTeslimId)
+		[HttpPost]
+		public IActionResult Delete(int islemId)
 		{
-			var isEmriTeslim = isEmriIslemRepository.GetById(isEmriTeslimId);
-			if (isEmriTeslim == null)
+			var islem = isEmriIslemRepository.GetById(islemId); // Burada doğru repository olmalı
+			if (islem == null)
 			{
 				return NotFound();
 			}
 
-			// Silmeden önce IsEmriId değerini saklayın
-			var isEmriId = isEmriTeslim.IsEmriId;
+			var isEmriId = islem.IsEmriId; // Geri dönüşte aynı sayfaya gidebilmek için saklıyoruz
 
-			isEmriIslemRepository.Delete(isEmriTeslim);
-			TempData["Ok"] = "İş Emri başarıyla silindi.";
+			isEmriIslemRepository.Delete(islem);
+			TempData["Ok"] = "İşlem başarıyla silindi.";
 
-			// Parametre adı "isEmriTeslim" olmalı, "isEmriId" değil
 			return RedirectToAction(nameof(IslemYap), new { isEmriTeslim = isEmriId });
 		}
-		public IActionResult IsEmriKapat(int isEmriTeslimId,string OdemeSekli,string TeslimatAciklama,int AlinanOdeme,string KapatmaSaati, DateTime KapatmaGunu)
+		//[HttpGet]
+		//public IActionResult Delete(int isEmriTeslimId)
+		//{
+		//	var isEmriTeslim = isEmriIslemRepository.GetById(isEmriTeslimId);
+		//	if (isEmriTeslim == null)
+		//	{
+		//		return NotFound();
+		//	}
+
+		//	// Silmeden önce IsEmriId değerini saklayın
+		//	var isEmriId = isEmriTeslim.IsEmriId;
+
+		//	isEmriIslemRepository.Delete(isEmriTeslim);
+		//	TempData["Ok"] = "İş Emri başarıyla silindi.";
+
+		//	// Parametre adı "isEmriTeslim" olmalı, "isEmriId" değil
+		//	return RedirectToAction(nameof(IslemYap), new { isEmriTeslim = isEmriId });
+		//}
+		//public IActionResult IsEmriKapat(int isEmriTeslimId,string OdemeSekli,string TeslimatAciklama,int AlinanOdeme,string KapatmaSaati, DateTime KapatmaGunu)
+		//{
+		//	var isEmri = isEmriTeslimRepository.GetById(isEmriTeslimId);
+		//	if (isEmri == null)
+		//	{
+		//		return NotFound();
+		//	}
+		//	// Kapatma işlemi için gerekli alanları güncelleyin
+		//	isEmri.KapatmaGunu = KapatmaGunu;
+		//	isEmri.KapatmaSaati = TimeSpan.Parse(KapatmaSaati);
+		//	isEmri.AlinanOdeme = AlinanOdeme;
+		//	isEmri.OdemeSekli = OdemeSekli;
+		//	isEmri.KapatmaTarihi = isEmri.KapatmaGunu + isEmri.KapatmaSaati;
+		//	isEmri.TeslimatAciklama = TeslimatAciklama;
+		//	isEmri.Kapali = true;
+		//	isEmri.IsEmriTeslimId = isEmriTeslimId;
+		//	isEmriTeslimRepository.Update(isEmri);
+		//	TempData["Ok"] = "İş Emri başarıyla kapatıldı.";
+		//	return RedirectToAction(nameof(AcikIsEmirleri));
+		//}
+		public IActionResult IsEmriKapat(int isEmriTeslimId, string OdemeSekli, string TeslimatAciklama,
+	decimal AlinanOdeme, string KapatmaSaati, DateTime KapatmaGunu, string SiparisDurumu)
 		{
 			var isEmri = isEmriTeslimRepository.GetById(isEmriTeslimId);
 			if (isEmri == null)
 			{
 				return NotFound();
 			}
-			
+
+			// Kapatma işlemi için gerekli alanları güncelleyin
+			isEmri.KapatmaGunu = KapatmaGunu;
+			isEmri.KapatmaSaati = TimeSpan.Parse(KapatmaSaati);
+			isEmri.AlinanOdeme = Convert.ToInt32(AlinanOdeme);
+			isEmri.OdemeSekli = OdemeSekli;
+			isEmri.SiparisDurumu = SiparisDurumu; // Make sure to add this field to your model
+			//isEmri.KapatmaTarihi =  KapatmaGunu + isEmri.KapatmaSaati;
+			isEmri.TeslimatAciklama = TeslimatAciklama;
 			isEmri.Kapali = true;
+
 			isEmriTeslimRepository.Update(isEmri);
+			TempData["Ok"] = "İş Emri başarıyla kapatıldı.";
 			return RedirectToAction(nameof(AcikIsEmirleri));
 		}
-	}	
+
+        [HttpPost]
+        public IActionResult IsEmriSil(int id)
+        {
+            try
+            {
+                var isEmri = isEmriTeslimRepository.GetById(id);
+                if (isEmri == null)
+                {
+                    TempData["Hata"] = "İş emri bulunamadı.";
+                    return RedirectToAction(nameof(AcikIsEmirleri));
+                }
+
+                isEmriTeslimRepository.Delete(isEmri);
+                TempData["Ok"] = "İş emri başarıyla silindi.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Hata"] = "İş emri silinirken bir hata oluştu: " + ex.Message;
+            }
+
+            return RedirectToAction(nameof(AcikIsEmirleri));
+        }
+		
+
+
+	}
 }
 

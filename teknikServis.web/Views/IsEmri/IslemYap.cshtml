@@ -209,7 +209,7 @@
 							<td>@item.Aciklama</td>
 							<td>
 								<form method="post" action="@Url.Action("Delete", "IsEmri")">
-									<input type="hidden" name="isEmriTeslimId" value="@item.IslemId" />
+									<input type="hidden" name="islemId" value="@item.IslemId" />
 									<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bu İş Emri silinecek, emin misiniz?');">Sil</button>
 								</form>
 							</td>
@@ -219,16 +219,17 @@
 			</table>
 			@using (Html.BeginForm("IsEmriKapat", "IsEmri"))
 			{
-			<input type="hidden" name="IsEmriId" value="@ViewBag.IsEmriTeslimId" />
-				<!-- Teslim ve Ödeme Bilgileri Formu -->
+				<input type="hidden" name="isEmriTeslimId" value="@ViewBag.IsEmriTeslimId" />
+@* 			<input type="hidden" name="IsEmriId" value="@ViewBag.IsEmriTeslimId" />
+ *@				<!-- Teslim ve Ödeme Bilgileri Formu -->
 				<div class="card mt-4 shadow-sm border-info">
 				<div class="card-header bg-info text-white">
 					<h5 class="mb-0"><i class="fas fa-handshake mr-2"></i> Teslim ve Ödeme Bilgileri</h5>
 				</div>
 				<div class="card-body">
 				
-						<input type="hidden" name="IsEmriId" value="@ViewBag.IsEmriTeslimId" />
-
+@* 						<input type="hidden" name="IsEmriId" value="@ViewBag.IsEmriTeslimId" />
+ *@
 						<div class="row mb-3">
 							<div class="col-md-6 mb-3">
 								<label for="OdemeSekli" class="form-label fw-bold">Ödeme Şekli</label>
@@ -282,7 +283,6 @@
 								<i class="fas fa-check-circle me-1"></i> Teslim Bilgilerini Kaydet
 							</button>
 						</div>
-					
 				</div>
 			</div>
 			}
