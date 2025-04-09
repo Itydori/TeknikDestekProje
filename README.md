@@ -1,5 +1,5 @@
 # Technical Support Management System
-
+ 
 ## 🧩 About the Project
 
 This project is a web-based management system designed for companies that provide technical support services. It allows easy tracking of **customer records**, **service requests**, and **work orders**.
@@ -73,6 +73,7 @@ This project is a web-based management system designed for companies that provid
 ![image](https://github.com/user-attachments/assets/60e0303e-ce7b-47d4-9297-b0822cec6029)
 
 ---
+[Live Demo - Technical Support Management System](http://servicetrack.somee.com/)
 
 ## 🚀 Demo Scenario (How to Use)
 
@@ -81,6 +82,9 @@ This project is a web-based management system designed for companies that provid
 3. Fill in device, description, and customer details to create a request
 4. Go to the "Work Orders" page to view created entries
 5. Click the details button to view the full order info
+
+# Visit the Live Demo
+You can view the live demo of the project by clicking the link below:
 
 
 ---
