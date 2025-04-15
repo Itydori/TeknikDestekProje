@@ -30,7 +30,7 @@ namespace TeknikServis.Entities.Servis
         public string? KapatmaTarihi { get; set; }
         public string? SiparisDurumu { get; set; }
         public  string? TeslimatAciklama { get; set; }
-        public List<İslem> Islems{ get; set; }
+        public List<Islem> Islems{ get; set; }
 	}
 	public enum GarantiDurumuEnum
 	{

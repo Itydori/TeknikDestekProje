@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TeknikServis.Entities.Servis
 {
-	public class İslem
+	public class Islem
 	{
         public int IslemId { get; set; }
         public int IsEmriId { get; set; }

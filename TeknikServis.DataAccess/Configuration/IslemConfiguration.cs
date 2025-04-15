@@ -9,9 +9,9 @@ using TeknikServis.Entities.Servis;
 
 namespace TeknikServis.DataAccess.Configuration
 {
-	public class IslemConfiguration : IEntityTypeConfiguration<İslem>
+	public class IslemConfiguration : IEntityTypeConfiguration<Islem>
 	{
-		public void Configure(EntityTypeBuilder<İslem> builder)
+		public void Configure(EntityTypeBuilder<Islem> builder)
 		{
 			builder.HasKey(i=>i.IslemId);
 			builder.Property(i => i.StokYeri).HasMaxLength(200).IsRequired();

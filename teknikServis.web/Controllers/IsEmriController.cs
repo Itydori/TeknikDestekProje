@@ -12,8 +12,8 @@ namespace teknikServis.web.Controllers
 	{
 		private readonly IRepository<Musteri> repository;
 		private readonly IRepository<IsEmriTeslim> isEmriTeslimRepository;
-		private readonly IRepository<İslem> isEmriIslemRepository;
-		public IsEmriController(IRepository<Musteri> repository, IRepository<IsEmriTeslim> isEmriTeslimRepository, IRepository<İslem> isEmriIslemRepository)
+		private readonly IRepository<Islem> isEmriIslemRepository;
+		public IsEmriController(IRepository<Musteri> repository, IRepository<IsEmriTeslim> isEmriTeslimRepository, IRepository<Islem> isEmriIslemRepository)
 		{
 			this.repository = repository;
 			this.isEmriTeslimRepository = isEmriTeslimRepository;
@@ -167,7 +167,7 @@ namespace teknikServis.web.Controllers
 			return View(isEmriIslemRepository.Get(x => x.IsEmriId == isEmriTeslim).OrderByDescending(x => x.IslemId).ToList());
 
 		}
-		public IActionResult IslemKaydet(İslem islem)
+		public IActionResult IslemKaydet(Islem islem)
 		{
 			//// IsEmriTeslimId değerinin işlem nesnesine aktarılması
 

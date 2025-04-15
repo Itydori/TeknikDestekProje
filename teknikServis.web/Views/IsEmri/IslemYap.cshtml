@@ -115,8 +115,8 @@
 	</div>
 
 </div>
- *@
- @model IEnumerable<İslem>
+ *@Islem
+ @model IEnumerable<Islem>
 @{
 	ViewBag.Title = @ViewBag.Title;
 	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -220,8 +220,7 @@
 			@using (Html.BeginForm("IsEmriKapat", "IsEmri"))
 			{
 				<input type="hidden" name="isEmriTeslimId" value="@ViewBag.IsEmriTeslimId" />
-@* 			<input type="hidden" name="IsEmriId" value="@ViewBag.IsEmriTeslimId" />
- *@				<!-- Teslim ve Ödeme Bilgileri Formu -->
+			<!-- Teslim ve Ödeme Bilgileri Formu -->
 				<div class="card mt-4 shadow-sm border-info">
 				<div class="card-header bg-info text-white">
 					<h5 class="mb-0"><i class="fas fa-handshake mr-2"></i> Teslim ve Ödeme Bilgileri</h5>
