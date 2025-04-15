@@ -30,6 +30,12 @@ namespace teknikServis.web.Controllers
 			var musteriAra = repository.Get(i => i.Ad.StartsWith(ara)).ToList();
 			return View(musteriAra);
 		}
+
+		/// <summary>
+		/// Bu İş Emri Oluşturur
+		/// </summary>
+		/// <param name="MusteriId"></param>
+		/// <returns></returns>
 		public IActionResult IsEmriOlustur(int MusteriId)
 		{
 			try
