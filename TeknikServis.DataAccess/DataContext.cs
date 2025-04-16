@@ -32,7 +32,9 @@ namespace TeknikServis.DataAccess
             builder.ApplyConfigurationsFromAssembly(typeof(TeknikServisDbContext).Assembly);
             base.OnModelCreating(builder);
         }
+
     }
+
 }
 
 // using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 using TeknikServis.Business.Abstract;
 using TeknikServis.DataAccess;
 using TeknikServis.Entities.Servis;
@@ -12,7 +13,7 @@ builder.Services.AddDbContext<TeknikServisDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 builder.Services.AddIdentity<Kullanici, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
@@ -24,6 +25,8 @@ builder.Services.AddIdentity<Kullanici, IdentityRole>(options =>
 
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+builder.Services.AddScoped<IIslemRepository,IslemRepository>();
 
 
 builder.Services.AddControllersWithViews();

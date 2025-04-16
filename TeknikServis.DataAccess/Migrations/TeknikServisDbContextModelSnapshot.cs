@@ -172,13 +172,6 @@ namespace TeknikServis.DataAccess.Migrations
                         .HasColumnType("time")
                         .HasDefaultValueSql("CAST(GETDATE() AS time)");
 
-                    b.Property<DateTime?>("KapatmaTarihi")
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasMaxLength(20)
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("CASE WHEN KapatmaGunu IS NULL OR KapatmaSaati IS NULL THEN CONVERT(varchar(10), GETDATE(), 104) + ' ' + CONVERT(varchar(5), CAST(GETDATE() AS time), 108) ELSE CONVERT(varchar(10), KapatmaGunu, 104) + ' ' + CONVERT(varchar(5), KapatmaSaati, 108) END", true);
-
                     b.Property<string>("Marka")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -215,7 +208,54 @@ namespace TeknikServis.DataAccess.Migrations
 
                     b.HasIndex("MusteriId");
 
-                    b.ToTable("IsEmriTeslim");
+                    b.ToTable("IsEmriTeslimler");
+                });
+
+            modelBuilder.Entity("TeknikServis.Entities.Servis.Islem", b =>
+                {
+                    b.Property<int>("IslemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IslemId"));
+
+                    b.Property<string>("Aciklama")
+                        .IsRequired()
+                        .HasMaxLength(750)
+                        .HasColumnType("nvarchar(750)");
+
+                    b.Property<int>("IsEmriId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IsEmriTeslimId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("OnarimTarihi")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OnarimYapan")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("StokYeri")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal>("Ucret")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("YapilanIslemler")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.HasKey("IslemId");
+
+                    b.HasIndex("IsEmriTeslimId");
+
+                    b.ToTable("Islemler");
                 });
 
             modelBuilder.Entity("TeknikServis.Entities.Servis.Kullanici", b =>
@@ -390,53 +430,6 @@ namespace TeknikServis.DataAccess.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("TeknikServis.Entities.Servis.İslem", b =>
-                {
-                    b.Property<int>("IslemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IslemId"));
-
-                    b.Property<string>("Aciklama")
-                        .IsRequired()
-                        .HasMaxLength(750)
-                        .HasColumnType("nvarchar(750)");
-
-                    b.Property<int>("IsEmriId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IsEmriTeslimId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("OnarimTarihi")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("OnarimYapan")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("StokYeri")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<decimal>("Ucret")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("YapilanIslemler")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.HasKey("IslemId");
-
-                    b.HasIndex("IsEmriTeslimId");
-
-                    b.ToTable("İslem");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("TeknikServis.Entities.Servis.Roles", null)
@@ -499,13 +492,13 @@ namespace TeknikServis.DataAccess.Migrations
                     b.Navigation("Musteri");
                 });
 
-            modelBuilder.Entity("TeknikServis.Entities.Servis.İslem", b =>
+            modelBuilder.Entity("TeknikServis.Entities.Servis.Islem", b =>
                 {
-                    b.HasOne("TeknikServis.Entities.Servis.IsEmriTeslim", "IsEmriTeslim")
+                    b.HasOne("TeknikServis.Entities.Servis.IsEmriTeslim", "IsEmriTeslimler")
                         .WithMany("Islems")
                         .HasForeignKey("IsEmriTeslimId");
 
-                    b.Navigation("IsEmriTeslim");
+                    b.Navigation("IsEmriTeslimler");
                 });
 
             modelBuilder.Entity("TeknikServis.Entities.Servis.IsEmriTeslim", b =>

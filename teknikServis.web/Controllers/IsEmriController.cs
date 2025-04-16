@@ -24,18 +24,12 @@ namespace teknikServis.web.Controllers
 			if (ara == "" || ara == null)
 			{
 
-				var musteri = repository.Get().OrderByDescending(i => i.MusteriId).Take(20).ToList();
+				var musteri = repository.Get().OrderByDescending(i => i.MusteriId).Take(20);
 				return View(musteri);
 			}
 			var musteriAra = repository.Get(i => i.Ad.StartsWith(ara)).ToList();
 			return View(musteriAra);
 		}
-
-		/// <summary>
-		/// Bu İş Emri Oluşturur
-		/// </summary>
-		/// <param name="MusteriId"></param>
-		/// <returns></returns>
 		public IActionResult IsEmriOlustur(int MusteriId)
 		{
 			try
@@ -160,17 +154,29 @@ namespace teknikServis.web.Controllers
 			//ViewBag.Title = "İş Emri İşlem Yap -" + baslik.Musteri.Ad + " " + baslik.Marka + " " + baslik.Model + " " + baslik.GelisTarih.ToString("dd/MM/yyyy") + " " + baslik.FisNo;
 			//ViewBag.IsEmriTeslimId = isEmriTeslim;
 			//return View(isEmriIslemRepository.Get(x => x.IsEmriId == isEmriTeslim).OrderByDescending(x => x.IslemId).ToList());
-			var baslik = isEmriTeslimRepository.Get(x => x.IsEmriTeslimId == isEmriTeslim, includeProperties: "Musteri").FirstOrDefault();
 
-			if (baslik == null || baslik.Musteri == null)
+			try
 			{
-				// Redirect to AcikIsEmirleri if data is null
-				return RedirectToAction("AcikIsEmirleri");
-			}
+				var baslik = isEmriTeslimRepository.Get(x => x.IsEmriTeslimId == isEmriTeslim, includeProperties: "Musteri").FirstOrDefault();
 
-			ViewBag.Title = "İş Emri İşlem Yap -" + baslik.Musteri.Ad + " " + baslik.Marka + " " + baslik.Model + " " + baslik.GelisTarih.ToString("dd/MM/yyyy") + " " + baslik.FisNo;
-			ViewBag.IsEmriTeslimId = isEmriTeslim;
-			return View(isEmriIslemRepository.Get(x => x.IsEmriId == isEmriTeslim).OrderByDescending(x => x.IslemId).ToList());
+				if (baslik == null || baslik.Musteri == null)
+				{
+					// Redirect to AcikIsEmirleri if data is null
+					return RedirectToAction("AcikIsEmirleri");
+				}
+
+				ViewBag.Title = "İş Emri İşlem Yap -" + baslik.Musteri.Ad + " " + baslik.Marka + " " + baslik.Model + " " + baslik.GelisTarih.ToString("dd/MM/yyyy") + " " + baslik.FisNo;
+				ViewBag.IsEmriTeslimId = isEmriTeslim;
+
+				var data = isEmriIslemRepository.Get(x => x.IsEmriTeslimId == isEmriTeslim).OrderByDescending(x => x.IslemId).ToList();
+				return View(data);
+			}
+			catch (Exception ex)
+			{
+
+				throw new Exception(ex.Message.ToString());
+			}
+		
 
 		}
 		public IActionResult IslemKaydet(Islem islem)

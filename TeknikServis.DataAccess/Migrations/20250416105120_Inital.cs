@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TeknikServis.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Inital : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -54,15 +54,41 @@ namespace TeknikServis.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Markalar",
+                columns: table => new
+                {
+                    MarkaId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MarkaAd = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Markalar", x => x.MarkaId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Modeller",
+                columns: table => new
+                {
+                    ModelId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ModelAd = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Modeller", x => x.ModelId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Musteris",
                 columns: table => new
                 {
                     MusteriId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Ad = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefon = table.Column<int>(type: "int", nullable: false),
-                    Adres = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Eposta = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ad = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Telefon = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    Adres = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Eposta = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Aktif = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -176,6 +202,65 @@ namespace TeknikServis.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "IsEmriTeslimler",
+                columns: table => new
+                {
+                    IsEmriTeslimId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MusteriId = table.Column<int>(type: "int", nullable: false),
+                    Marka = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GelisTarih = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    ArizaDurumu = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Yil = table.Column<int>(type: "int", nullable: false),
+                    Kapali = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    FisNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GarantiDurumu = table.Column<int>(type: "int", nullable: false),
+                    ServisTalebi = table.Column<int>(type: "int", nullable: false),
+                    OdemeSekli = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "Nakit"),
+                    AlinanOdeme = table.Column<int>(type: "int", nullable: true, defaultValue: 0),
+                    KapatmaGunu = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETDATE()"),
+                    KapatmaSaati = table.Column<TimeSpan>(type: "time", nullable: true, defaultValueSql: "CAST(GETDATE() AS time)"),
+                    SiparisDurumu = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "Sipariş verilmedi"),
+                    TeslimatAciklama = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "Teslimat yapılmadı")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IsEmriTeslimler", x => x.IsEmriTeslimId);
+                    table.ForeignKey(
+                        name: "FK_IsEmriTeslimler_Musteris_MusteriId",
+                        column: x => x.MusteriId,
+                        principalTable: "Musteris",
+                        principalColumn: "MusteriId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Islemler",
+                columns: table => new
+                {
+                    IslemId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsEmriId = table.Column<int>(type: "int", nullable: false),
+                    OnarimYapan = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    OnarimTarihi = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StokYeri = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    YapilanIslemler = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Ucret = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Aciklama = table.Column<string>(type: "nvarchar(750)", maxLength: 750, nullable: false),
+                    IsEmriTeslimId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Islemler", x => x.IslemId);
+                    table.ForeignKey(
+                        name: "FK_Islemler_IsEmriTeslimler_IsEmriTeslimId",
+                        column: x => x.IsEmriTeslimId,
+                        principalTable: "IsEmriTeslimler",
+                        principalColumn: "IsEmriTeslimId");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -214,6 +299,16 @@ namespace TeknikServis.DataAccess.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_IsEmriTeslimler_MusteriId",
+                table: "IsEmriTeslimler",
+                column: "MusteriId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Islemler_IsEmriTeslimId",
+                table: "Islemler",
+                column: "IsEmriTeslimId");
         }
 
         /// <inheritdoc />
@@ -235,13 +330,25 @@ namespace TeknikServis.DataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Musteris");
+                name: "Islemler");
+
+            migrationBuilder.DropTable(
+                name: "Markalar");
+
+            migrationBuilder.DropTable(
+                name: "Modeller");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "IsEmriTeslimler");
+
+            migrationBuilder.DropTable(
+                name: "Musteris");
         }
     }
 }

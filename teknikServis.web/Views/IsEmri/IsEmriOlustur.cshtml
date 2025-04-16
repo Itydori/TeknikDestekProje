@@ -1,4 +1,5 @@
-﻿@model  List<TeknikServis.Entities.Servis.IsEmriTeslim>
+﻿@using TeknikServis.Entities.Enums
+@model  List<TeknikServis.Entities.Servis.IsEmriTeslim>
 
 @{
 	
@@ -192,6 +193,7 @@
 								<th>Servis Talebi</th>
 								<th>Geliş Tarihi</th>
 								<th>Fiş No</th>
+								<th>Pdf</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -208,6 +210,11 @@
 									<td>@item.GelisTarih.ToString("dd.MM.yyyy")</td>
 @* 									<td>@item.Tes.ToString("dd.MM.yyyy")</td>
  *@									<td>@item.FisNo</td>
+									<td>
+										<a href="/Fatura/FaturaYazdir/@item.IsEmriTeslimId" class="btn btn-danger" target="_blank">
+											<i class="fas fa-file-pdf"></i> Faturayı İndir
+										</a>
+									</td>
 								</tr>
 							}
 						</tbody>

@@ -2,36 +2,84 @@
 <Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
   <Body>
     <ReportItems>
-      <Textbox Name="Title">
+      <Textbox Name="ReportTitle">
         <Paragraphs>
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>FATURA</Value>
+                <Value>TEKNİK SERVİS FATURASI</Value>
                 <Style>
-                  <FontSize>18pt</FontSize>
+                  <FontFamily>Calibri</FontFamily>
+                  <FontSize>22pt</FontSize>
                   <FontWeight>Bold</FontWeight>
+                  <Color>#3366cc</Color>
                 </Style>
               </TextRun>
             </TextRuns>
-            <Style />
+            <Style>
+              <TextAlign>Center</TextAlign>
+            </Style>
           </Paragraph>
         </Paragraphs>
-        <Top>0.3cm</Top>
+        <Top>0.5cm</Top>
         <Height>1cm</Height>
         <Width>20cm</Width>
         <Style>
-          <TextAlign>Center</TextAlign>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <BottomBorder>
+            <Color>#cccccc</Color>
+            <Style>Solid</Style>
+            <Width>1pt</Width>
+          </BottomBorder>
+          <PaddingBottom>5pt</PaddingBottom>
         </Style>
       </Textbox>
       <Textbox Name="MusteriBilgileri">
+        <CanGrow>true</CanGrow>
         <Paragraphs>
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value xml:space="preserve">
-									
-								</Value>
+                <Value>Müşteri: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!Ad.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value> | Tel: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!Telefon.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value> | E-posta: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!Eposta.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value>
+Adres: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!Adres.Value</Value>
                 <Style />
               </TextRun>
             </TextRuns>
@@ -39,36 +87,596 @@
           </Paragraph>
         </Paragraphs>
         <Top>1.5cm</Top>
-        <Height>3cm</Height>
+        <Height>1.2cm</Height>
         <Width>20cm</Width>
         <ZIndex>1</ZIndex>
         <Style />
       </Textbox>
-      <Textbox Name="AltBilgiler">
+      <Textbox Name="CihazBilgileri">
+        <CanGrow>true</CanGrow>
         <Paragraphs>
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value xml:space="preserve">
-									
-								</Value>
+                <Value>Fiş No: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!FisNo.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value>    Geliş Tarihi: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!KapatmaTarihi.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value>    Cihaz: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!Marka.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value> / </Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!Model.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value> / </Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!Yil.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value>
+Arıza: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!ArizaDurumu.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value>   Garanti: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!GarantiDurumu.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value>   Talep: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!ServisTalebi.Value</Value>
                 <Style />
               </TextRun>
             </TextRuns>
             <Style />
           </Paragraph>
         </Paragraphs>
-        <Top>5cm</Top>
-        <Height>3cm</Height>
+        <Top>3cm</Top>
+        <Height>1cm</Height>
         <Width>20cm</Width>
         <ZIndex>2</ZIndex>
         <Style />
+      </Textbox>
+      <Textbox Name="OdemeBilgileri">
+        <CanGrow>true</CanGrow>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Ödeme Şekli: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!OdemeSekli.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value>   Alınan Ödeme: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!AlinanOdeme.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value>   Toplam Ücret: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!ToplamUcret.Value</Value>
+                <Style />
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <Top>4.5cm</Top>
+        <Height>0.8cm</Height>
+        <Width>20cm</Width>
+        <ZIndex>3</ZIndex>
+        <Style />
+      </Textbox>
+      <Textbox Name="TabloBaslik">
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>YAPILAN İŞLEMLER</Value>
+                <Style />
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <Top>5.5cm</Top>
+        <Height>0.6cm</Height>
+        <Width>20cm</Width>
+        <ZIndex>4</ZIndex>
+        <Style>
+          <FontSize>12pt</FontSize>
+          <FontWeight>Bold</FontWeight>
+        </Style>
+      </Textbox>
+      <Tablix Name="TablixIslemler">
+        <TablixBody>
+          <TablixColumns>
+            <TablixColumn>
+              <Width>5cm</Width>
+            </TablixColumn>
+            <TablixColumn>
+              <Width>3.5cm</Width>
+            </TablixColumn>
+            <TablixColumn>
+              <Width>3.5cm</Width>
+            </TablixColumn>
+            <TablixColumn>
+              <Width>4cm</Width>
+            </TablixColumn>
+            <TablixColumn>
+              <Width>4cm</Width>
+            </TablixColumn>
+          </TablixColumns>
+          <TablixRows>
+            <TablixRow>
+              <Height>0.6cm</Height>
+              <TablixCells>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Header_YapilanIslemler">
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>Yapılan Islem</Value>
+                              <Style>
+                                <FontWeight>Bold</FontWeight>
+                                <Color>White</Color>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style>
+                            <TextAlign>Center</TextAlign>
+                          </Style>
+                        </Paragraph>
+                      </Paragraphs>
+                      <Style>
+                        <BackgroundColor>#4472c4</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Header_OnarimYapan">
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>Onaran</Value>
+                              <Style>
+                                <FontWeight>Bold</FontWeight>
+                                <Color>White</Color>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style>
+                            <TextAlign>Center</TextAlign>
+                          </Style>
+                        </Paragraph>
+                      </Paragraphs>
+                      <Style>
+                        <BackgroundColor>#4472c4</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Header_OnarimTarihi">
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>Tarih</Value>
+                              <Style>
+                                <FontWeight>Bold</FontWeight>
+                                <Color>White</Color>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style>
+                            <TextAlign>Center</TextAlign>
+                          </Style>
+                        </Paragraph>
+                      </Paragraphs>
+                      <Style>
+                        <BackgroundColor>#4472c4</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Header_StokYeri">
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>Stok Yeri</Value>
+                              <Style>
+                                <FontWeight>Bold</FontWeight>
+                                <Color>White</Color>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style>
+                            <TextAlign>Center</TextAlign>
+                          </Style>
+                        </Paragraph>
+                      </Paragraphs>
+                      <Style>
+                        <BackgroundColor>#4472c4</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Header_Ucret">
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>Ucret</Value>
+                              <Style>
+                                <FontWeight>Bold</FontWeight>
+                                <Color>White</Color>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style>
+                            <TextAlign>Center</TextAlign>
+                          </Style>
+                        </Paragraph>
+                      </Paragraphs>
+                      <Style>
+                        <BackgroundColor>#4472c4</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+              </TablixCells>
+            </TablixRow>
+            <TablixRow>
+              <Height>0.6cm</Height>
+              <TablixCells>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Data_YapilanIslemler">
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Fields!YapilanIslemler.Value</Value>
+                              <Style>
+                                <FontFamily>Calibri</FontFamily>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <Style>
+                        <Border>
+                          <Color>#cccccc</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <BackgroundColor>=iif(RowNumber(Nothing) Mod 2 = 0, "White", "#F2F2F2")</BackgroundColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Data_OnarimYapan">
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Fields!OnarimYapan.Value</Value>
+                              <Style>
+                                <FontFamily>Calibri</FontFamily>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <Style>
+                        <Border>
+                          <Color>#cccccc</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <BackgroundColor>=iif(RowNumber(Nothing) Mod 2 = 0, "White", "#F2F2F2")</BackgroundColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Data_OnarimTarihi">
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Fields!OnarimTarihi.Value</Value>
+                              <Style>
+                                <FontFamily>Calibri</FontFamily>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <Style>
+                        <Border>
+                          <Color>#cccccc</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <BackgroundColor>=iif(RowNumber(Nothing) Mod 2 = 0, "White", "#F2F2F2")</BackgroundColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Data_StokYeri">
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Fields!StokYeri.Value</Value>
+                              <Style>
+                                <FontFamily>Calibri</FontFamily>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <Style>
+                        <Border>
+                          <Color>#cccccc</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <BackgroundColor>=iif(RowNumber(Nothing) Mod 2 = 0, "White", "#F2F2F2")</BackgroundColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Data_Ucret">
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Fields!Ucret.Value</Value>
+                              <Style>
+                                <FontFamily>Calibri</FontFamily>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <Style>
+                        <Border>
+                          <Color>#cccccc</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <BackgroundColor>=iif(RowNumber(Nothing) Mod 2 = 0, "White", "#F2F2F2")</BackgroundColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+              </TablixCells>
+            </TablixRow>
+          </TablixRows>
+        </TablixBody>
+        <TablixColumnHierarchy>
+          <TablixMembers>
+            <TablixMember />
+            <TablixMember />
+            <TablixMember />
+            <TablixMember />
+            <TablixMember />
+          </TablixMembers>
+        </TablixColumnHierarchy>
+        <TablixRowHierarchy>
+          <TablixMembers>
+            <TablixMember>
+              <KeepWithGroup>After</KeepWithGroup>
+              <RepeatOnNewPage>true</RepeatOnNewPage>
+            </TablixMember>
+            <TablixMember />
+          </TablixMembers>
+        </TablixRowHierarchy>
+        <DataSetName>FaturaDataset</DataSetName>
+        <Top>6.3cm</Top>
+        <Height>1.2cm</Height>
+        <Width>20cm</Width>
+        <ZIndex>5</ZIndex>
+        <Style>
+          <Border>
+            <Color>#cccccc</Color>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Tablix>
+      <Textbox Name="Textbox1">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!ToplamUcret.Value</Value>
+                <Style />
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox1</rd:DefaultName>
+        <Top>21.20189cm</Top>
+        <Left>16.5715cm</Left>
+        <Height>0.6cm</Height>
+        <Width>4cm</Width>
+        <ZIndex>6</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox2">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value />
+                <Style />
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox2</rd:DefaultName>
+        <Top>22.1107cm</Top>
+        <Left>16.865cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.5cm</Width>
+        <ZIndex>7</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
       </Textbox>
     </ReportItems>
     <Height>25cm</Height>
     <Style />
   </Body>
-  <Width>21cm</Width>
+  <Width>21.22767cm</Width>
   <Page>
     <PageHeight>29.7cm</PageHeight>
     <PageWidth>21cm</PageWidth>
@@ -79,14 +687,99 @@
     <Style />
   </Page>
   <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DataSource">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString />
+      </ConnectionProperties>
+      <rd:DataSourceID>2057c405-b481-4a6d-b4a1-5c8e21a50a63</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
   <DataSets>
-    <DataSet Name="FaturaDataSet">
+    <DataSet Name="FaturaDataset">
       <Query>
-        <DataSourceName />
+        <DataSourceName>DataSource</DataSourceName>
         <CommandText />
       </Query>
+      <Fields>
+        <Field Name="Ad">
+          <DataField>Ad</DataField>
+        </Field>
+        <Field Name="Telefon">
+          <DataField>Telefon</DataField>
+        </Field>
+        <Field Name="Adres">
+          <DataField>Adres</DataField>
+        </Field>
+        <Field Name="Eposta">
+          <DataField>Eposta</DataField>
+        </Field>
+        <Field Name="Marka">
+          <DataField>Marka</DataField>
+        </Field>
+        <Field Name="Model">
+          <DataField>Model</DataField>
+        </Field>
+        <Field Name="Yil">
+          <DataField>Yil</DataField>
+        </Field>
+        <Field Name="ArizaDurumu">
+          <DataField>ArizaDurumu</DataField>
+        </Field>
+        <Field Name="GarantiDurumu">
+          <DataField>GarantiDurumu</DataField>
+        </Field>
+        <Field Name="ServisTalebi">
+          <DataField>ServisTalebi</DataField>
+        </Field>
+        <Field Name="FisNo">
+          <DataField>FisNo</DataField>
+        </Field>
+        <Field Name="OdemeSekli">
+          <DataField>OdemeSekli</DataField>
+        </Field>
+        <Field Name="AlinanOdeme">
+          <DataField>AlinanOdeme</DataField>
+        </Field>
+        <Field Name="ToplamUcret">
+          <DataField>ToplamUcret</DataField>
+        </Field>
+        <Field Name="YapilanIslemler">
+          <DataField>YapilanIslemler</DataField>
+        </Field>
+        <Field Name="OnarimYapan">
+          <DataField>OnarimYapan</DataField>
+        </Field>
+        <Field Name="OnarimTarihi">
+          <DataField>OnarimTarihi</DataField>
+        </Field>
+        <Field Name="StokYeri">
+          <DataField>StokYeri</DataField>
+        </Field>
+        <Field Name="Ucret">
+          <DataField>Ucret</DataField>
+        </Field>
+        <Field Name="Aciklama">
+          <DataField>Aciklama</DataField>
+        </Field>
+        <Field Name="KapatmaTarihi">
+          <DataField>KapatmaTarihi</DataField>
+        </Field>
+        <Field Name="KapatmaSaati">
+          <DataField>KapatmaSaati</DataField>
+        </Field>
+        <Field Name="SiparisDurumu">
+          <DataField>SiparisDurumu</DataField>
+        </Field>
+        <Field Name="TeslimatAciklama">
+          <DataField>TeslimatAciklama</DataField>
+        </Field>
+      </Fields>
     </DataSet>
   </DataSets>
+  <Language>tr-TR</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
-  <rd:ReportID>bb2dd13f-240a-4691-9e2b-2c73947fa928</rd:ReportID>
+  <rd:ReportID>e070c863-be8d-4625-9f87-b1e94b29e7a8</rd:ReportID>
 </Report>

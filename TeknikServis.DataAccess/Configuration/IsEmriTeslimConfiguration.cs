@@ -17,25 +17,16 @@ namespace TeknikServis.DataAccess.Configuration
             builder.Property(i => i.KapatmaGunu).HasDefaultValueSql("GETDATE()");
             builder.Property(i => i.KapatmaSaati).HasDefaultValueSql("CAST(GETDATE() AS time)");
 
-            // Computed column için NULL kontrolü ekleyelim
-            //builder.Property(i => i.KapatmaTarihi)
-            //    .HasComputedColumnSql(
-            //        "CASE WHEN KapatmaGunu IS NULL OR KapatmaSaati IS NULL " +
-            //        "THEN CONVERT(varchar(10), GETDATE(), 104) + ' ' + CONVERT(varchar(5), CAST(GETDATE() AS time), 108) " +
-            //        "ELSE CONVERT(varchar(10), KapatmaGunu, 104) + ' ' + CONVERT(varchar(5), KapatmaSaati, 108) END",
-            //        stored: true)
-            //    .HasMaxLength(20)
-            //    .IsRequired();
-
-        
-            builder.Property(i => i.KapatmaTarihi)
-    .HasComputedColumnSql(
-        "CASE WHEN KapatmaGunu IS NULL OR KapatmaSaati IS NULL " +
-        "THEN CONVERT(varchar(10), GETDATE(), 104) + ' ' + CONVERT(varchar(5), CAST(GETDATE() AS time), 108) " +
-        "ELSE CONVERT(varchar(10), KapatmaGunu, 104) + ' ' + CONVERT(varchar(5), KapatmaSaati, 108) END",
-        stored: true)  // persist edilen column yerine, hesaplanan column olarak bırakıyoruz.
-    .HasMaxLength(20)
-    .IsRequired();
+			// Computed column için NULL kontrolü ekleyelim
+			//builder.Property(i => i.KapatmaTarihi)
+			//    .HasComputedColumnSql(
+			//        "CASE WHEN KapatmaGunu IS NULL OR KapatmaSaati IS NULL " +
+			//        "THEN CONVERT(varchar(10), GETDATE(), 104) + ' ' + CONVERT(varchar(5), CAST(GETDATE() AS time), 108) " +
+			//        "ELSE CONVERT(varchar(10), KapatmaGunu, 104) + ' ' + CONVERT(varchar(5), KapatmaSaati, 108) END",
+			//        stored: true)
+			//    .HasMaxLength(20)
+			//    .IsRequired();
+			builder.Ignore(x => x.KapatmaTarihi);
             // Diğer default değerler
             builder.Property(i => i.AlinanOdeme).HasDefaultValue(0);
             builder.Property(i => i.TeslimatAciklama).HasDefaultValue("Teslimat yapılmadı");

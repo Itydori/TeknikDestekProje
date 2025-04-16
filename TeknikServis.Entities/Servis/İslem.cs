@@ -18,7 +18,7 @@ namespace TeknikServis.Entities.Servis
 		public  decimal Ucret { get; set; }
         public string Aciklama { get; set; } = default;
         public int? IsEmriTeslimId { get; set; } 
-        public virtual IsEmriTeslim IsEmriTeslim { get; set; }
+        public virtual IsEmriTeslim IsEmriTeslimler { get; set; }
 
     }
 }

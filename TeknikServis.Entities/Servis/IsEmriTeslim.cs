@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TeknikServis.Entities.Enums;
 
 namespace TeknikServis.Entities.Servis
 {
@@ -12,7 +13,6 @@ namespace TeknikServis.Entities.Servis
 		[Key]
 		public int IsEmriTeslimId { get; set; }
 		public int MusteriId { get; set; }
-
         public Musteri Musteri { get; set; }
         public string Marka { get; set; }
 		public string Model { get; set; }
@@ -32,14 +32,5 @@ namespace TeknikServis.Entities.Servis
         public  string? TeslimatAciklama { get; set; }
         public List<Islem> Islems{ get; set; }
 	}
-	public enum GarantiDurumuEnum
-	{
-		Garantili = 1,
-		Garantisiz = 2
-	}
-	public enum ServisTalebiEnum
-	{
-		ArizaliUrun = 1,
-		YedekParcaSiparis = 2
-	}
+	
 }
