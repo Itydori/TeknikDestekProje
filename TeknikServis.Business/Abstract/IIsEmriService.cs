@@ -29,5 +29,7 @@ namespace TeknikServis.Business.Abstract
 		Task<IEnumerable<Islem>> GetOperationsAsync(int isEmriTeslimId);
 		Task AddOperationAsync(Islem islem);
 		Task DeleteOperationAsync(int islemId);
+		Task<IsEmriTeslim?> GetOrderByIdAsync(int isEmriTeslimId);
+
 	}
 }

@@ -116,17 +116,16 @@
 
 </div>
  *@Islem
- @model IEnumerable<Islem>
+@model TeknikServis.Web.Models.IslemYapViewModel
 @{
-	ViewBag.Title = @ViewBag.Title;
+	ViewBag.Title = ViewBag.Title;
 	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 <!-- Onarım İşlemi Formu -->
 @using (Html.BeginForm("IslemKaydet", "IsEmri"))
 {
-	<input type="text" value="@ViewBag.IsEmriTeslimId" hidden />
-	<input type="text" name="IsEmriId" value="@ViewBag.IsEmriTeslimId" hidden />
+	<input type="hidden" asp-for="YeniIslem.IsEmriTeslimId" value="@ViewBag.IsEmriTeslimId" />
 
 	<div class="container mt-4">
 		<div class="card shadow-sm">
@@ -136,39 +135,92 @@
 			<div class="card-body">
 				<div class="row mb-4">
 					<div class="col-md-6 mb-3">
-						<label for="OnarimYapan" class="form-label fw-bold">Onarımı Yapan Kişi</label>
-						<input type="text" class="form-control" id="OnarimYapan" name="OnarimYapan" placeholder="Onarımı Yapan Kişi" />
+						<div class="form-group row">
+							<label asp-for="YeniIslem.OnarimYapan" class="col-md-3 control-label"></label>
+							<div class="col-md-9">
+								<input asp-for="YeniIslem.OnarimYapan"
+									   class="form-control"
+									   maxlength="50"
+									   required
+									   placeholder="Onarımı Yapan Kişi" />
+								<span asp-validation-for="YeniIslem.OnarimYapan" class="text-danger"></span>
+							</div>
+						</div>
 					</div>
 					<div class="col-md-6 mb-3">
-						<label for="OnarimTarihi" class="form-label fw-bold">Onarım Tarihi</label>
-						<input type="date" class="form-control" id="OnarimTarihi" name="OnarimTarihi" />
+						<div class="form-group row">
+							<label asp-for="YeniIslem.OnarimTarihi" class="col-md-3 control-label"></label>
+							<div class="col-md-9">
+								<input asp-for="YeniIslem.OnarimTarihi"
+									   type="date"
+									   class="form-control"
+									   required />
+								<span asp-validation-for="YeniIslem.OnarimTarihi" class="text-danger"></span>
+							</div>
+						</div>
 					</div>
 				</div>
 
 				<div class="row mb-4">
 					<div class="col-md-6 mb-3">
-						<label for="StokYeri" class="form-label fw-bold">Stok Yeri</label>
-						<input type="text" class="form-control" id="StokYeri" name="StokYeri" placeholder="Stok Yeri" />
+						<div class="form-group row">
+							<label asp-for="YeniIslem.StokYeri" class="col-md-3 control-label"></label>
+							<div class="col-md-9">
+								<input asp-for="YeniIslem.StokYeri"
+									   class="form-control"
+									   maxlength="100"
+									   required
+									   placeholder="Stok Yeri" />
+								<span asp-validation-for="YeniIslem.StokYeri" class="text-danger"></span>
+							</div>
+						</div>
 					</div>
 					<div class="col-md-6 mb-3">
-						<label for="YapilanIslemler" class="form-label fw-bold">Yapılan İşlemler</label>
-						<textarea class="form-control" id="YapilanIslemler" name="YapilanIslemler" placeholder="Yapılan işlemleri açıklayınız" rows="3"></textarea>
+						<div class="form-group row">
+							<label asp-for="YeniIslem.YapilanIslemler" class="col-md-3 control-label"></label>
+							<div class="col-md-9">
+								<textarea asp-for="YeniIslem.YapilanIslemler"
+										  class="form-control"
+										  rows="3"
+										  maxlength="500"
+										  required
+										  placeholder="Yapılan işlemleri açıklayınız"></textarea>
+								<span asp-validation-for="YeniIslem.YapilanIslemler" class="text-danger"></span>
+							</div>
+						</div>
 					</div>
 				</div>
 
 				<div class="row mb-4">
 					<div class="col-md-6 mb-3">
-						<label for="Ucret" class="form-label fw-bold">Ücret Bilgisi</label>
-						<input type="number" class="form-control" id="Ucret" name="Ucret" placeholder="Ücret" step="0.01" />
+						<div class="form-group row">
+							<label asp-for="YeniIslem.Ucret" class="col-md-3 control-label"></label>
+							<div class="col-md-9">
+								<input asp-for="YeniIslem.Ucret"
+									   type="number"
+									   step="0.01"
+									   class="form-control"
+									   required
+									   placeholder="Ücret" />
+								<span asp-validation-for="YeniIslem.Ucret" class="text-danger"></span>
+							</div>
+						</div>
 					</div>
-					<div class="col-md-6 mb-3">
-						<label for="Aciklama" class="form-label fw-bold">Açıklama</label>
-						<textarea class="form-control" id="Aciklama" name="Aciklama" placeholder="Ekstra açıklamalar" rows="3"></textarea>
-					</div>
+					<textarea asp-for="YeniIslem.Aciklama"
+							  class="form-control"
+							  rows="3"
+							  maxlength="500"
+							  required
+							  placeholder="Ekstra açıklamalar"></textarea>
+					<span asp-validation-for="YeniIslem.Aciklama" class="text-danger"></span>
 				</div>
 
 				<div class="d-flex justify-content-end mt-4">
-					<button type="button" class="btn btn-secondary me-2">İptal</button>
+					<button type="button"
+							class="btn btn-secondary me-2"
+							onclick="location.href='@Url.Action("Detay","IsEmri", new { id=ViewBag.IsEmriTeslimId })'">
+						İptal
+					</button>
 					<button type="submit" class="btn btn-success">
 						<i class="fas fa-save me-1"></i> Onarım İşlemi Kaydet
 					</button>
@@ -177,6 +229,7 @@
 		</div>
 	</div>
 }
+
 
 <!-- İş Emirleri Tablosu -->
 <div class="container mt-4">
@@ -198,11 +251,11 @@
 					</tr>
 				</thead>
 				<tbody>
-					@foreach (var item in Model)
+					@foreach (var item in Model.MevcutIslemler)
 					{
 						<tr>
 							<td>@item.OnarimYapan</td>
-							<td>@item.OnarimTarihi</td>
+							<td>@item.OnarimTarihi.ToShortDateString()</td>
 							<td>@item.StokYeri</td>
 							<td>@item.YapilanIslemler</td>
 							<td>@item.Ucret.ToString("C")</td>
@@ -210,7 +263,11 @@
 							<td>
 								<form method="post" action="@Url.Action("Delete", "IsEmri")">
 									<input type="hidden" name="islemId" value="@item.IslemId" />
-									<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bu İş Emri silinecek, emin misiniz?');">Sil</button>
+									<input type="hidden" name="isEmriTeslimId" value="@item.IsEmriTeslimId" />
+									<button type="submit" class="btn btn-danger btn-sm"
+											onclick="return confirm('Bu işlem silinecek, emin misiniz?');">
+										Sil
+									</button>
 								</form>
 							</td>
 						</tr>
@@ -288,3 +345,8 @@
 		</div>
 	</div>
 </div>
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

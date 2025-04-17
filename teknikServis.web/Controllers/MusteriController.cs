@@ -18,14 +18,18 @@ namespace TeknikServis.Web.Controllers
 			return View(model);
 		}
 		public IActionResult Create()
-			=> View();		
+			=> View();
 		[HttpPost]
 		public async Task<IActionResult> Create(Musteri musteri)
 		{
 			if (!ModelState.IsValid)
+			{
+				TempData["Error"] = "Lütfen girdiğiniz bilgileri kontrol edin.";
 				return View(musteri);
+			}
 
 			await _service.CreateAsync(musteri);
+			TempData["Ok"] = "Müşteri başarıyla eklendi.";
 			return RedirectToAction(nameof(Index));
 		}
 		public async Task<IActionResult> Edit(int id)

@@ -119,7 +119,14 @@ namespace TeknikServis.Business.Concrete
 								 .ToList();
 			return await Task.FromResult(list);
 		}
+		public async Task<IsEmriTeslim?> GetOrderByIdAsync(int isEmriTeslimId)
+		{
+			var result = _orderRepo
+				.Get(x => x.IsEmriTeslimId == isEmriTeslimId, includeProperties: "Musteri")
+				.FirstOrDefault();
 
+			return await Task.FromResult(result);
+		}
 		public async Task AddOperationAsync(Islem islem)
 		{
 			_islemRepo.Create(islem);

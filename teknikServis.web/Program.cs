@@ -5,7 +5,7 @@ using TeknikServis.Business.Abstract;
 using TeknikServis.Business.Concrete;
 using TeknikServis.DataAccess;
 using TeknikServis.Entities.Servis;
-
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +36,7 @@ builder.Services.AddScoped<IMusteriService, MusteriService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
 
 var app = builder.Build();
 
