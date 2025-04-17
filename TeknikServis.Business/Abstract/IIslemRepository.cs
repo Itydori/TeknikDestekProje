@@ -10,9 +10,6 @@ namespace TeknikServis.Business.Abstract
 {
 	public interface IIslemRepository:IRepository<Islem>
 	{
-
-
-
 		List<IslemRaporViewModel> GetAllReport(int id);
 	}
 }

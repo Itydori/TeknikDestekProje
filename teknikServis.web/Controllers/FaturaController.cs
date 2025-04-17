@@ -30,8 +30,8 @@ public class FaturaController : Controller
 
 	public IActionResult FaturaYazdir(int id)
 	{
-		
-		Console.WriteLine("Gelen ID: " + id);
+
+		System.Diagnostics.Debug.WriteLine("Gelen ID: " + id);
 		var veri = _islemRepository.GetAllReport(id);
 
 		if (!veri.Any())

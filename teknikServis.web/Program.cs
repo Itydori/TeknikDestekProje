@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using TeknikServis.Business.Abstract;
+using TeknikServis.Business.Concrete;
 using TeknikServis.DataAccess;
 using TeknikServis.Entities.Servis;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +29,10 @@ builder.Services.AddIdentity<Kullanici, IdentityRole>(options =>
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddScoped<IIslemRepository,IslemRepository>();
+builder.Services.AddScoped<IFaturaService, FaturaService>();
 
+builder.Services.AddScoped<IIsEmriService, IsEmriService>();
+builder.Services.AddScoped<IMusteriService, MusteriService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -44,18 +49,18 @@ else
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
+app.UseAuthorization();
+
 
 app.UseRouting();
 
-app.UseAuthorization();
 
-app.UseAuthentication();
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Home}/{action=Index}/{MusteriId?}");
+        pattern: "{controller=Home}/{action=Index}/{id:int?}");
 });
 app.MapRazorPages();
 

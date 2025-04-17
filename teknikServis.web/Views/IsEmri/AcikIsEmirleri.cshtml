@@ -1,51 +1,77 @@
-﻿@model List<IsEmriTeslim>
+﻿@model IEnumerable<TeknikServis.Entities.Servis.IsEmriTeslim>
 @{
 	ViewBag.title = "Açık İş Emirleri";
 	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    }
-    <div class="container mt-4">
-        <div class="card shadow-sm">
-            <div class="card-header bg-warning text-black d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><i class="fas fa-list mr-2"></i> Açık İş Emirleri</h4>
-            </div>
-            <div class="card-body">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>İş Emri No</th>
-                            <th>Müşteri</th>
-                            <th>Marka</th>
-                            <th>Model</th>
-                            <th>Arıza / Hizmet Talebi</th>
-@*                             <th>Servis Talebi</th>
- *@                            <th>İşlem</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.IsEmriTeslimId</td>
-                            <td>@(item.Musteri != null ? item.Musteri.Ad : "Müşteri Yok")</td>
-                            <td>@item.Marka</td>
-                            <td>@item.Model</td>
-@*                                 <td>@item.ArizaDurumu</td>
-                        *@
-                            <td>@item.ArizaDurumu / @item.ServisTalebi</td>
-                                <td>
-                                    
-                                <a href="@Url.Action("IslemYap", "IsEmri", new { isEmriTeslim = item.IsEmriTeslimId })" class="btn btn-sm btn-primary">
-                                        İşlem Yap
-                                    </a>
-                                <form action="@Url.Action("IsEmriSil", "IsEmri")" method="post" style="display:inline;" onsubmit="return confirm('Bu iş emrini silmek istediğinize emin misiniz?');">
-                                    <input type="hidden" name="id" value="@item.IsEmriTeslimId" />
-                                    <button type="submit" class="btn btn-sm btn-danger">Sil</button>
-                                </form>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+}
+<h2>Tüm Açık İş Emirleri</h2>
+
+@if (!Model.Any())
+{
+	<div class="alert alert-info">Hiç açık iş emri yok.</div>
+}
+else
+{
+	<div class="container mt-4">
+		<div class="card shadow-sm">
+			<div class="card-header bg-warning text-black d-flex justify-content-between align-items-center">
+				<h4 class="mb-0"><i class="fas fa-list mr-2"></i> Açık İş Emirleri</h4>
+			</div>
+			<div class="card-body">
+				<table class="table table-striped table-hover">
+					<thead class="table-dark">
+						<tr>
+							<th>#</th>
+							<th>Müşteri</th>
+							<th>Marka/Model</th>
+							<th>Arıza</th>
+							<th>Model Yılı</th>
+							<th>Geliş Tarihi</th>
+							<th>Fiş No</th>
+							<th></th>    <!-- İşlem Yap -->
+							<th></th>    <!-- Fatura İndir -->
+							<th></th>    <!-- Sil -->
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model)
+						{
+							<tr>
+								<td>@item.IsEmriTeslimId</td>
+								<td>@item.Musteri?.Ad</td>
+								<td>@item.Marka @item.Model</td>
+								<td>@item.ArizaDurumu</td>
+								<td>@item.Yil</td>
+								<td>@item.GelisTarih.ToString("dd.MM.yyyy")</td>
+								<td>@item.FisNo</td>
+								<td>
+									<a asp-action="IslemYap"
+									   asp-route-isEmriTeslimId="@item.IsEmriTeslimId"
+									   class="btn btn-sm btn-primary">
+										İşlem Yap
+									</a>
+								</td>
+								<td>
+									<a asp-controller="Fatura" asp-action="FaturaYazdir"
+									   asp-route-id="@item.IsEmriTeslimId"
+									   class="btn btn-sm btn-danger" target="_blank">
+										Fatura
+									</a>
+								</td>
+								<td>
+									<form asp-action="IsEmriSil" method="post"
+										  onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+										<input type="hidden" name="id" value="@item.IsEmriTeslimId" />
+										<button type="submit" class="btn btn-sm btn-outline-danger">
+											Sil
+										</button>
+									</form>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+				}
+			</div>
+		</div>
+	</div>
+	}
