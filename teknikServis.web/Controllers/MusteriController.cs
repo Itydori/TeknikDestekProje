@@ -44,14 +44,15 @@ namespace TeknikServis.Web.Controllers
 			TempData["Ok"] = $"{musteri.Ad} başarıyla güncellendi";
 			return RedirectToAction(nameof(Index));
 		}
-		public async Task<IActionResult> Delete(int id)
+		public async Task<IActionResult> Delete(int MusteriId)
 		{
-			var m = await _service.GetByIdAsync(id);
+			var m = await _service.GetByIdAsync(MusteriId);
 			if (m == null) return NotFound();
 
-			await _service.DeleteAsync(id);
+			await _service.DeleteAsync(MusteriId);
 			TempData["Ok"] = $"{m.Ad} başarıyla silindi";
 			return RedirectToAction(nameof(Index));
 		}
+
 	}
 }

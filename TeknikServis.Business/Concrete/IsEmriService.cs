@@ -48,10 +48,11 @@ namespace TeknikServis.Business.Concrete
 		public async Task<IEnumerable<IsEmriTeslim>> GetAllOpenOrdersAsync()
 		{
 			var list = _orderRepo
-				.Get(o => !o.Kapali, includeProperties: "Musteri")
-				.OrderByDescending(o => o.GelisTarih)
-				.ToList();
-			return await Task.FromResult(list);
+        .Get(o => !o.Kapali, includeProperties: "Musteri")
+        .OrderByDescending(o => o.GelisTarih)
+        .ToList();
+
+		return await Task.FromResult(list);
 		}
 
 		public async Task<IEnumerable<IsEmriTeslim>> GetOpenOrdersByCustomerAsync(int musteriId)
