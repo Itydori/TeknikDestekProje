@@ -240,15 +240,17 @@
 </div>
 
 <script>
-	document.addEventListener("DOMContentLoaded", function () {
-		var form = document.getElementById("serviceOrderForm");
-		form.addEventListener("submit", function (event) {
-			if (!form.checkValidity()) {
-				event.preventDefault(); // Gönderimi engelle
-				event.stopPropagation();
-			}
-			form.classList.add("was-validated");
-		}, false);
-	});
+    document.addEventListener("DOMContentLoaded", function () {
+        var form = document.getElementById("serviceOrderForm");
+        if (form) {
+            form.addEventListener("submit", function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add("was-validated");
+            }, false);
+        }
+    });
 </script>
 
