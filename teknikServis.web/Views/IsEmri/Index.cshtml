@@ -1,6 +1,5 @@
 ﻿@model IEnumerable<TeknikServis.Entities.Servis.Musteri>
 @{
-	ViewBag.title = "İş Emri Oluşturma";
 	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 @using (Html.BeginForm())
@@ -29,7 +28,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model)
+		@foreach (var item in Model.ToList())
 		{
 			<tr>
 				<td>@item.Ad</td>

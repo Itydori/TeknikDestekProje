@@ -12,7 +12,7 @@ namespace TeknikServis.Business.Abstract
 
     public class Repository<T> : IRepository<T> where T : class
         {
-        private readonly TeknikServisDbContext _context;
+        protected readonly TeknikServisDbContext _context;
        
         public Repository(TeknikServisDbContext context)
         {

@@ -1,6 +1,8 @@
 ﻿@model TeknikServis.Entities.Servis.Musteri
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@Html.ValidationMessageFor(model => model.Ad, "", new { @class = "text-danger" })
+
 @{
-    ViewBag.title = "Müşteri";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -14,54 +16,73 @@
 
         <!-- Adı Girişi -->
         <div class="form-group row">
-            @Html.LabelFor(model => model.Ad, htmlAttributes: new { @class = "control-label col-md-3" })
+            <label asp-for="Ad" class="col-md-3 control-label"></label>
             <div class="col-md-9">
-                @Html.EditorFor(model => model.Ad, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                @Html.ValidationMessageFor(model => model.Ad, "", new { @class = "text-danger" })
+                <input asp-for="Ad"
+                       class="form-control"
+                       minlength="2"
+                       maxlength="100"
+                       required
+                       title="2–100 karakter arası isim giriniz." />
+                <span asp-validation-for="Ad" class="text-danger"></span>
             </div>
         </div>
 
         <!-- Telefon Girişi -->
         <div class="form-group row">
-            @Html.LabelFor(model => model.Telefon, htmlAttributes: new { @class = "control-label col-md-3" })
+            <label asp-for="Telefon" class="col-md-3 control-label"></label>
             <div class="col-md-9">
-                @Html.EditorFor(model => model.Telefon, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                @Html.ValidationMessageFor(model => model.Telefon, "", new { @class = "text-danger" })
+                <input asp-for="Telefon"
+                       class="form-control"
+                       type="tel"
+                       pattern="\d{10,15}"
+                       required
+                       title="10–15 rakam giriniz." />
+                <span asp-validation-for="Telefon" class="text-danger"></span>
             </div>
         </div>
 
         <!-- Adres Girişi -->
         <div class="form-group row">
-            @Html.LabelFor(model => model.Adres, htmlAttributes: new { @class = "control-label col-md-3" })
+            <label asp-for="Adres" class="col-md-3 control-label"></label>
             <div class="col-md-9">
-                @Html.EditorFor(model => model.Adres, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                @Html.ValidationMessageFor(model => model.Adres, "", new { @class = "text-danger" })
+                <input asp-for="Adres"
+                       class="form-control"
+                       maxlength="500"
+                       required
+                       title="En fazla 500 karakter." />
+                <span asp-validation-for="Adres" class="text-danger"></span>
             </div>
         </div>
 
         <!-- Eposta Girişi -->
-        <div class="form-group row">
-            @Html.LabelFor(model => model.Eposta, htmlAttributes: new { @class = "control-label col-md-3" })
+         <div class="form-group row">
+            <label asp-for="Eposta" class="col-md-3 control-label"></label>
             <div class="col-md-9">
-                @Html.EditorFor(model => model.Eposta, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                @Html.ValidationMessageFor(model => model.Eposta, "", new { @class = "text-danger" })
+                <input asp-for="Eposta"
+                       class="form-control"
+                       type="email"
+                       maxlength="255"
+                       required
+                       title="Geçerli bir e-posta adresi giriniz." />
+                <span asp-validation-for="Eposta" class="text-danger"></span>
             </div>
         </div>
 
         <!-- Butonlar -->
         <div class="form-group d-flex justify-content-between mt-4">
-            <div>
-                <input type="submit" value="Kaydet" class="btn btn-success" />
-            </div>
-            <div>
-                <a href="@Url.Action("Index", "Musteri")" class="btn btn-secondary">Listeye Geri Dön</a>
-            </div>
+            <button type="submit" class="btn btn-success">Kaydet</button>
+            <a asp-action="Index" class="btn btn-secondary">Listeye Geri Dön</a>
         </div>
+
     </div>
 }
 
 @section Scripts {
-    <script>
-        // Buraya gerekirse özel bir JavaScript veya jQuery ekleyebilirsiniz
-    </script>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- jQuery Validate -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+    <!-- Unobtrusive Validation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
 }
