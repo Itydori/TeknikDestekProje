@@ -71,8 +71,12 @@ namespace teknikServis.web.Controllers
 					OnarimTarihi = DateTime.Today // 👈 BURAYA EKLEDİK!
 				},
 				MevcutIslemler = islemler,
+
+				
 				TeslimBilgisi = teslim
 			};
+
+			ViewBag.IsEmriTeslimId = isEmriTeslimId;
 
 			return View(vm);
 		}
@@ -118,57 +122,36 @@ namespace teknikServis.web.Controllers
 		public async Task<IActionResult> IsEmriKapat(IslemYapViewModel model)
 		{
 			Console.WriteLine("🚀 [IsEmriKapat] POST edildi.");
-			Console.WriteLine($"📦 Teslim ID: {model.YeniTeslimBilgisi.IsEmriTeslimId}");
-			Console.WriteLine($"💰 Alınan Ödeme: {model.YeniTeslimBilgisi.AlinanOdeme}");
-			Console.WriteLine($"🕒 Tarih/Saat: {model.YeniTeslimBilgisi.KapatmaGunu} {model.YeniTeslimBilgisi.KapatmaSaati}");
-			Console.WriteLine($"📦 Sipariş Durumu: {model.YeniTeslimBilgisi.SiparisDurumu}");
+			Console.WriteLine($"📦 Teslim ID: {model.YeniTeslimBilgisi?.IsEmriTeslimId}");
+			Console.WriteLine($"💰 Alınan Ödeme: {model.YeniTeslimBilgisi?.AlinanOdeme}");
+			Console.WriteLine($"🕒 Tarih/Saat:  {model.YeniTeslimBilgisi?.KapatmaGunu:d} {model.YeniTeslimBilgisi?.KapatmaSaati}");
+			Console.WriteLine($"📦 Sipariş Durumu: {model.YeniTeslimBilgisi?.SiparisDurumu}");
 
+			// 1) Basit validasyon: ID gelmemişse devam etmeyelim
+			if (model.YeniTeslimBilgisi?.IsEmriTeslimId is null or 0)
+				return BadRequest("Teslim ID gelmedi.");
+			// kaydetme islemi ekle 
 			if (!ModelState.IsValid)
 			{
 				Console.WriteLine("❌ ModelState geçersiz!");
-				foreach (var key in ModelState.Keys)
-				{
-					var state = ModelState[key];
-					foreach (var error in state.Errors)
-					{
-						Console.WriteLine($"🔴 {key} : {error.ErrorMessage}");
-					}
-				}
-
+				// Hataları loglayıp sayfayı geri döndür.
 				model.MevcutIslemler = await _service.GetOperationsAsync(model.YeniTeslimBilgisi.IsEmriTeslimId);
 				model.TeslimBilgisi = await _service.GetOrderByIdAsync(model.YeniTeslimBilgisi.IsEmriTeslimId);
 				return View("IslemYap", model);
 			}
 
-			Console.WriteLine("✅ ModelState OK. Güncelleme başlıyor...");
-
-			// Mapping işlemi debug
-			var teslimEntity = await _service.GetOrderByIdAsync(model.YeniTeslimBilgisi.IsEmriTeslimId);
-			if (teslimEntity == null)
-			{
-				Console.WriteLine("🚫 Teslim entity bulunamadı.");
-				return NotFound();
-			}
-			Console.WriteLine("🟢 Teslim entity bulundu. Güncelleniyor...");
-
-			// Mapping burada
-			teslimEntity.OdemeSekli = model.YeniTeslimBilgisi.OdemeSekli;
-			teslimEntity.AlinanOdeme = (int)model.YeniTeslimBilgisi.AlinanOdeme;
-			teslimEntity.KapatmaGunu = model.YeniTeslimBilgisi.KapatmaGunu;
-			teslimEntity.KapatmaSaati = model.YeniTeslimBilgisi.KapatmaSaati;
-			teslimEntity.SiparisDurumu = model.YeniTeslimBilgisi.SiparisDurumu;
-			teslimEntity.TeslimatAciklama = model.YeniTeslimBilgisi.TeslimatAciklama;
+			Console.WriteLine("✅ ModelState OK → Servise devrediliyor...");
 
 			await _service.CloseOrderAsync(
-			model.YeniTeslimBilgisi.IsEmriTeslimId,
-			model.YeniTeslimBilgisi.KapatmaGunu,
-			model.YeniTeslimBilgisi.KapatmaSaati,
-			model.YeniTeslimBilgisi.AlinanOdeme,
-			model.YeniTeslimBilgisi.OdemeSekli,
-			model.YeniTeslimBilgisi.TeslimatAciklama,
-			model.YeniTeslimBilgisi.SiparisDurumu);
-			Console.WriteLine("✅ Güncelleme tamamlandı.");
+				model.YeniTeslimBilgisi.IsEmriTeslimId,
+				model.YeniTeslimBilgisi.KapatmaGunu,
+				model.YeniTeslimBilgisi.KapatmaSaati,
+				model.YeniTeslimBilgisi.AlinanOdeme,
+				model.YeniTeslimBilgisi.OdemeSekli,
+				model.YeniTeslimBilgisi.TeslimatAciklama,
+				model.YeniTeslimBilgisi.SiparisDurumu);
 
+			Console.WriteLine("✅ Güncelleme tamamlandı.");
 			return RedirectToAction(nameof(AcikIsEmirleri));
 		}
 
