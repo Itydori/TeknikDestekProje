@@ -82,8 +82,10 @@ namespace TeknikServis.Business.Abstract
 			}
 		}
         public void Update(T entity)
-        {
-            _context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+		{
+			Console.WriteLine("🟢 [REPO] Güncelleme çağrıldı: " + entity.ToString());
+
+			_context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             _context.SaveChanges();
         }
 

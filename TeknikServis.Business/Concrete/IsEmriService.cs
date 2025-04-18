@@ -31,8 +31,8 @@ namespace TeknikServis.Business.Concrete
 			var list = _musteriRepo.Get().OrderByDescending(m => m.MusteriId).Take(count);
 
 
-			return  ValueTask.FromResult(BaseResponse < IEnumerable < Musteri >>.Successfully(list));	
-			
+			return ValueTask.FromResult(BaseResponse<IEnumerable<Musteri>>.Successfully(list));
+
 		}
 
 		public async Task<IEnumerable<Musteri>> SearchCustomersAsync(string term)
@@ -48,11 +48,11 @@ namespace TeknikServis.Business.Concrete
 		public async Task<IEnumerable<IsEmriTeslim>> GetAllOpenOrdersAsync()
 		{
 			var list = _orderRepo
-        .Get(o => !o.Kapali, includeProperties: "Musteri")
-        .OrderByDescending(o => o.GelisTarih)
-        .ToList();
+		.Get(o => !o.Kapali, includeProperties: "Musteri")
+		.OrderByDescending(o => o.GelisTarih)
+		.ToList();
 
-		return await Task.FromResult(list);
+			return await Task.FromResult(list);
 		}
 
 		public async Task<IEnumerable<IsEmriTeslim>> GetOpenOrdersByCustomerAsync(int musteriId)
@@ -84,13 +84,13 @@ namespace TeknikServis.Business.Concrete
 		}
 
 		public async Task CloseOrderAsync(
-	int isEmriTeslimId,
-	DateTime kapanmaGunu,
-	TimeSpan kapanmaSaati,
-	decimal alinanOdeme,
-	string odemeSekli,
-	string teslimatAciklama,
-	string siparisDurumu)
+			int isEmriTeslimId,
+			DateTime kapanmaGunu,
+			TimeSpan kapanmaSaati,
+			decimal alinanOdeme,
+			string odemeSekli,
+			string teslimatAciklama,
+			string siparisDurumu)
 		{
 			Console.WriteLine("📦 [CloseOrderAsync] İş emri kapatma işlemi başlatıldı.");
 			Console.WriteLine($"🆔 ID: {isEmriTeslimId}");
@@ -121,6 +121,7 @@ namespace TeknikServis.Business.Concrete
 			Console.WriteLine("✅ İş emri başarıyla kapatıldı.");
 
 			await Task.CompletedTask;
+
 		}
 
 		public async Task DeleteOrderAsync(int isEmriTeslimId)
@@ -130,7 +131,7 @@ namespace TeknikServis.Business.Concrete
 			await Task.CompletedTask;
 		}
 		// --- Açık iş emri ---
-		
+
 
 		// --- İşlem ---
 		public async Task<IEnumerable<Islem>> GetOperationsAsync(int isEmriTeslimId)
