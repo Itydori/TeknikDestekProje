@@ -84,12 +84,30 @@ namespace TeknikServis.Business.Concrete
 		}
 
 		public async Task CloseOrderAsync(
-			int isEmriTeslimId, DateTime kapanmaGunu, TimeSpan kapanmaSaati,
-			decimal alinanOdeme, string odemeSekli, string teslimatAciklama, string siparisDurumu)
+	int isEmriTeslimId,
+	DateTime kapanmaGunu,
+	TimeSpan kapanmaSaati,
+	decimal alinanOdeme,
+	string odemeSekli,
+	string teslimatAciklama,
+	string siparisDurumu)
 		{
-			var order = _orderRepo.GetById(isEmriTeslimId);
-			if (order == null) throw new InvalidOperationException("İş emri bulunamadı");
+			Console.WriteLine("📦 [CloseOrderAsync] İş emri kapatma işlemi başlatıldı.");
+			Console.WriteLine($"🆔 ID: {isEmriTeslimId}");
+			Console.WriteLine($"🕒 Tarih/Saat: {kapanmaGunu.ToShortDateString()} - {kapanmaSaati}");
+			Console.WriteLine($"💰 Ödeme: {alinanOdeme} ₺ - Şekil: {odemeSekli}");
+			Console.WriteLine($"📦 Durum: {siparisDurumu}");
+			Console.WriteLine($"📝 Açıklama: {teslimatAciklama}");
 
+			var order = _orderRepo.GetById(isEmriTeslimId);
+
+			if (order == null)
+			{
+				Console.WriteLine("❌ HATA: İş emri bulunamadı!");
+				throw new InvalidOperationException("İş emri bulunamadı.");
+			}
+
+			// Verileri güncelle
 			order.KapatmaGunu = kapanmaGunu;
 			order.KapatmaSaati = kapanmaSaati;
 			order.AlinanOdeme = (int)alinanOdeme;
@@ -98,7 +116,10 @@ namespace TeknikServis.Business.Concrete
 			order.SiparisDurumu = siparisDurumu;
 			order.Kapali = true;
 
+			// Güncelleme işlemi
 			_orderRepo.Update(order);
+			Console.WriteLine("✅ İş emri başarıyla kapatıldı.");
+
 			await Task.CompletedTask;
 		}
 

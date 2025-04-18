@@ -22,10 +22,13 @@ builder.Services.AddIdentity<Kullanici, IdentityRole>(options =>
 })
     .AddEntityFrameworkStores<TeknikServisDbContext>()
     .AddDefaultTokenProviders();
-    
- // AddUserManager eklenmeli
+
+// AddUserManager eklenmeli
 
 
+
+
+//builder.Services.AddModelStateExtension();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddScoped<IIslemRepository,IslemRepository>();
