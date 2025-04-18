@@ -10,7 +10,7 @@ namespace TeknikServis.Entities.Servis
 
         [Required]
         public int IsEmriTeslimId { get; set; }
-        public virtual IsEmriTeslim IsEmriTeslimler { get; set; }
+        public virtual IsEmriTeslim? IsEmriTeslimler { get; set; }
 
         [Required(ErrorMessage = "Onarımı yapan kişi girilmelidir.")]
         [StringLength(50, ErrorMessage = "En fazla 50 karakter olabilir.")]

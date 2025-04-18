@@ -115,7 +115,7 @@
 	</div>
 
 </div>
- *@Islem
+ *@
 @model TeknikServis.Web.Models.IslemYapViewModel
 @{
 	ViewBag.Title = ViewBag.Title;
@@ -123,10 +123,12 @@
 }
 
 <!-- Onarım İşlemi Formu -->
-@using (Html.BeginForm("IslemKaydet", "IsEmri"))
+@using (Html.BeginForm("IslemKaydet", "IsEmri", FormMethod.Post, new { id = "islemForm" }))
 {
-	<input type="hidden" asp-for="YeniIslem.IsEmriTeslimId" value="@ViewBag.IsEmriTeslimId" />
+	<input type="hidden" asp-for="YeniIslem.IsEmriTeslimId" />
 
+@* 	<input type="hidden" asp-for="YeniIslem.IsEmriTeslimId" value="@ViewBag.IsEmriTeslimId" />
+ *@
 	<div class="container mt-4">
 		<div class="card shadow-sm">
 			<div class="card-header bg-primary text-white">
@@ -221,16 +223,19 @@
 							onclick="location.href='@Url.Action("Detay","IsEmri", new { id=ViewBag.IsEmriTeslimId })'">
 						İptal
 					</button>
-					<button type="submit" class="btn btn-success">
-						<i class="fas fa-save me-1"></i> Onarım İşlemi Kaydet
-					</button>
+					<button type="submit" class="btn btn-success">Kaydet</button>
 				</div>
 			</div>
 		</div>
 	</div>
 }
+<script>
+	document.getElementById("islemForm").addEventListener("submit", function () {
+		console.log("✅ Form gönderiliyor...");
+	});
+</script>
 
-
+@* 
 <!-- İş Emirleri Tablosu -->
 <div class="container mt-4">
 	<div class="card shadow-sm">
@@ -285,7 +290,7 @@
 				<div class="card-body">
 				
 @* 						<input type="hidden" name="IsEmriId" value="@ViewBag.IsEmriTeslimId" />
- *@
+ *@@* 
 						<div class="row mb-3">
 							<div class="col-md-6 mb-3">
 								<label for="OdemeSekli" class="form-label fw-bold">Ödeme Şekli</label>
@@ -349,4 +354,4 @@
 	@{
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
-}
+} *@ 

@@ -81,7 +81,7 @@ namespace TeknikServis.Entities.Servis
         [Display(Name = "Teslimat Açıklaması")]
         public string? TeslimatAciklama { get; set; }
 
-        public List<Islem> Islems { get; set; }
+        public List<Islem>? Islems { get; set; }
     }
 
 }
