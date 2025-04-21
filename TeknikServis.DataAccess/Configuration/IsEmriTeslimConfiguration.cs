@@ -13,9 +13,11 @@ namespace TeknikServis.DataAccess.Configuration
 	{
         public void Configure(EntityTypeBuilder<IsEmriTeslim> builder)
         {
-            // Default değerleri SQL tarafında tanımla
-            builder.Property(i => i.KapatmaGunu).HasDefaultValueSql("GETDATE()");
-            builder.Property(i => i.KapatmaSaati).HasDefaultValueSql("CAST(GETDATE() AS time)");
+			// Default değerleri SQL tarafında tanımla
+			builder.Property(i => i.GelisTarih)
+		   .HasDefaultValueSql("GETDATE()");
+			builder.Property(i => i.Kapali)
+				   .HasDefaultValue(false);
 
 			// Computed column için NULL kontrolü ekleyelim
 			//builder.Property(i => i.KapatmaTarihi)
@@ -26,15 +28,21 @@ namespace TeknikServis.DataAccess.Configuration
 			//        stored: true)
 			//    .HasMaxLength(20)
 			//    .IsRequired();
+			builder.Property(i => i.KapatmaGunu)
+		  .IsRequired(false);
+			builder.Property(i => i.KapatmaSaati)
+				   .IsRequired(false);
+			builder.Property(i => i.AlinanOdeme)
+				   .IsRequired(false);
+			builder.Property(i => i.OdemeSekli)
+				   .IsRequired(false);
+			builder.Property(i => i.SiparisDurumu)
+				   .IsRequired(false);
+			builder.Property(i => i.TeslimatAciklama)
+				   .IsRequired(false);
+			// Diğer default değerler
 			builder.Ignore(x => x.KapatmaTarihi);
-            // Diğer default değerler
-            builder.Property(i => i.AlinanOdeme).HasDefaultValue(0);
-            builder.Property(i => i.TeslimatAciklama).HasDefaultValue("Teslimat yapılmadı");
-            builder.Property(i => i.SiparisDurumu).HasDefaultValue("Sipariş verilmedi");
-            builder.Property(i => i.OdemeSekli).HasDefaultValue("Nakit");
-            builder.Property(i => i.GelisTarih).HasDefaultValueSql("GETDATE()"); // Bu da SQL ifadesi olmalı
-            builder.Property(i => i.Kapali).HasDefaultValue(false);
-            //builder.HasQueryFilter(i => !i.Kapali);
-        }
-    }
+			//builder.HasQueryFilter(i => !i.Kapali);
+		}
+	}
 }
