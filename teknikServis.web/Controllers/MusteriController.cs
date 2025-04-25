@@ -34,7 +34,7 @@ namespace TeknikServis.Web.Controllers
 		}
 		public async Task<IActionResult> Edit(int id)
 		{
-			var m = await _service.GetByIdAsync(id);
+            var m = await _service.GetByIdAsync(id);
 			if (m == null) return NotFound();
 			return View(m);
 		}

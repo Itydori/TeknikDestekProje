@@ -56,5 +56,5 @@ namespace TeknikServis.Business.Concrete
 			_repo.Delete(db);
 			await Task.CompletedTask;
 		}
-	}
+    }
 }

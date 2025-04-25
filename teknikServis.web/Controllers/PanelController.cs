@@ -6,9 +6,9 @@ namespace teknikServis.web.Controllers
 {
     public class PanelController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        private readonly IPanelReportService _srv;
+        public PanelController(IPanelReportService srv) => _srv = srv;
+        public async Task<IActionResult> Index([FromQuery] PanelReportFilter f)
+                => View(await _srv.GetAsync(f));
     }
 }

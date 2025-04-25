@@ -14,6 +14,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<TeknikServisDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddScoped<IPanelReportService, PanelReportService>();
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 builder.Services.AddIdentity<Kullanici, IdentityRole>(options =>
@@ -33,6 +34,10 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddScoped<IIslemRepository,IslemRepository>();
 builder.Services.AddScoped<IFaturaService, FaturaService>();
+
+builder.Services.AddScoped<IPanelReportService, PanelReportService>();
+builder.Services.AddScoped<IslemIndexService>();
+
 
 builder.Services.AddScoped<IIsEmriService, IsEmriService>();
 builder.Services.AddScoped<IMusteriService, MusteriService>();

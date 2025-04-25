@@ -30,6 +30,7 @@
 	  <PackageReference Include="Microsoft.ReportingServices.ReportViewerControl.WebForms" Version="150.1652.0" />
 	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.15" />
+	  <PackageReference Include="NEST" Version="7.17.5" />
 	  <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.26" />
 	  <!--<PackageReference Include="Microsoft.Reporting.NETCore" Version="1.1.0" />-->
   </ItemGroup>

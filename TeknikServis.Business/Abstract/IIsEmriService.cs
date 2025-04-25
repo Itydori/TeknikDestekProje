@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using TeknikServis.Business.Response;
 using TeknikServis.Entities.Servis;
 
+
 namespace TeknikServis.Business.Abstract
 {
 	public interface IIsEmriService
@@ -18,7 +19,8 @@ namespace TeknikServis.Business.Abstract
 		Task<IEnumerable<IsEmriTeslim>> GetAllOpenOrdersAsync();
 		Task<IEnumerable<IsEmriTeslim>> GetOpenOrdersByCustomerAsync(int musteriId);
 
-		Task<IEnumerable<IsEmriTeslim>> GetClosedOrdersAsync(int musteriId);
+
+        Task<IEnumerable<IsEmriTeslim>> GetClosedOrdersAsync(int musteriId);
 		Task CreateOrderAsync(IsEmriTeslim order);
 		Task CloseOrderAsync(
 			int isEmriTeslimId, DateTime kapanmaGunu, TimeSpan kapanmaSaati,
