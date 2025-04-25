@@ -73,5 +73,16 @@ pattern: "{controller=Home}/{action=Index}/{id?}");
 });
 app.MapRazorPages();
 
+var path = Path.Combine(AppContext.BaseDirectory, "indexed.flag");
+
+if (!File.Exists("indexed.flag"))
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var indexService = scope.ServiceProvider.GetRequiredService<IslemIndexService>();
+        await indexService.IndexAllAsync(); // indexlenmesi için
+        File.WriteAllText("indexed.flag", DateTime.Now.ToString());
+    }
+}
 app.Run();
 

@@ -29,5 +29,10 @@ namespace teknikServis.web.Controllers
             var docs = await _indexService.TestElasticSearchAsync();
             return Json(docs);
         }
+        public async Task<IActionResult> Index()
+        {
+            await _indexService.IndexAllAsync(); // ← ANA SAYFA AÇILIRKEN INDEXLENİR
+            return View();
+        }   
     }
 }

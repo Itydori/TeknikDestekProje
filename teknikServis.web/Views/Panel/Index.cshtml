@@ -8,6 +8,8 @@
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h4 class="mb-0">📊 Panel Raporu</h4>
+            <button id="toggleTableBtn" class="btn btn-sm btn-light text-dark">Tabloyu Gizle</button>
+
         </div>
         <div class="card-body">
             <div class="mb-3 d-flex flex-wrap gap-2">
@@ -64,6 +66,10 @@
                     <strong>@Model.ToplamIs</strong> işlem bulundu |
                     Toplam Ücret: <strong>@Model.ToplamUcret.ToString("N2") ₺</strong> |
                     Garanti Kapsamı: <strong>@Model.ToplamGarantiKapsamıIs</strong>
+                    <p class="text-danger">
+                        Gerçek Toplam (raw): @Model.ToplamUcret.ToString("C", new System.Globalization.CultureInfo("tr-TR"))
+
+                    </p>
                 </div>
             </div>
 
@@ -134,9 +140,16 @@
         document.querySelector('[name="Tarihe"]').value = '';
     }
 
-    1
-    2
-    3
+    document.getElementById("toggleTableBtn").addEventListener("click", function () {
+        const table = document.querySelector(".table-responsive");
+        if (table.style.display === "none") {
+            table.style.display = "block";
+            this.innerText = "Tabloyu Gizle";
+        } else {
+            table.style.display = "none";
+            this.innerText = "Tabloyu Göster";
+        }
+    });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <link rel = "stylesheet" href = "https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />

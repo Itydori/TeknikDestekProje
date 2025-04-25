@@ -26,6 +26,37 @@ public class PanelReportService : IPanelReportService
 
     public async Task<PanelReportViewModel> GetAsync(PanelReportFilter f)
     {
+        // 🔥 FILTRE YOKSA → TÜM VERİYİ GETİR
+        if (string.IsNullOrWhiteSpace(f.MusteriAd)
+            && string.IsNullOrWhiteSpace(f.Marka)
+            && string.IsNullOrWhiteSpace(f.Model)
+            && string.IsNullOrWhiteSpace(f.FisNo)
+            && !f.Tarihten.HasValue
+            && !f.Tarihe.HasValue)
+        {
+            var response = await _client.SearchAsync<IslemIndexModel>(s => s
+                .Query(q => q.MatchAll())
+                .Size(10000)
+            );
+
+            var allRows = response.Documents.Select(x => new PanelReportRow
+            {
+                Tarih = x.Tarih,
+                MusteriAd = x.MusteriAd,
+                Marka = x.Marka,
+                Model = x.Model,
+                Garanti = x.GarantiDurumu,
+                FisNo = x.FisNo,
+                Ucret = x.Ucret
+            }).ToList();
+
+            return new PanelReportViewModel
+            {
+                Rows = allRows
+            };
+        }
+
+        // 🔎 FILTRE VARSA → QUERY YAP
         var query = new List<QueryContainer>();
 
         if (!string.IsNullOrWhiteSpace(f.MusteriAd))
@@ -56,12 +87,12 @@ public class PanelReportService : IPanelReportService
             query.Add(range);
         }
 
-        var response = await _client.SearchAsync<IslemIndexModel>(s => s
-    .Query(q => q.Bool(b => b.Must(query.ToArray())))
-    .Size(1000)
-);
+        var filteredResponse = await _client.SearchAsync<IslemIndexModel>(s => s
+            .Query(q => q.Bool(b => b.Must(query.ToArray())))
+            .Size(10000)
+        );
 
-        var rows = response.Documents.Select(x => new PanelReportRow
+        var rows = filteredResponse.Documents.Select(x => new PanelReportRow
         {
             Tarih = x.Tarih,
             MusteriAd = x.MusteriAd,
