@@ -1,122 +1,4 @@
-﻿@* @model IEnumerable<İslem>
-@{
-	ViewBag.Title = @ViewBag.Title;
-	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-}
-
-<!-- Onarım İşlemi Formu -->
-@using (Html.BeginForm("IslemKaydet", "IsEmri"))
-{
-	<input type="text" value="@ViewBag.IsEmriTeslimId" hidden />
-	<input type="text" name="IsEmriId" value="@ViewBag.IsEmriTeslimId" hidden />
-
-	<div class="container mt-4">
-		<div class="card shadow-sm">
-			<div class="card-header bg-primary text-white">
-				<h4 class="mb-0"><i class="fas fa-cogs mr-2"></i> Onarım İşlemi</h4>
-			</div>
-			<div class="card-body">
-				<div class="row mb-4">
-					<div class="col-md-6 mb-3">
-						<label for="OnarimYapan" class="form-label fw-bold">Onarımı Yapan Kişi</label>
-						<input type="text" class="form-control" id="OnarimYapan" name="OnarimYapan" placeholder="Onarımı Yapan Kişi" />
-					</div>
-					<div class="col-md-6 mb-3">
-						<label for="OnarimTarihi" class="form-label fw-bold">Onarım Tarihi</label>
-						<input type="date" class="form-control" id="OnarimTarihi" name="OnarimTarihi" />
-					</div>
-				</div>
-
-				<div class="row mb-4">
-					<div class="col-md-6 mb-3">
-						<label for="StokYeri" class="form-label fw-bold">Stok Yeri</label>
-						<input type="text" class="form-control" id="StokYeri" name="StokYeri" placeholder="Stok Yeri" />
-					</div>
-					<div class="col-md-6 mb-3">
-						<label for="YapilanIslemler" class="form-label fw-bold">Yapılan İşlemler</label>
-						<textarea class="form-control" id="YapilanIslemler" name="YapilanIslemler" placeholder="Yapılan işlemleri açıklayınız" rows="3"></textarea>
-					</div>
-				</div>
-
-				<div class="row mb-4">
-					<div class="col-md-6 mb-3">
-						<label for="Ucret" class="form-label fw-bold">Ücret Bilgisi</label>
-						<input type="number" class="form-control" id="Ucret" name="Ucret" placeholder="Ücret" step="0.01" />
-					</div>
-					<div class="col-md-6 mb-3">
-						<label for="Aciklama" class="form-label fw-bold">Açıklama</label>
-						<textarea class="form-control" id="Aciklama" name="Aciklama" placeholder="Ekstra açıklamalar" rows="3"></textarea>
-					</div>
-				</div>
-
-				<div class="d-flex justify-content-end mt-4">
-					<button type="button" class="btn btn-secondary me-2">İptal</button>
-					<button type="submit" class="btn btn-success">
-						<i class="fas fa-save me-1"></i> Onarım İşlemi Kaydet
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
-}
-
-<!-- İş Emirleri Tablosu -->
-<div class="container mt-4">
-	<div class="card shadow-sm">
-		<div class="card-header bg-warning text-black d-flex justify-content-between align-items-center">
-			<h4 class="mb-0"><i class="fas fa-list mr-2"></i> Açık İş Emirleri</h4>
-		</div>
-		<div class="card-body">
-			<table class="table table-striped table-hover">
-				<thead class="table-dark">
-					<tr>
-						<th>Onarımı Yapan</th>
-						<th>Onarım Tarihi</th>
-						<th>Stok Yeri</th>
-						<th>Yapılan İşlemler</th>
-						<th>Ücret Bilgisi</th>
-						<th>Açıklama</th>
-						<th>İşlem</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (var item in Model)
-					{
-						<tr>
-							<td>@item.OnarimYapan</td>
-							<td>@item.OnarimTarihi</td>
-							<td>@item.StokYeri</td>
-							<td>@item.YapilanIslemler</td>
-							<td>@item.Ucret.ToString("C")</td>
-							<td>@item.Aciklama</td>
-							<td>
-								<form method="post" action="@Url.Action("Delete", "IsEmri")">
-									<input type="hidden" name="isEmriTeslimId" value="@item.IslemId" />
-									<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bu İş Emri silinecek, emin misiniz?');">Sil</button>
-								</form>
-							</td>
-						</tr>
-					}
-				</tbody>
-
-			</table>
-			<div class="row">
-				<div class="col-md-4">
-					<select class="form-control" required>
-						<option value="Ödeme Şekli">Ödeme Şekli</option>
-						<option value="Nakit">Nakit</option>
-						<option value="Kart">Kart</option>
-					</select>
-					<text
-				</div>
-			</div>
-		</div>
-
-	</div>
-
-</div>
- *@
-@model TeknikServis.Web.Models.IslemYapViewModel
+﻿@model TeknikServis.Web.Models.IslemYapViewModel
 @{
 	ViewBag.Title = ViewBag.Title;
 	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -270,8 +152,17 @@
 					}
 				</tbody>
 			</table>
-@using (Html.BeginForm("IsEmriKapat", "IsEmri"))
-{
+			@if (TempData["Success"] != null)
+			{
+				<div class="alert alert-success">
+                    <div class="alert alert-success" role="alert">
+                        İşlem başarıyla kaydedildi.
+                    </div>
+					@TempData["Success"]
+				</div>
+			}
+			@using (Html.BeginForm("IsEmriKapat", "IsEmri", FormMethod.Post))
+			{
 
 	<div asp-validation-summary="ModelOnly"> </div>
 	<input asp-for="YeniTeslimBilgisi.IsEmriTeslimId" type="hidden" value="@ViewBag.IsEmriTeslimId" />
@@ -347,7 +238,6 @@
 		</div>
 	</div>
 }
-
 		</div>
 	</div>
 </div>

@@ -21,9 +21,9 @@
             </Style>
           </Paragraph>
         </Paragraphs>
-        <Top>0.5cm</Top>
+        <Top>0.64111cm</Top>
         <Height>1cm</Height>
-        <Width>20cm</Width>
+        <Width>20.635cm</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -52,7 +52,7 @@
                 <Style />
               </TextRun>
               <TextRun>
-                <Value> | Tel: </Value>
+                <Value> |                           Tel: </Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                 </Style>
@@ -62,7 +62,7 @@
                 <Style />
               </TextRun>
               <TextRun>
-                <Value> | E-posta: </Value>
+                <Value> |                                           E-posta: </Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                 </Style>
@@ -86,9 +86,10 @@ Adres: </Value>
             <Style />
           </Paragraph>
         </Paragraphs>
-        <Top>1.5cm</Top>
+        <Top>2.135cm</Top>
+        <Left>0.635cm</Left>
         <Height>1.2cm</Height>
-        <Width>20cm</Width>
+        <Width>17.60817cm</Width>
         <ZIndex>1</ZIndex>
         <Style />
       </Textbox>
@@ -108,7 +109,7 @@ Adres: </Value>
                 <Style />
               </TextRun>
               <TextRun>
-                <Value>    Geliş Tarihi: </Value>
+                <Value>                          Geliş Tarihi: </Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                 </Style>
@@ -118,7 +119,7 @@ Adres: </Value>
                 <Style />
               </TextRun>
               <TextRun>
-                <Value>    Cihaz: </Value>
+                <Value>                   Cihaz: </Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                 </Style>
@@ -155,7 +156,7 @@ Arıza: </Value>
                 <Style />
               </TextRun>
               <TextRun>
-                <Value>   Garanti: </Value>
+                <Value>                 Garanti: </Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                 </Style>
@@ -165,7 +166,7 @@ Arıza: </Value>
                 <Style />
               </TextRun>
               <TextRun>
-                <Value>   Talep: </Value>
+                <Value>                        Talep: </Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                 </Style>
@@ -174,13 +175,18 @@ Arıza: </Value>
                 <Value>=Fields!ServisTalebi.Value</Value>
                 <Style />
               </TextRun>
+              <TextRun>
+                <Value xml:space="preserve"> </Value>
+                <Style />
+              </TextRun>
             </TextRuns>
             <Style />
           </Paragraph>
         </Paragraphs>
-        <Top>3cm</Top>
+        <Top>3.9525cm</Top>
+        <Left>0.635cm</Left>
         <Height>1cm</Height>
-        <Width>20cm</Width>
+        <Width>17.60817cm</Width>
         <ZIndex>2</ZIndex>
         <Style />
       </Textbox>
@@ -200,7 +206,7 @@ Arıza: </Value>
                 <Style />
               </TextRun>
               <TextRun>
-                <Value>   Alınan Ödeme: </Value>
+                <Value>       Alınan Ödeme: </Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                 </Style>
@@ -210,7 +216,7 @@ Arıza: </Value>
                 <Style />
               </TextRun>
               <TextRun>
-                <Value>   Toplam Ücret: </Value>
+                <Value>                Toplam Ücret: </Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                 </Style>
@@ -223,9 +229,10 @@ Arıza: </Value>
             <Style />
           </Paragraph>
         </Paragraphs>
-        <Top>4.5cm</Top>
+        <Top>5.77cm</Top>
+        <Left>0.635cm</Left>
         <Height>0.8cm</Height>
-        <Width>20cm</Width>
+        <Width>17.60817cm</Width>
         <ZIndex>3</ZIndex>
         <Style />
       </Textbox>
@@ -234,16 +241,17 @@ Arıza: </Value>
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>YAPILAN İŞLEMLER</Value>
+                <Value>YAPILAN İŞLEMLER </Value>
                 <Style />
               </TextRun>
             </TextRuns>
             <Style />
           </Paragraph>
         </Paragraphs>
-        <Top>5.5cm</Top>
+        <Top>7.0875cm</Top>
+        <Left>0.635cm</Left>
         <Height>0.6cm</Height>
-        <Width>20cm</Width>
+        <Width>3.617cm</Width>
         <ZIndex>4</ZIndex>
         <Style>
           <FontSize>12pt</FontSize>
@@ -254,19 +262,19 @@ Arıza: </Value>
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>5cm</Width>
+              <Width>4.52163cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>3.5cm</Width>
+              <Width>3.02163cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>3.5cm</Width>
+              <Width>3.02163cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>4cm</Width>
+              <Width>3.52163cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>4cm</Width>
+              <Width>3.52163cm</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -498,6 +506,7 @@ Arıza: </Value>
                               <Value>=Fields!OnarimTarihi.Value</Value>
                               <Style>
                                 <FontFamily>Calibri</FontFamily>
+                                <Format>d</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -601,9 +610,15 @@ Arıza: </Value>
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>FaturaDataset</DataSetName>
-        <Top>6.3cm</Top>
+        <SortExpressions>
+          <SortExpression>
+            <Value>Yapılan İşlemler</Value>
+          </SortExpression>
+        </SortExpressions>
+        <Top>7.86389cm</Top>
+        <Left>0.635cm</Left>
         <Height>1.2cm</Height>
-        <Width>20cm</Width>
+        <Width>17.60817cm</Width>
         <ZIndex>5</ZIndex>
         <Style>
           <Border>
@@ -627,8 +642,8 @@ Arıza: </Value>
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox1</rd:DefaultName>
-        <Top>21.20189cm</Top>
-        <Left>16.5715cm</Left>
+        <Top>13.13739cm</Top>
+        <Left>13.54467cm</Left>
         <Height>0.6cm</Height>
         <Width>4cm</Width>
         <ZIndex>6</ZIndex>
@@ -642,23 +657,23 @@ Arıza: </Value>
           <PaddingBottom>2pt</PaddingBottom>
         </Style>
       </Textbox>
-      <Textbox Name="Textbox2">
+      <Textbox Name="Textbox5">
         <CanGrow>true</CanGrow>
         <KeepTogether>true</KeepTogether>
         <Paragraphs>
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value />
+                <Value>=Fields!Aciklama.Value</Value>
                 <Style />
               </TextRun>
             </TextRuns>
             <Style />
           </Paragraph>
         </Paragraphs>
-        <rd:DefaultName>Textbox2</rd:DefaultName>
-        <Top>22.1107cm</Top>
-        <Left>16.865cm</Left>
+        <rd:DefaultName>Textbox5</rd:DefaultName>
+        <Top>7.0875cm</Top>
+        <Left>4.73287cm</Left>
         <Height>0.6cm</Height>
         <Width>2.5cm</Width>
         <ZIndex>7</ZIndex>
@@ -673,10 +688,10 @@ Arıza: </Value>
         </Style>
       </Textbox>
     </ReportItems>
-    <Height>25cm</Height>
+    <Height>20.36256cm</Height>
     <Style />
   </Body>
-  <Width>21.22767cm</Width>
+  <Width>20.6985cm</Width>
   <Page>
     <PageHeight>29.7cm</PageHeight>
     <PageWidth>21cm</PageWidth>

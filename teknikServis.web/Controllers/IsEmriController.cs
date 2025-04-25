@@ -118,42 +118,96 @@ namespace teknikServis.web.Controllers
 			await _service.DeleteOperationAsync(islemId);
 			return RedirectToAction(nameof(IslemYap), new { isEmriTeslimId });
 		}
-		[HttpPost]
-		public async Task<IActionResult> IsEmriKapat(IslemYapViewModel model)
-		{
-			Console.WriteLine("🚀 [IsEmriKapat] POST edildi.");
-			Console.WriteLine($"📦 Teslim ID: {model.YeniTeslimBilgisi?.IsEmriTeslimId}");
-			Console.WriteLine($"💰 Alınan Ödeme: {model.YeniTeslimBilgisi?.AlinanOdeme}");
-			Console.WriteLine($"🕒 Tarih/Saat:  {model.YeniTeslimBilgisi?.KapatmaGunu:d} {model.YeniTeslimBilgisi?.KapatmaSaati}");
-			Console.WriteLine($"📦 Sipariş Durumu: {model.YeniTeslimBilgisi?.SiparisDurumu}");
+		//[HttpPost]
+		//[ValidateAntiForgeryToken]
+		//public async Task<IActionResult> IsEmriKapat(IslemYapViewModel model)
+		//{
+		//	Console.WriteLine("🚀 [IsEmriKapat] POST edildi.");
+		//	Console.WriteLine($"📦 Teslim ID: {model.YeniTeslimBilgisi?.IsEmriTeslimId}");
+		//	Console.WriteLine($"💰 Alınan Ödeme: {model.YeniTeslimBilgisi?.AlinanOdeme}");
+		//	Console.WriteLine($"🕒 Tarih/Saat:  {model.YeniTeslimBilgisi?.KapatmaGunu:d} {model.YeniTeslimBilgisi?.KapatmaSaati}");
+		//	Console.WriteLine($"📦 Sipariş Durumu: {model.YeniTeslimBilgisi?.SiparisDurumu}");
 
-			// 1) Basit validasyon: ID gelmemişse devam etmeyelim
-			if (model.YeniTeslimBilgisi?.IsEmriTeslimId is null or 0)
-				return BadRequest("Teslim ID gelmedi.");
-			// kaydetme islemi ekle 
-			if (!ModelState.IsValid)
-			{
-				Console.WriteLine("❌ ModelState geçersiz!");
-				// Hataları loglayıp sayfayı geri döndür.
-				model.MevcutIslemler = await _service.GetOperationsAsync(model.YeniTeslimBilgisi.IsEmriTeslimId);
-				model.TeslimBilgisi = await _service.GetOrderByIdAsync(model.YeniTeslimBilgisi.IsEmriTeslimId);
-				return View("IslemYap", model);
-			}
+		//	// 1) Basit validasyon: ID gelmemişse devam etmeyelim
+		//	if (model.YeniTeslimBilgisi?.IsEmriTeslimId is null or 0)
+		//		return BadRequest("Teslim ID gelmedi.");
+		//	// kaydetme islemi ekle 
+		//	if (!ModelState.IsValid)
+		//	{
+		//		Console.WriteLine("❌ ModelState geçersiz!");
+		//		// Hataları loglayıp sayfayı geri döndür.
+		//		model.MevcutIslemler = await _service.GetOperationsAsync(model.YeniTeslimBilgisi.IsEmriTeslimId);
+		//		model.TeslimBilgisi = await _service.GetOrderByIdAsync(model.YeniTeslimBilgisi.IsEmriTeslimId);
+		//		return View("IslemYap", model);
+		//	}
 
-			Console.WriteLine("✅ ModelState OK → Servise devrediliyor...");
+		//	Console.WriteLine("✅ ModelState OK → Servise devrediliyor...");
 
-			await _service.CloseOrderAsync(
-				model.YeniTeslimBilgisi.IsEmriTeslimId,
-				model.YeniTeslimBilgisi.KapatmaGunu,
-				model.YeniTeslimBilgisi.KapatmaSaati,
-				model.YeniTeslimBilgisi.AlinanOdeme,
-				model.YeniTeslimBilgisi.OdemeSekli,
-				model.YeniTeslimBilgisi.TeslimatAciklama,
-				model.YeniTeslimBilgisi.SiparisDurumu);
+		//	await _service.CloseOrderAsync(
+		//		model.YeniTeslimBilgisi.IsEmriTeslimId,
+		//		model.YeniTeslimBilgisi.KapatmaGunu,
+		//		model.YeniTeslimBilgisi.KapatmaSaati,
+		//		model.YeniTeslimBilgisi.AlinanOdeme,
+		//		model.YeniTeslimBilgisi.OdemeSekli,
+		//		model.YeniTeslimBilgisi.TeslimatAciklama,
+		//		model.YeniTeslimBilgisi.SiparisDurumu);
 
-			Console.WriteLine("✅ Güncelleme tamamlandı.");
-			return RedirectToAction(nameof(AcikIsEmirleri));
-		}
+		//	Console.WriteLine("✅ Güncelleme tamamlandı.");
+		//	return RedirectToAction(nameof(AcikIsEmirleri));
+		//}
+		// Controllers/IsEmriController.cs
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> IsEmriKapat(IslemYapViewModel model)
+{
+			ModelState.Remove("YeniIslem.OnarimYapan");
+			ModelState.Remove("YeniIslem.OnarimTarihi");
+			ModelState.Remove("YeniIslem.StokYeri");
+			ModelState.Remove("YeniIslem.YapilanIslemler");
+			ModelState.Remove("YeniIslem.Ucret");
+			ModelState.Remove("YeniIslem.Aciklama");
+			Console.WriteLine("🚀 [IsEmriKapat] POST başladı.");
+    // ModelState kontrolü
+    if (!ModelState.IsValid)
+    {
+        Console.WriteLine("❌ ModelState geçersiz!");
+        foreach (var kv in ModelState)
+            foreach (var err in kv.Value.Errors)
+                Console.WriteLine($"🔴 {kv.Key}: {err.ErrorMessage}");
+        return View("IslemYap", model);
+    }
+
+    try
+    {
+        // Service metodunu çağır
+        await _service.CloseOrderAsync(
+            model.YeniTeslimBilgisi.IsEmriTeslimId,
+            model.YeniTeslimBilgisi.KapatmaGunu,
+            model.YeniTeslimBilgisi.KapatmaSaati,
+            model.YeniTeslimBilgisi.AlinanOdeme,
+            model.YeniTeslimBilgisi.OdemeSekli,
+            model.YeniTeslimBilgisi.TeslimatAciklama,
+            model.YeniTeslimBilgisi.SiparisDurumu
+        );
+
+        // Başarı mesajı ve yönlendirme
+        TempData["Success"] = "İş emri başarıyla kapatıldı.";
+        return RedirectToAction("IslemYap", new { MusteriId = model.YeniTeslimBilgisi.IsEmriTeslimId });
+    }
+    catch (InvalidOperationException ex)
+    {
+        Console.WriteLine($"❌ Serviste hata: {ex.Message}");
+        ModelState.AddModelError("", "Kapanma işlemi başarısız: " + ex.Message);
+        return View("IslemYap", model);
+    }
+    catch (Exception ex)
+    {
+				Console.WriteLine($"❌ Beklenmedik hata: {ex}");
+				ModelState.AddModelError("", "Beklenmedik bir hata oluştu.");
+        return View("IslemYap", model);
+    }
+}
+
 
 
 		[HttpPost]

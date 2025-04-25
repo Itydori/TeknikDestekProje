@@ -37,13 +37,24 @@ public class FaturaController : Controller
 		if (!veri.Any())
 			return Content("Rapor verisi bulunamadı.");
 
+		var header = veri.First();
+		string musteriAdi = header.Ad;      // viewmodel’ında varsa
+		string cihaz = header.Marka.Replace(" ", "_");
+		string model = header.Marka.Replace(" ", "_") + "_" + header.Model.Replace(" ", "_");
+		string tarih = DateTime.Now.ToString("dd/MM/yyyy");
+		string fileName = $"{musteriAdi}_{cihaz}_{model}_{tarih}.pdf";
+		
+
+		// Raporu oluşturmak için gerekli olan dosya yolu
 		string path = Path.Combine(Directory.GetCurrentDirectory(), "Rapor", "Fatura.rdlc");
-		AspNetCore.Reporting.LocalReport rapor = new AspNetCore.Reporting.LocalReport(path);
+		var rapor = new AspNetCore.Reporting.LocalReport(path);
+		rapor.AddDataSource("FaturaDataset", veri);
+
 
 		rapor.AddDataSource("FaturaDataset", veri); // Dataset adı .rdlc dosyasındakiyle birebir aynı
 
 		var result = rapor.Execute(RenderType.Pdf, 1, null, "");
 
-		return File(result.MainStream, "application/pdf", "fatura.pdf");
+		return File(result.MainStream, "application/pdf", fileName);
 	}
 }
