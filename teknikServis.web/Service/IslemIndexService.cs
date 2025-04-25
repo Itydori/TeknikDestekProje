@@ -13,7 +13,10 @@ public class IslemIndexService
         _ctx = ctx;
 
         var settings = new ConnectionSettings(new Uri(config["Elastic:Uri"]))
-            .DefaultIndex("islemler");
+                .ServerCertificateValidationCallback((o, certificate, chain, errors) => true) // ← SSL kontrolünü geç
+    .BasicAuthentication(config["Elastic:Username"], config["Elastic:Password"])
+    .DefaultIndex("islemler");
+
         _client = new ElasticClient(settings);
     }
 
@@ -25,24 +28,42 @@ public class IslemIndexService
             .AsNoTracking()
             .ToListAsync();
 
+        Console.WriteLine($"TOPLAM {islemler.Count} adet işlem bulundu.");
+
+        int indexlenen = 0;
+        int atlanan = 0;
+
         foreach (var islem in islemler)
         {
-            if (islem.IsEmriTeslimler is null || islem.IsEmriTeslimler.Musteri is null)
+            var teslim = islem.IsEmriTeslimler;
+            var musteri = teslim?.Musteri;
+
+            if (teslim == null || musteri == null)
+            {
+                Console.WriteLine($"SKIPPED → ID: {islem.IslemId} (Teslim ya da Müşteri null)");
+                atlanan++;
                 continue;
+            }
 
             var doc = new IslemIndexModel
             {
                 Id = islem.IslemId,
-                MusteriAd = islem.IsEmriTeslimler.Musteri?.Ad ?? "Bilinmiyor",
-                Marka = islem.IsEmriTeslimler?.Marka ?? "Yok",
-                Model = islem.IsEmriTeslimler?.Model ?? "Yok",
-                FisNo = islem.IsEmriTeslimler?.FisNo ?? "Yok",
-                GarantiDurumu = (int)islem.IsEmriTeslimler.GarantiDurumu == 1 ? "Garantili" : "Garantisiz",
+                MusteriAd = musteri.Ad ?? "Bilinmiyor",
+                Marka = teslim.Marka ?? "Markasız",
+                Model = teslim.Model ?? "Modelsiz",
+                FisNo = teslim.FisNo ?? "Fissiz",
+                GarantiDurumu = teslim.GarantiDurumu.ToString(),
                 Tarih = islem.OnarimTarihi,
                 Ucret = islem.Ucret
             };
+
+            Console.WriteLine($"INDEX → ID: {doc.Id}, Müşteri: {doc.MusteriAd}, Marka: {doc.Marka}");
             await _client.IndexDocumentAsync(doc);
+            indexlenen++;
         }
+
+        Console.WriteLine($"🟢 Indexlenen: {indexlenen} kayıt");
+        Console.WriteLine($"⚠️  Atlanan (null yüzünden): {atlanan} kayıt");
     }
     public async Task<List<IslemIndexModel>> TestElasticSearchAsync()
     {

@@ -16,6 +16,7 @@ public class PanelReportService : IPanelReportService
     public PanelReportService(IConfiguration config)
     {
         var settings = new ConnectionSettings(new Uri(config["Elastic:Uri"]))
+                .ServerCertificateValidationCallback((o, certificate, chain, errors) => true) // ← SSL kontrolünü geç
        .BasicAuthentication(config["Elastic:Username"], config["Elastic:Password"])
        .DefaultIndex("islemler");
 
