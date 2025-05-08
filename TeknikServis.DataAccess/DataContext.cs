@@ -1,38 +1,36 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using TeknikServis.DataAccess.Configuration;
 using TeknikServis.Entities;
+using TeknikServis.Entities.Auth;
 using TeknikServis.Entities.Servis;
 
 namespace TeknikServis.DataAccess
 {
 
 
-    public class TeknikServisDbContext : IdentityDbContext<Kullanici, Roles, string>
+ public class TeknikServisDbContext : IdentityDbContext<AppUser, IdentityRole, string>
     {
         public TeknikServisDbContext(DbContextOptions<TeknikServisDbContext> options) : base(options)
         {
         }
 
         public DbSet<Musteri> Musteris { get; set; }
-        public DbSet<Kullanici> Kullanicilar { get; set; }
-        public DbSet<Roles> Roller { get; set; }
-
         public DbSet<Marka> Markalar { get; set; }
         public DbSet<Model> Modeller { get; set; }
 		public DbSet<Islem> Islemler { get; set; }
 		public DbSet<IsEmriTeslim> IsEmriTeslimler { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
         {
-
             //builder.ApplyConfiguration(new IslemConfiguration());
 
             builder.ApplyConfigurationsFromAssembly(typeof(TeknikServisDbContext).Assembly);
             base.OnModelCreating(builder);
         }
-
     }
+
 
 }
 

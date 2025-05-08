@@ -1,54 +1,47 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using TeknikServis.Business.Abstract;
 using TeknikServis.Business.Concrete;
 using TeknikServis.DataAccess;
+using TeknikServis.Entities.Auth;
 using TeknikServis.Entities.Servis;
-using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<TeknikServisDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddScoped<IPanelReportService, PanelReportService>();
+// ▶ DbContext
+builder.Services.AddDbContext<TeknikServisDbContext>(opt =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-builder.Services.AddIdentity<Kullanici, IdentityRole>(options =>
-{
-    options.SignIn.RequireConfirmedAccount = true;
-})
+// ▶ Identity  (AppUser + IdentityRole)
+builder.Services
+    .AddIdentity<AppUser, IdentityRole>(opt =>
+    {
+        opt.Password.RequireDigit = false;
+        opt.Password.RequireUppercase = false;
+        opt.Password.RequireNonAlphanumeric = false;
+        opt.Password.RequiredLength = 6;
+    })
     .AddEntityFrameworkStores<TeknikServisDbContext>()
     .AddDefaultTokenProviders();
 
-// AddUserManager eklenmeli
-
-
-
-
-//builder.Services.AddModelStateExtension();
+// ▶ DI kayıtları (senin servislerin)
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
-builder.Services.AddScoped<IIslemRepository,IslemRepository>();
+builder.Services.AddScoped<IIslemRepository, IslemRepository>();
 builder.Services.AddScoped<IFaturaService, FaturaService>();
-
 builder.Services.AddScoped<IPanelReportService, PanelReportService>();
 builder.Services.AddScoped<IslemIndexService>();
-
-
+builder.Services.AddScoped<IRepository<IsEmriTeslim>, Repository<IsEmriTeslim>>();
 builder.Services.AddScoped<IIsEmriService, IsEmriService>();
 builder.Services.AddScoped<IMusteriService, MusteriService>();
 
+// ▶ MVC / Razor
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ▶ Hata/kullanıcı dostu sayfalar
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -57,32 +50,35 @@ else
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
-app.UseAuthorization();
 
+app.UseRouting();        // 1️⃣ Routing
+app.UseAuthentication(); // 2️⃣ Kimlik
+app.UseAuthorization();  // 3️⃣ Yetki
 
-app.UseRouting();
-
-
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "default",
-pattern: "{controller=Home}/{action=Index}/{id?}");
-});
+// ▶ Varsayılan route
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+// ▶ İlk kez Elasticsearch indexleme (mevcut kodun)
 var path = Path.Combine(AppContext.BaseDirectory, "indexed.flag");
-
-if (!File.Exists("indexed.flag"))
+if (!File.Exists(path))
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var indexService = scope.ServiceProvider.GetRequiredService<IslemIndexService>();
-        await indexService.IndexAllAsync(); // indexlenmesi i�in
-        File.WriteAllText("indexed.flag", DateTime.Now.ToString());
-    }
+    using var scope = app.Services.CreateScope();
+    var indexSvc = scope.ServiceProvider.GetRequiredService<IslemIndexService>();
+    await indexSvc.IndexAllAsync();
+    File.WriteAllText(path, DateTime.Now.ToString());
 }
-app.Run();
 
+// ▶ Migration uygula + Admin seed
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<TeknikServisDbContext>();
+    await db.Database.MigrateAsync();                 // otomatik migration
+    await IdentitySeed.SeedAsync(scope.ServiceProvider); // admin/admin123 seed
+}
+
+app.Run();

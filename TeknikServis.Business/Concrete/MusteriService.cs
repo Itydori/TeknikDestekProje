@@ -10,18 +10,20 @@ namespace TeknikServis.Business.Concrete
 	public class MusteriService : IMusteriService
 	{
 		private readonly IRepository<Musteri> _repo;
-
-		public MusteriService(IRepository<Musteri> repo)
+        private readonly IRepository<IsEmriTeslim> _teslimRepo;
+        public MusteriService(IRepository<Musteri> repo)
 		{
 			_repo = repo;
 		}
 
         private readonly IIslemRepository _islemRepo;
 
-        public MusteriService(IRepository<Musteri> repo, IIslemRepository islemRepo)
+        public MusteriService(
+         IRepository<Musteri> repo,
+         IRepository<IsEmriTeslim> teslimRepo)                  // ← constructor’a da ekle
         {
             _repo = repo;
-            _islemRepo = islemRepo;
+            _teslimRepo = teslimRepo;
         }
         public async Task<IEnumerable<Musteri>> GetRecentAsync(int count = 20)
 		{
@@ -52,13 +54,13 @@ namespace TeknikServis.Business.Concrete
 
             foreach (var musteri in musteriler)
             {
-                var acikIsSayisi = _islemRepo
-    .Get()
-    .Count(x =>
-        x.IsEmriTeslimler != null &&
-        x.IsEmriTeslimler.MusteriId == musteri.MusteriId &&
-        x.IsEmriTeslimler.KapatmaGunu == null
-    );
+                // doğru repo, doğru tablo, null-check
+                var acikIsSayisi = _teslimRepo
+                    .Get()
+                    .Count(x =>
+                        x.MusteriId == musteri.MusteriId &&
+                        x.KapatmaGunu == null
+                    );
 
                 musteri.AcikIsEmriSayisi = acikIsSayisi;
             }
