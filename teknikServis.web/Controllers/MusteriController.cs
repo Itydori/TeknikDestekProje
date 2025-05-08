@@ -7,17 +7,20 @@ namespace TeknikServis.Web.Controllers
 {
 	public class MusteriController : Controller
 	{
+
 		private readonly IMusteriService _service;
+        
+
 		public MusteriController(IMusteriService service)
 		{
 			_service = service;
 		}
-		public async Task<IActionResult> Index()
-		{
-			var model = await _service.GetRecentAsync();
-			return View(model);
-		}
-		public IActionResult Create()
+        public async Task<IActionResult> Index()
+        {
+            var model = await _service.GetWithOpenIsEmriInfoAsync();
+            return View(model);
+        }
+        public IActionResult Create()
 			=> View();
 		[HttpPost]
 		public async Task<IActionResult> Create(Musteri musteri)

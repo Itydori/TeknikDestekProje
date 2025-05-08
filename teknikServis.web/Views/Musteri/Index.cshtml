@@ -11,18 +11,18 @@
 </p>
 
 <table id="example" class="table table-bordered table-striped table-hover">
-    <thead class="thead-dark">
+    <thead>
         <tr>
-            <th>Adı</th>
+            <th>Ad</th>
             <th>Telefon</th>
             <th>Adres</th>
             <th>Eposta</th>
+            <th>Durum</th>
             <th>İşlem</th>
-            <th>Aktif</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+       @*  @foreach (var item in Model)
         {
             <tr>
                 <td>@item.Ad</td>
@@ -34,13 +34,31 @@
                         <a asp-action="Edit" asp-controller="Musteri" asp-route-id="@item.MusteriId" class="btn btn-primary btn-sm">Düzenle</a>
                     </div>
                     <div style="display: inline-block;">
-                        <form method="post" asp-action="Delete" asp-route-MusteriId="@item.MusteriId" onsubmit="return confirm('Bu müşteri silinecek, emin misiniz?');">
+                        <form method="post" asp-action="Delete" asp-route-id="@item.MusteriId" onsubmit="return confirm('Bu müşteri silinecek, emin misiniz?');">
                             <button type="submit" class="btn btn-danger btn-sm">Sil</button>
                         </form>
                     </div>
                 </td>
+                @if (item.AcikIsEmriSayisi > 0)
+                {
+                    <span class="badge bg-success">Aktif</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Pasif</span>
+                }
+            </tr>
+        } *@
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Ad</td>
+                <td>@item.Telefon</td>
+                <td>@item.Adres</td>
+                <td>@item.Eposta</td>
                 <td>
-                    @if (item.Aktif)
+                    @if (item.AcikIsEmriSayisi > 0)
                     {
                         <span class="badge bg-success">Aktif</span>
                     }
@@ -48,6 +66,9 @@
                     {
                         <span class="badge bg-danger">Pasif</span>
                     }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MusteriId" class="btn btn-primary btn-sm">Düzenle</a>
                 </td>
             </tr>
         }

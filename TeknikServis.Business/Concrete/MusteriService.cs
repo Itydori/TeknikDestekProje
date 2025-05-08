@@ -16,7 +16,14 @@ namespace TeknikServis.Business.Concrete
 			_repo = repo;
 		}
 
-		public async Task<IEnumerable<Musteri>> GetRecentAsync(int count = 20)
+        private readonly IIslemRepository _islemRepo;
+
+        public MusteriService(IRepository<Musteri> repo, IIslemRepository islemRepo)
+        {
+            _repo = repo;
+            _islemRepo = islemRepo;
+        }
+        public async Task<IEnumerable<Musteri>> GetRecentAsync(int count = 20)
 		{
 			var liste = _repo.Get()
 							.OrderByDescending(m => m.MusteriId)
@@ -36,8 +43,29 @@ namespace TeknikServis.Business.Concrete
 			_repo.Create(musteri);
 			await Task.CompletedTask;
 		}
+        public async Task<IEnumerable<Musteri>> GetWithOpenIsEmriInfoAsync(int count = 20)
+        {
+            var musteriler = _repo.Get()
+                .OrderByDescending(m => m.MusteriId)
+                .Take(count)
+                .ToList();
 
-		public async Task UpdateAsync(Musteri musteri)
+            foreach (var musteri in musteriler)
+            {
+                var acikIsSayisi = _islemRepo
+    .Get()
+    .Count(x =>
+        x.IsEmriTeslimler != null &&
+        x.IsEmriTeslimler.MusteriId == musteri.MusteriId &&
+        x.IsEmriTeslimler.KapatmaGunu == null
+    );
+
+                musteri.AcikIsEmriSayisi = acikIsSayisi;
+            }
+
+            return await Task.FromResult(musteriler);
+        }
+        public async Task UpdateAsync(Musteri musteri)
 		{
 			var db = _repo.GetById(musteri.MusteriId);
 			if (db is null) return;

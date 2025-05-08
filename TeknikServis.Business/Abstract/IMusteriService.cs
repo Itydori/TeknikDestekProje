@@ -11,5 +11,7 @@ namespace TeknikServis.Business.Abstract
 		Task CreateAsync(Musteri musteri);
 		Task UpdateAsync(Musteri musteri);
 		Task DeleteAsync(int musteriId);
+			Task<IEnumerable<Musteri>> GetWithOpenIsEmriInfoAsync(int count = 20);
+
     }
 }
