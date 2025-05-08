@@ -2,12 +2,18 @@
 
 namespace teknikServis.web.Models.Account
 {
-	public class LoginViewModel
-	{
-		[Required, EmailAddress]
-		public string Email { get; set; } = string.Empty;
+    public class LoginViewModel
+    {
+        [Required]
+        public string UserName { get; set; }
 
-		[Required, DataType(DataType.Password)]
-		public string Password { get; set; } = string.Empty;
-	}
+        [Required, DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        public bool RememberMe { get; set; }
+
+        // Geri dönüş yolu gizli input için
+        public string? ReturnUrl { get; set; }
+    }
+
 }

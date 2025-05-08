@@ -21,6 +21,11 @@ builder.Services
         opt.Password.RequireUppercase = false;
         opt.Password.RequireNonAlphanumeric = false;
         opt.Password.RequiredLength = 6;
+
+        opt.User.RequireUniqueEmail = true;
+        opt.Lockout.AllowedForNewUsers = false;
+        opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+
     })
 	.AddEntityFrameworkStores<TeknikServisDbContext>();
 

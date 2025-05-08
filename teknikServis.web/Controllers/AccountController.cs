@@ -1,36 +1,67 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.AspNetCore.Mvc;
+using teknikServis.Entities;
 using teknikServis.web.Models.Account;
-using TeknikServis.Entities.Auth;
+using TeknikServis.Entities.Auth;          // AppUser burada
 
+[AllowAnonymous]
 public class AccountController : Controller
 {
-    private readonly SignInManager<AppUser> _signInMgr;
-    public AccountController(SignInManager<AppUser> signInMgr)
+    private readonly SignInManager<AppUser> _signInManager;
+    private readonly UserManager<AppUser> _userManager;
+
+    public AccountController(SignInManager<AppUser> signInManager,
+                             UserManager<AppUser> userManager)
     {
-        _signInMgr = signInMgr;
+        _signInManager = signInManager;
+        _userManager = userManager;
     }
 
-    [HttpGet, AllowAnonymous]
-    public IActionResult Login() => View(new LoginViewModel());
-
-    [HttpPost, ValidateAntiForgeryToken, AllowAnonymous]
-    public async Task<IActionResult> Login(LoginViewModel vm)
+    // GET: /Account/Login
+    [HttpGet]
+    public IActionResult Login(string returnUrl = null)
     {
-        if (!ModelState.IsValid) return View(vm);
-
-        var res = await _signInMgr.PasswordSignInAsync(vm.Email, vm.Password, true, false);
-        if (res.Succeeded) return RedirectToAction("Index", "Panel");
-
-        ModelState.AddModelError("", "Hatalı e-posta veya parola");
-        return View(vm);
+        ViewData["ReturnUrl"] = returnUrl;
+        return View();
     }
 
+    // POST: /Account/Login
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginViewModel model,
+                                           string returnUrl = null)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var user = await _userManager.FindByNameAsync(model.UserName);   // KALSIN
+        if (user == null)
+        {
+            ModelState.AddModelError(string.Empty, "Kullanıcı bulunamadı");
+            return View(model);
+        }
+
+        var result = await _signInManager.PasswordSignInAsync(
+                         user, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+        if (result.Succeeded)
+        {
+            // Güvenli local redirect
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return LocalRedirect(returnUrl);
+
+            return RedirectToAction("Index", "Panel");   // yedek
+        }
+
+        ModelState.AddModelError(string.Empty, "Hatalı giriş denemesi");
+        return View(model);
+    }
+
+    // Çıkış
+    [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
-        await _signInMgr.SignOutAsync();
-        return RedirectToAction(nameof(Login));
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Index", "Home");
     }
 }

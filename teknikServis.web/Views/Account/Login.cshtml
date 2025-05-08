@@ -8,17 +8,28 @@
 <form asp-action="Login" method="post" class="w-25 mx-auto">
     @Html.AntiForgeryToken()
 
+    <!-- Kullanıcı Adı -->
     <div class="mb-3">
-        <label asp-for="Email" class="form-label"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+        <label asp-for="UserName" class="form-label"></label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
     </div>
 
+    <!-- Şifre -->
     <div class="mb-3">
         <label asp-for="Password" class="form-label"></label>
-        <input asp-for="Password" class="form-control" />
+        <input asp-for="Password" class="form-control" type="password" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
+
+    <!-- Beni Hatırla -->
+    <div class="form-check mb-3">
+        <input asp-for="RememberMe" class="form-check-input" />
+        <label asp-for="RememberMe" class="form-check-label"></label>
+    </div>
+
+    <!-- ReturnUrl gizli alan (otomatik geri dönüş için) -->
+    <input type="hidden"  />
 
     <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
 
