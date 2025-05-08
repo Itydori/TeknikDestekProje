@@ -1,26 +1,36 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+
+using teknikServis.web.Models.Account;
 using TeknikServis.Entities.Auth;
 
 public class AccountController : Controller
 {
     private readonly SignInManager<AppUser> _signInMgr;
-    public AccountController(SignInManager<AppUser> m) => _signInMgr = m;
-
-    [HttpGet] public IActionResult Login() => View();
-
-    [HttpPost]
-    public async Task<IActionResult> Login(string email, string password)
+    public AccountController(SignInManager<AppUser> signInMgr)
     {
-        var result = await _signInMgr.PasswordSignInAsync(email, password, true, false);
-        if (result.Succeeded) return RedirectToAction("Index", "Panel");   // panel ana sayfan
-        ModelState.AddModelError("", "Hatalı giriş");
-        return View();
+        _signInMgr = signInMgr;
+    }
+
+    [HttpGet, AllowAnonymous]
+    public IActionResult Login() => View(new LoginViewModel());
+
+    [HttpPost, ValidateAntiForgeryToken, AllowAnonymous]
+    public async Task<IActionResult> Login(LoginViewModel vm)
+    {
+        if (!ModelState.IsValid) return View(vm);
+
+        var res = await _signInMgr.PasswordSignInAsync(vm.Email, vm.Password, true, false);
+        if (res.Succeeded) return RedirectToAction("Index", "Panel");
+
+        ModelState.AddModelError("", "Hatalı e-posta veya parola");
+        return View(vm);
     }
 
     public async Task<IActionResult> Logout()
     {
         await _signInMgr.SignOutAsync();
-        return RedirectToAction("Login");
+        return RedirectToAction(nameof(Login));
     }
 }

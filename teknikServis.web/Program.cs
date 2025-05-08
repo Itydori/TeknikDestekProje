@@ -15,15 +15,14 @@ builder.Services.AddDbContext<TeknikServisDbContext>(opt =>
 
 // ▶ Identity  (AppUser + IdentityRole)
 builder.Services
-    .AddIdentity<AppUser, IdentityRole>(opt =>
+	.AddIdentity<AppUser, IdentityRole>(opt =>
     {
         opt.Password.RequireDigit = false;
         opt.Password.RequireUppercase = false;
         opt.Password.RequireNonAlphanumeric = false;
         opt.Password.RequiredLength = 6;
     })
-    .AddEntityFrameworkStores<TeknikServisDbContext>()
-    .AddDefaultTokenProviders();
+	.AddEntityFrameworkStores<TeknikServisDbContext>();
 
 // ▶ DI kayıtları (senin servislerin)
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -52,10 +51,9 @@ else
 }
 
 app.UseStaticFiles();
-
-app.UseRouting();        // 1️⃣ Routing
-app.UseAuthentication(); // 2️⃣ Kimlik
-app.UseAuthorization();  // 3️⃣ Yetki
+app.UseRouting();          // 1
+app.UseAuthentication();   // 2
+app.UseAuthorization();    // 3
 
 // ▶ Varsayılan route
 app.MapControllerRoute(

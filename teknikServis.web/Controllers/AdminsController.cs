@@ -7,11 +7,11 @@ using TeknikServis.Entities.Servis;
 [Authorize(Roles = "Admin")]
 public class AdminsController : Controller
 {
-    private readonly UserManager<Kullanici> _userMgr;
+    private readonly UserManager<AppUser> _userMgr;
     private readonly RoleManager<IdentityRole> _roleMgr;
 
     public AdminsController(
-        UserManager<Kullanici> userMgr,
+        UserManager<AppUser> userMgr,
         RoleManager<IdentityRole> roleMgr)
     {
         _userMgr = userMgr;
@@ -27,7 +27,7 @@ public class AdminsController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(string email, string password)
     {
-        var user = new Kullanici { UserName = email, Email = email };
+        var user = new AppUser { UserName = email, Email = email };
         var res = await _userMgr.CreateAsync(user, password);
 
         if (res.Succeeded)

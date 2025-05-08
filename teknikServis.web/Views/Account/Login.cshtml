@@ -1,20 +1,23 @@
-﻿@{
-    ViewBag.Title = "Admin";
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+﻿@model teknikServis.web.Models.Account.LoginViewModel
+@{
     ViewData["Title"] = "Admin Giriş";
 }
 
 <h2 class="text-center">Admin Giriş</h2>
 
 <form asp-action="Login" method="post" class="w-25 mx-auto">
+    @Html.AntiForgeryToken()
+
     <div class="mb-3">
-        <label asp-for="Email" class="form-label">E-posta</label>
-        <input name="email" class="form-control" type="text" />
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Password" class="form-label">Parola</label>
-        <input name="password" class="form-control" type="password" />
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
@@ -22,3 +25,6 @@
     <div asp-validation-summary="All" class="text-danger mt-2"></div>
 </form>
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
