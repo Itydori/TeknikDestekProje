@@ -1,12 +1,16 @@
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using teknikServis.web.Models;
+using TeknikServis.Entities.Servis;
 
 namespace teknikServis.web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        // test
+  
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;

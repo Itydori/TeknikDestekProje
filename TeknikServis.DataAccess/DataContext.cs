@@ -23,8 +23,7 @@ namespace TeknikServis.DataAccess
         public DbSet<Model> Modeller { get; set; }
 		public DbSet<Islem> Islemler { get; set; }
 		public DbSet<IsEmriTeslim> IsEmriTeslimler { get; set; }
-
-		protected override void OnModelCreating(ModelBuilder builder)
+    protected override void OnModelCreating(ModelBuilder builder)
         {
 
             //builder.ApplyConfiguration(new IslemConfiguration());

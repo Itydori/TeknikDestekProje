@@ -10,7 +10,7 @@ namespace TeknikServis.DataAccess.Migrations
         {
             migrationBuilder.Sql(@"
 DECLARE @i INT = 1;
-WHILE @i <= 5000
+WHILE @i <= 100
 BEGIN
     INSERT INTO Musteris (Ad, Telefon, Adres, Eposta, Aktif)
     VALUES (
