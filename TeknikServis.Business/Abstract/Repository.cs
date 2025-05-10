@@ -12,7 +12,7 @@ namespace TeknikServis.Business.Abstract
 
     public class Repository<T> : IRepository<T> where T : class
         {
-        private readonly TeknikServisDbContext _context;
+        protected readonly TeknikServisDbContext _context;
        
         public Repository(TeknikServisDbContext context)
         {
@@ -82,8 +82,10 @@ namespace TeknikServis.Business.Abstract
 			}
 		}
         public void Update(T entity)
-        {
-            _context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+		{
+			Console.WriteLine("🟢 [REPO] Güncelleme çağrıldı: " + entity.ToString());
+
+			_context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             _context.SaveChanges();
         }
 

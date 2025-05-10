@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace TeknikServis.Entities.Servis 
 {
@@ -11,15 +13,29 @@ namespace TeknikServis.Entities.Servis
     {
         [Key]
         public int MusteriId { get; set; }
-		[StringLength(100)]
-		public string Ad { get; set; }
-		[StringLength(15)]
-		public string Telefon { get; set; }
-		[StringLength(500)]
-		public string Adres { get; set; }
-		[StringLength(255)]
+
+        [Required(ErrorMessage = "Ad alanı zorunludur.")]
+        [StringLength(100, ErrorMessage = "Ad en fazla 100 karakter olabilir.")]
+        public string Ad { get; set; }
+
+        [Required(ErrorMessage = "Telefon numarası zorunludur.")]
+        [StringLength(15, ErrorMessage = "Telefon numarası en fazla 15 hane olabilir.")]
+        [RegularExpression(@"^\d{10,15}$", ErrorMessage = "Telefon sadece rakam ve en az 10, en fazla 15 haneden oluşmalı.")]
+        public string Telefon { get; set; }
+
+        [Required(ErrorMessage = "Adres zorunludur.")]
+        [StringLength(500, ErrorMessage = "Adres en fazla 500 karakter olabilir.")]
+        public string Adres { get; set; }
+
+        [Required(ErrorMessage = "E-posta zorunludur.")]
+        [EmailAddress(ErrorMessage = "Geçerli bir e-posta giriniz.")]
+        [StringLength(255, ErrorMessage = "E-posta en fazla 255 karakter olabilir.")]
         public string Eposta { get; set; }
+
         public bool Aktif { get; set; }
-		public List<IsEmriTeslim>? IsEmriTeslim { get; set; }
+
+        [NotMapped]
+        public int AcikIsEmriSayisi { get; set; }
+        public List<IsEmriTeslim>? IsEmriTeslim { get; set; }
     }
 }

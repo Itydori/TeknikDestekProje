@@ -1,79 +1,82 @@
-﻿@model  List<TeknikServis.Entities.Servis.IsEmriTeslim>
+﻿@using TeknikServis.Entities.Enums
+@model TeknikServis.Web.Models.IsEmriOlusturViewModel
 
 @{
-	
 	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
-@if (ViewBag.AcikIsEmirleri != null)
-{
-	var acik = (List<IsEmriTeslim>)ViewBag.AcikIsEmirleri;
-	<div class="container mt-4">
-		<div class="card shadow-sm">
-			<div class="card-header bg-warning  text-black d-flex justify-content-between align-items-center">
-				<h4 class="mb-0"><i class="fas fa-list mr-2"></i> Açık İş Emirleri</h4>
-				@if (!acik.Any())
-				{
-					<span class="text-danger fw-bold">Müşterinin açık iş emri yok</span>
-				}
-			</div>
-			<div class="card-body">
-				@if (acik.Any())
-				{
-					<table class="table table-striped table-hover">
-						<thead class="table-dark">
+
+<div class="container mt-4">
+	<div class="card shadow-sm mb-4">
+		<div class="card-header bg-warning text-black d-flex justify-content-between align-items-center">
+			<h4 class="mb-0"><i class="fas fa-list mr-2"></i> Açık İş Emirleri (@Model.AcikIsEmirleri.Count())</h4>
+		</div>
+		<div class="card-body">
+			@if (!Model.AcikIsEmirleri.Any())
+			{
+				<span class="text-danger fw-bold">Müşterinin açık iş emri yok</span>
+			}
+			else
+			{
+				<table class="table table-striped table-hover">
+					<thead class="table-dark">
+						<tr>
+							<th>Müşteri Adı</th>
+							<th>Marka</th>
+							<th>Model</th>
+							<th>Arıza Durumu</th>
+							<th>Model Yılı</th>
+							<th>Garanti</th>
+							<th>Talep</th>
+							<th>Geliş Tarihi</th>
+							<th>Fiş No</th>
+							<th>İşlemler</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model.AcikIsEmirleri)
+						{
 							<tr>
-								<th>Müşteri Adı</th>
-								<th>Marka</th>
-								<th>Model</th>
-								<th>Arıza Durumu</th>
-								<th>Model Yılı</th>
-								<th>Garanti Durumu</th>
-								<th>Servis Talebi</th>
-								<th>Geliş Tarihi</th>
-								<th>Fiş No</th>
-								<th>İşlemler</th>
+								<td>@item.Musteri.Ad</td>
+								<td>@item.Marka</td>
+								<td>@item.Model</td>
+								<td>@item.ArizaDurumu</td>
+								<td>@item.Yil</td>
+								<td>@Enum.GetName(typeof(GarantiDurumuEnum), item.GarantiDurumu)</td>
+								<td>@Enum.GetName(typeof(ServisTalebiEnum), item.ServisTalebi)</td>
+								<td>@item.GelisTarih:dd.MM.yyyy</td>
+								<td>@item.FisNo</td>
+								<td>
+									<a asp-action="IslemYap" asp-route-isEmriTeslimId="@item.IsEmriTeslimId" class="btn btn-primary btn-sm">
+										<i class="fas fa-edit"></i> Düzenle
+									</a>
+									<button class="btn btn-danger btn-sm" onclick="sil(@item.IsEmriTeslimId)">
+										<i class="fas fa-trash"></i>
+									</button>
+								</td>
 							</tr>
-						</thead>
-						<tbody>
-							@foreach (var item in acik)
-							{
-								<tr>
-									<td>@item.Musteri.Ad</td>
-									<td>@item.Marka</td>
-									<td>@item.Model</td>
-									<td>@item.ArizaDurumu</td>
-									<td>@item.Yil</td>
-									<td>@Enum.GetName(typeof(GarantiDurumuEnum), item.GarantiDurumu)</td>
-									<td>@Enum.GetName(typeof(ServisTalebiEnum), item.ServisTalebi)</td>
-									<td>@item.GelisTarih.ToString("dd.MM.yyyy")</td>
-									<td>@item.FisNo</td>
-									<td>
-										<button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Düzenle</button>
-										<button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Sil</button>
-									</td>
-								</tr>
-							}
-						</tbody>
-					</table>
-				}
-			</div>
+						}
+					</tbody>
+				</table>
+			}
 		</div>
 	</div>
-}
-@using (Html.BeginForm("IsEmriKaydet", "IsEmri"))
-{
-	
-	<div class="container mt-4">
-		<div class="card shadow-sm">
-			<div class="card-header bg-primary text-white">
-				<h4 class="mb-0"><i class="fas fa-tools mr-2"></i> İş Emri Oluşturma</h4>
-			</div>
-			<div class="card-body">
-				<form id="serviceOrderForm">
+
+	<!-- Yeni İş Emri Formu -->
+	@using (Html.BeginForm("IsEmriKaydet", "IsEmri", FormMethod.Post, new { id = "serviceOrderForm" }))
+	{
+		@Html.HiddenFor(m => m.NewIsEmri.MusteriId)
+
+		<div class="container mt-4">
+			<div class="card shadow-sm">
+				<div class="card-header bg-primary text-white">
+					<h4 class="mb-0"><i class="fas fa-tools mr-2"></i> İş Emri Oluşturma</h4>
+				</div>
+				<div class="card-body">
+
 					<div class="row mb-4">
 						<div class="col-md-6 mb-3">
-							<label for="Marka " class="form-label fw-bold">Marka Seç</label>
-							<input list="markalar" class="form-control" id="Marka"  placeholder="Marka seç veya yaz" name="Marka" @*  asp-for="Marka" *@>
+							<label asp-for="NewIsEmri.Marka" class="form-label fw-bold"></label>
+							<input asp-for="NewIsEmri.Marka" list="markalar" class="form-control" placeholder="Marka seç veya yaz" />
 							<datalist id="markalar">
 								<option value="Apple"></option>
 								<option value="Samsung"></option>
@@ -100,134 +103,167 @@
 								<option value="Electrolux"></option>
 								<option value="Profilo"></option>
 							</datalist>
+							<span asp-validation-for="NewIsEmri.Marka" class="text-danger"></span>
 						</div>
+
 						<div class="col-md-6 mb-3">
-							<label for="Model" class="form-label fw-bold">Model Gir</label>
-							<input type="text" class="form-control" id="Model" name="Model" placeholder="Model" />
+							<label asp-for="NewIsEmri.Model" class="form-label fw-bold"></label>
+							<input asp-for="NewIsEmri.Model" class="form-control" placeholder="Model" />
+							<span asp-validation-for="NewIsEmri.Model" class="text-danger"></span>
 						</div>
 					</div>
 
 					<div class="row mb-4">
 						<div class="col-md-6 mb-3">
-							<label for="ArizaDurumu " class="form-label fw-bold">Ürün Arızası</label>
-							<input type="text" class="form-control" id="ArizaDurumu" name="ArizaDurumu" placeholder="Ürün Arızası" />
+							<label asp-for="NewIsEmri.ArizaDurumu" class="form-label fw-bold"></label>
+							<input asp-for="NewIsEmri.ArizaDurumu" class="form-control" placeholder="Ürün Arızası" />
+							<span asp-validation-for="NewIsEmri.ArizaDurumu" class="text-danger"></span>
 						</div>
+
 						<div class="col-md-6 mb-3">
-							<label  for="Yil" class="form-label fw-bold">Model Yılı</label>
-							@{
-								var deger = DateTime.Now.Year;
-								<select  class="form-select" id="Yil" name="Yil">
-									@for (int i = 1; i <= 10; i++)
-									{
-										deger = deger - 1;
-										<option>@deger</option>
-									}
-								</select>
-							}
+							<label asp-for="NewIsEmri.Yil" class="form-label fw-bold"></label>
+							<select asp-for="NewIsEmri.Yil" class="form-select">
+								@for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 10; i--)
+								{
+									<option value="@i">@i</option>
+								}
+							</select>
+							<span asp-validation-for="NewIsEmri.Yil" class="text-danger"></span>
 						</div>
 					</div>
 
 					<div class="row mb-4">
 						<div class="col-md-6 mb-3">
-							<label for="GarantiDurumu" class="form-label fw-bold">Ürün Garanti Durumu</label>
-							<select class="form-select" id="GarantiDurumu" name="GarantiDurumu">
+							<label asp-for="NewIsEmri.GarantiDurumu" class="form-label fw-bold"></label>
+							<select asp-for="NewIsEmri.GarantiDurumu" class="form-select">
 								<option value="1">Garantili</option>
 								<option value="2">Garantisiz</option>
 							</select>
+							<span asp-validation-for="NewIsEmri.GarantiDurumu" class="text-danger"></span>
 						</div>
+
 						<div class="col-md-6 mb-3">
-							<label for="ServisTalebi" class="form-label fw-bold">Ürün Geliş Sebebi</label>
-							<select  class="form-select" id="ServisTalebi" name="ServisTalebi">
+							<label asp-for="NewIsEmri.ServisTalebi" class="form-label fw-bold"></label>
+							<select asp-for="NewIsEmri.ServisTalebi" class="form-select">
 								<option value="1">Arızalı Ürün</option>
 								<option value="2">Yedek Parça Sipariş</option>
 							</select>
+							<span asp-validation-for="NewIsEmri.ServisTalebi" class="text-danger"></span>
 						</div>
 					</div>
+
 					<div class="row mb-4">
 						<div class="col-md-6 mb-3">
-							<label for="GelisTarih" class="form-label fw-bold">Ürün Geliş Tarihi</label>
-							<input type="date" class="form-control" id="GelisTarih" name="GelisTarih" />
+							<label asp-for="NewIsEmri.GelisTarih" class="form-label fw-bold"></label>
+							<input asp-for="NewIsEmri.GelisTarih" type="date" class="form-control" />
+							<span asp-validation-for="NewIsEmri.GelisTarih" class="text-danger"></span>
 						</div>
-						<div class="col-md-6 mb-3">
-							<label for="FisNo" class="form-label fw-bold">Fiş No</label>
-							<input type="text" class="form-control" id="FisNo" name="FisNo" placeholder="Fiş No" />
 
+						<div class="col-md-6 mb-3">
+							<label asp-for="NewIsEmri.FisNo" class="form-label fw-bold"></label>
+							<input asp-for="NewIsEmri.FisNo" class="form-control" placeholder="Fiş No" />
+							<span asp-validation-for="NewIsEmri.FisNo" class="text-danger"></span>
 						</div>
 					</div>
 
 					<div class="d-flex justify-content-end mt-4">
-						<button type="button" class="btn btn-secondary me-2">İptal</button>
 						<button type="submit" class="btn btn-success">
 							<i class="fas fa-save me-1"></i> İş Emri Oluştur
 						</button>
 					</div>
-				</form>
+
+				</div>
 			</div>
 		</div>
-	</div>
-}
-@if (Model != null && Model.Any())
-{
-	<div class="container mt-4">
-		<div class="card shadow-sm">
-			<div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-				<h4 class="mb-0"><i class="fas fa-archive mr-2"></i> Kapalı İş Emirleri</h4>
-				@if (!Model.Any())
-				{
-					<span class="text-danger fw-bold">Müşterinin kapalı iş emri yok</span>
-				}
-			</div>
-			<div class="card-body">
-				@if (Model.Any())
-				{
-					<table class="table table-striped table-hover">
-						<thead class="table-dark">
+	}
+
+	@section Scripts {
+		@{
+			await Html.RenderPartialAsync("_ValidationScriptsPartial");
+		}
+	}
+	<!-- Kapalı İş Emirleri -->
+	<div class="card shadow-sm">
+		<div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+			<h4 class="mb-0"><i class="fas fa-archive mr-2"></i> Kapalı İş Emirleri (@Model.KapaliIsEmirleri.Count())</h4>
+		</div>
+		<div class="card-body">
+			@if (!Model.KapaliIsEmirleri.Any())
+			{
+				<span class="text-danger fw-bold">Müşterinin kapalı iş emri yok</span>
+			}
+			else
+			{
+				<table class="table table-striped table-hover">
+					<thead class="table-dark">
+						<tr>
+							<th>Müşteri Adı</th>
+							<th>Marka</th>
+							<th>Model</th>
+							<th>Arıza</th>
+							<th>Yıl</th>
+							<th>Garanti</th>
+							<th>Talep</th>
+							<th>Geliş</th>
+							<th>Fiş No</th>
+							<th>PDF</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model.KapaliIsEmirleri)
+						{
 							<tr>
-								<th>Müşteri Adı</th>
-								<th>Marka</th>
-								<th>Model</th>
-								<th>Arıza Durumu</th>
-								<th>Model Yılı</th>
-								<th>Garanti Durumu</th>
-								<th>Servis Talebi</th>
-								<th>Geliş Tarihi</th>
-								<th>Fiş No</th>
+								<td>@item.Musteri.Ad</td>
+								<td>@item.Marka</td>
+								<td>@item.Model</td>
+								<td>@item.ArizaDurumu</td>
+								<td>@item.Yil</td>
+								<td>@Enum.GetName(typeof(GarantiDurumuEnum), item.GarantiDurumu)</td>
+								<td>@Enum.GetName(typeof(ServisTalebiEnum), item.ServisTalebi)</td>
+								<td>@item.GelisTarih:dd.MM.yyyy</td>
+								<td>@item.FisNo</td>
+								<td>
+									<a asp-controller="Fatura" asp-action="FaturaYazdir" asp-route-id="@item.IsEmriTeslimId" class="btn btn-danger btn-sm" target="_blank">
+										<i class="fas fa-file-pdf"></i>
+									</a>
+								</td>
 							</tr>
-						</thead>
-						<tbody>
-							@foreach (var item in Model)
-							{
-								<tr>
-									<td>@item.Musteri.Ad</td>
-									<td>@item.Marka</td>
-									<td>@item.Model</td>
-									<td>@item.ArizaDurumu</td>
-									<td>@item.Yil</td>
-									<td>@Enum.GetName(typeof(GarantiDurumuEnum), item.GarantiDurumu)</td>
-									<td>@Enum.GetName(typeof(ServisTalebiEnum), item.ServisTalebi)</td>
-									<td>@item.GelisTarih.ToString("dd.MM.yyyy")</td>
-@* 									<td>@item.Tes.ToString("dd.MM.yyyy")</td>
- *@									<td>@item.FisNo</td>
-								</tr>
-							}
-						</tbody>
-					</table>
-				}
-			</div>
+						}
+					</tbody>
+				</table>
+			}
 		</div>
 	</div>
-}
+</div>
 
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
 		var form = document.getElementById("serviceOrderForm");
-		form.addEventListener("submit", function (event) {
-			if (!form.checkValidity()) {
-				event.preventDefault(); // Gönderimi engelle
-				event.stopPropagation();
-			}
-			form.classList.add("was-validated");
-		}, false);
+		if (form) {
+			form.addEventListener("submit", function (event) {
+				if (!form.checkValidity()) {
+					event.preventDefault();
+					event.stopPropagation();
+				}
+				form.classList.add("was-validated");
+			}, false);
+		}
 	});
+
+	function sil(id) {
+		if (confirm("Silmek istediğinize emin misiniz?")) {
+			fetch('/IsEmri/IsEmriSil', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+				},
+				body: JSON.stringify({ id: id })
+			}).then(res => {
+				if (res.ok) location.reload();
+				else alert("Silme işlemi başarısız oldu.");
+			});
+		}
+	}
 </script>
 

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace TeknikServis.Entities.Servis
 {
-    public class Kullanici:IdentityUser
+    public class Kullanici:IdentityUser<string>
     {
         public string Ad { get; set; }
-        public bool Admin { get; set; }
+     
         public bool Aktif { get; set; }
 
 

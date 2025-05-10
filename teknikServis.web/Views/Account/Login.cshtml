@@ -1,0 +1,41 @@
+﻿@model teknikServis.web.Models.Account.LoginViewModel
+@{
+    ViewData["Title"] = "Admin Giriş";
+}
+
+<h2 class="text-center">Admin Giriş</h2>
+
+<form asp-action="Login" method="post" class="w-25 mx-auto">
+    @Html.AntiForgeryToken()
+
+    <!-- Kullanıcı Adı -->
+    <div class="mb-3">
+        <label asp-for="UserName" class="form-label"></label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+
+    <!-- Şifre -->
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <!-- Beni Hatırla -->
+    <div class="form-check mb-3">
+        <input asp-for="RememberMe" class="form-check-input" />
+        <label asp-for="RememberMe" class="form-check-label"></label>
+    </div>
+
+    <!-- ReturnUrl gizli alan (otomatik geri dönüş için) -->
+    <input type="hidden"  />
+
+    <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
+
+    <div asp-validation-summary="All" class="text-danger mt-2"></div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
