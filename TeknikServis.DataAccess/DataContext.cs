@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using teknikServis.Entities;
 using TeknikServis.DataAccess.Configuration;
 using TeknikServis.Entities;
 using TeknikServis.Entities.Auth;

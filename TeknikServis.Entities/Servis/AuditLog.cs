@@ -1,15 +1,23 @@
-﻿namespace TeknikServis.Entities.Servis
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using TeknikServis.Entities;
+
+namespace teknikServis.Entities
 {
     public class AuditLog
     {
+        [Key]
         public int Id { get; set; }
-        public string AdminId { get; set; }          // FK → AspNetUsers.Id
-        public string Action { get; set; }           // "Create","Update","Delete"…
-        public string Entity { get; set; }           // "IsEmri","Parca","Admin"…
-        public string EntityKey { get; set; }        // "42" veya GUID
-        public string? OldValues { get; set; }       // JSON (null ise ekleme)
-        public string? NewValues { get; set; }       // JSON (null ise silme)
+        public string AdminId { get; set; }
+        public string Action { get; set; }  // Created, Updated, Deleted
+        public string Entity { get; set; }  // The entity type name
+        public string EntityKey { get; set; }  // The primary key value
+        public string OldValues { get; set; }  // JSON representation of old values
+        public string NewValues { get; set; }  // JSON representation of new values
         public DateTime When { get; set; }
-        public string? IpAddress { get; set; }       // istersen
+        public string IpAddress { get; set; }
+
+        // Navigation property
+        public AppUser Admin { get; set; }
     }
 }

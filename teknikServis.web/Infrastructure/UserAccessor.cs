@@ -1,11 +1,19 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using teknikServis.Entities.Infrastructure;   // ← Arayüzü görüyoruz
 
-public interface IUserAccessor { string? GetUserId(); }
-
-public class UserAccessor : IUserAccessor
+namespace TeknikServis.DataAccess.Interceptors
 {
-    private readonly IHttpContextAccessor _ctx;
-    public UserAccessor(IHttpContextAccessor ctx) => _ctx = ctx;
-    public string? GetUserId() =>
-        _ctx.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+    public class UserAccessor : IUserAccessor
+    {
+        private readonly IHttpContextAccessor _ctx;
+
+        public UserAccessor(IHttpContextAccessor ctx) => _ctx = ctx;
+
+        public string? GetCurrentUserId() =>
+            _ctx.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        public string? GetCurrentIpAddress() =>
+            _ctx.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+    }
 }

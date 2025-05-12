@@ -4,20 +4,26 @@ using System.Text;
 using TeknikServis.Business.Abstract;
 using TeknikServis.Business.Concrete;
 using TeknikServis.DataAccess;
+using TeknikServis.DataAccess.Interceptors;
 using TeknikServis.DataAccess.Services;
 using TeknikServis.Entities;
 using TeknikServis.Entities.Auth;
 using TeknikServis.Entities.Servis;
 
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+builder.Services.AddScoped<AuditSaveChangesInterceptor>();
 
 // ▶ DbContext
-builder.Services.AddDbContext<TeknikServisDbContext>(opt =>
+builder.Services.AddDbContext<TeknikServisDbContext>((sp, opt) =>
+{
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-    .EnableSensitiveDataLogging()          // parametreleri de yazar
-    .LogTo(Console.WriteLine,
-            LogLevel.Information)); 
-
+       .EnableSensitiveDataLogging()
+       .LogTo(Console.WriteLine, LogLevel.Information)
+       .AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
+});
 
 // ▶ Identity  (AppUser + IdentityRole)
 builder.Services

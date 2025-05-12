@@ -1,0 +1,85 @@
+﻿@model teknikServis.Entities.AuditLog
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    ViewData["Title"] = "Audit Log Details";
+}
+
+<h1>Audit Log Details</h1>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>@Model.Action - @Model.Entity</h5>
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Date/Time</dt>
+            <dd class="col-sm-9">@Model.When.ToString("yyyy-MM-dd HH:mm:ss")</dd>
+
+            <dt class="col-sm-3">Admin</dt>
+            <dd class="col-sm-9">@(Model.Admin?.UserName ?? Model.AdminId)</dd>
+
+            <dt class="col-sm-3">IP Address</dt>
+            <dd class="col-sm-9">@Model.IpAddress</dd>
+
+            <dt class="col-sm-3">Action</dt>
+            <dd class="col-sm-9">
+                <span class="badge @GetBadgeClass(Model.Action)">@Model.Action</span>
+            </dd>
+
+            <dt class="col-sm-3">Entity</dt>
+            <dd class="col-sm-9">@Model.Entity</dd>
+
+            <dt class="col-sm-3">Entity ID</dt>
+            <dd class="col-sm-9">@Model.EntityKey</dd>
+        </dl>
+
+        @if (!string.IsNullOrEmpty(Model.OldValues))
+        {
+            <h5 class="mt-4">Old Values</h5>
+            <div class="bg-light p-3 rounded">
+                <pre class="mb-0">@PrettyPrintJson(Model.OldValues)</pre>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.NewValues))
+        {
+            <h5 class="mt-4">New Values</h5>
+            <div class="bg-light p-3 rounded">
+                <pre class="mb-0">@PrettyPrintJson(Model.NewValues)</pre>
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    string GetBadgeClass(string action)
+    {
+        return action switch
+        {
+            "Created" => "bg-success",
+            "Updated" => "bg-info",
+            "Deleted" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    string PrettyPrintJson(string json)
+    {
+        try
+        {
+            var options = new System.Text.Json.JsonSerializerOptions
+                {
+                    WriteIndented = true
+                };
+
+            var jsonElement = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(json);
+            return System.Text.Json.JsonSerializer.Serialize(jsonElement, options);
+        }
+        catch
+        {
+            return json;
+        }
+    }
+}
