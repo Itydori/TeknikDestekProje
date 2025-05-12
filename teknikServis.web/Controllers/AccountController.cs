@@ -22,8 +22,10 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login(string returnUrl = null)
     {
-        ViewData["ReturnUrl"] = returnUrl;
-        return View();
+        return View(new LoginViewModel
+        {
+            ReturnUrl = returnUrl
+        });
     }
 
     // POST: /Account/Login

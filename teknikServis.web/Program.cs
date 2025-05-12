@@ -13,7 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ▶ DbContext
 builder.Services.AddDbContext<TeknikServisDbContext>(opt =>
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    .EnableSensitiveDataLogging()          // parametreleri de yazar
+    .LogTo(Console.WriteLine,
+            LogLevel.Information)); 
+
 
 // ▶ Identity  (AppUser + IdentityRole)
 builder.Services
