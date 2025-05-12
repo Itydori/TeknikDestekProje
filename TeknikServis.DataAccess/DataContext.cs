@@ -22,9 +22,17 @@ namespace TeknikServis.DataAccess
         public DbSet<Model> Modeller { get; set; }
 		public DbSet<Islem> Islemler { get; set; }
 		public DbSet<IsEmriTeslim> IsEmriTeslimler { get; set; }
-    protected override void OnModelCreating(ModelBuilder builder)
+        public DbSet<LoginAudit> LoginAudits { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+            builder.Entity<LoginAudit>(e =>
+            {
+                e.HasKey(x => x.Id);
+                e.Property(x => x.UserName).HasMaxLength(256);
+            });
             //builder.ApplyConfiguration(new IslemConfiguration());
+
 
             builder.ApplyConfigurationsFromAssembly(typeof(TeknikServisDbContext).Assembly);
             base.OnModelCreating(builder);

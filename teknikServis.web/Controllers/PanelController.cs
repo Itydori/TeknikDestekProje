@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using teknikServis.web.Models;
 
 namespace teknikServis.web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PanelController : Controller
     {
         private readonly IPanelReportService _srv;

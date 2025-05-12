@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using teknikServis.web.Models;
 
 namespace teknikServis.web.Controllers
 {
-    public class ElasticController : Controller
+	[Authorize]
+	public class ElasticController : Controller
     {
         private readonly IslemIndexService _indexService;
 

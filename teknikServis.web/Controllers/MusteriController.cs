@@ -2,9 +2,12 @@
 using TeknikServis.Business.Abstract;
 using TeknikServis.Entities.Servis;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TeknikServis.Web.Controllers
 {
+
+	[Authorize]
 	public class MusteriController : Controller
 	{
 

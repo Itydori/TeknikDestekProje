@@ -7,8 +7,9 @@ using teknikServis.Entities.Fatura;
 using TeknikServis.Business.Abstract;
 using AspNetCore.Reporting;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
-
+[Authorize]
 public class FaturaController : Controller
 {
 	private readonly IIslemRepository _islemRepository;

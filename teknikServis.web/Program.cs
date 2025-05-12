@@ -4,6 +4,7 @@ using System.Text;
 using TeknikServis.Business.Abstract;
 using TeknikServis.Business.Concrete;
 using TeknikServis.DataAccess;
+using TeknikServis.DataAccess.Services;
 using TeknikServis.Entities.Auth;
 using TeknikServis.Entities.Servis;
 
@@ -38,6 +39,8 @@ builder.Services.AddScoped<IslemIndexService>();
 builder.Services.AddScoped<IRepository<IsEmriTeslim>, Repository<IsEmriTeslim>>();
 builder.Services.AddScoped<IIsEmriService, IsEmriService>();
 builder.Services.AddScoped<IMusteriService, MusteriService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<LoginAuditService>();
 
 // ▶ MVC / Razor
 builder.Services.AddControllersWithViews();

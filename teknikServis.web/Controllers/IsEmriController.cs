@@ -7,9 +7,11 @@ using TeknikServis.DataAccess;
 using System.Collections.Generic;
 using TeknikServis.Web.Models;
 using TeknikServis.Business;
+using Microsoft.AspNetCore.Authorization;
 
 namespace teknikServis.web.Controllers
 {
+	[Authorize]
 	public class IsEmriController : Controller
 	{
 		private readonly IIsEmriService _service;

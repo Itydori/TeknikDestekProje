@@ -114,11 +114,28 @@
 						<li class="border-top my-3"></li>
 
 						<li class="mb-1">
-							<a class="nav-link" asp-controller="Admins" asp-action="Index">🔑 Adminler</a>
-							</li>
-						<li class="nav-item">
-							<a class="nav-link" asp-controller="Account" asp-action="Logout">🚪 Çıkış</a>
+							<a class="nav-link" asp-controller="Admins" asp-action="Index">
+								<i class="fa-solid fa-user-shield"></i> Adminler
+							</a>
 						</li>
+						<li class="nav-item">
+
+    <!-- Anchor görünümlü buton: formu tetikler -->
+    <a class="nav-link px-3" href="javascript:void(0);"
+       onclick="document.getElementById('logoutForm').submit();">
+        <i class="fa-solid fa-sign-out-alt"></i> Sign out
+    </a>
+
+    <!-- Gizli form -->
+    <form id="logoutForm"
+          asp-controller="Account"
+          asp-action="Logout"
+          method="post"
+          class="d-none">
+        @Html.AntiForgeryToken()
+    </form>
+
+</li>
 
 
 

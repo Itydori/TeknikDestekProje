@@ -5,7 +5,6 @@ using teknikServis.Entities;
 using teknikServis.web.Models.Account;
 using TeknikServis.Entities.Auth;          // AppUser burada
 
-[AllowAnonymous]
 public class AccountController : Controller
 {
     private readonly SignInManager<AppUser> _signInManager;
@@ -58,10 +57,10 @@ public class AccountController : Controller
     }
 
     // Çıkış
-    [HttpPost, ValidateAntiForgeryToken]
+    [HttpPost]
     public async Task<IActionResult> Logout()
     {
-        await _signInManager.SignOutAsync();
-        return RedirectToAction("Index", "Home");
+        await _signInManager.SignOutAsync();          // ⇦ cookie temizlenir
+        return RedirectToAction("Index", "Home");     // ⇦ nereye istersen
     }
 }
