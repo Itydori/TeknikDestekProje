@@ -47,6 +47,9 @@ builder.Services.AddScoped<IMusteriService, MusteriService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<LoginAuditService>();
 
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 // ▶ MVC / Razor
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

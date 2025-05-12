@@ -23,8 +23,8 @@ namespace TeknikServis.DataAccess
 		public DbSet<Islem> Islemler { get; set; }
 		public DbSet<IsEmriTeslim> IsEmriTeslimler { get; set; }
         public DbSet<LoginAudit> LoginAudits { get; set; }
-	
-		protected override void OnModelCreating(ModelBuilder builder)
+        public DbSet<AuditLog> AuditLogs { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
             builder.Entity<LoginAudit>(e =>
