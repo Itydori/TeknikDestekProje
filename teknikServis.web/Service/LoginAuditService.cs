@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
-using TeknikServis.Entities.Auth;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TeknikServis.Entities;
+using TeknikServis.Entities.Auth;
 
 namespace TeknikServis.DataAccess.Services   // kendi namespace’ine göre ayarla
 {

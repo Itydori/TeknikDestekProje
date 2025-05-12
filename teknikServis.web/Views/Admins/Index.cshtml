@@ -1,0 +1,21 @@
+﻿@model IEnumerable<TeknikServis.Entities.AppUser>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Admin Listesi";
+
+}
+<a asp-action="Create" class="btn btn-success mb-3">Yeni Admin Ekle</a>
+
+<table class="table table-striped">
+    <thead><tr><th>Kullanıcı Adı</th><th>Email</th></tr></thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.UserName</td>
+                <td>@a.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
+using TeknikServis.Entities;
 using TeknikServis.Entities.Auth;   //  ← AppUser burada
 
 namespace TeknikServis.DataAccess

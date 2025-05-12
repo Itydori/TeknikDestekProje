@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using teknikServis.Entities;
 using teknikServis.web.Models.Account;
+using TeknikServis.Entities;
 using TeknikServis.Entities.Auth;          // AppUser burada
 
 public class AccountController : Controller

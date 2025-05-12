@@ -5,6 +5,7 @@ using TeknikServis.Business.Abstract;
 using TeknikServis.Business.Concrete;
 using TeknikServis.DataAccess;
 using TeknikServis.DataAccess.Services;
+using TeknikServis.Entities;
 using TeknikServis.Entities.Auth;
 using TeknikServis.Entities.Servis;
 
@@ -16,7 +17,7 @@ builder.Services.AddDbContext<TeknikServisDbContext>(opt =>
 
 // ▶ Identity  (AppUser + IdentityRole)
 builder.Services
-	.AddIdentity<AppUser, IdentityRole>(opt =>
+	.AddIdentity<AppUser,IdentityRole>(opt =>
     {
         opt.Password.RequireDigit = false;
         opt.Password.RequireUppercase = false;
@@ -28,7 +29,7 @@ builder.Services
         opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 
     })
-	.AddEntityFrameworkStores<TeknikServisDbContext>();
+    .AddEntityFrameworkStores<TeknikServisDbContext>();
 
 // ▶ DI kayıtları (senin servislerin)
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
