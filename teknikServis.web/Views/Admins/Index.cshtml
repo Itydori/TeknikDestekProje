@@ -8,14 +8,30 @@
 <a asp-action="Create" class="btn btn-success mb-3">Yeni Admin Ekle</a>
 
 <table class="table table-striped">
-    <thead><tr><th>Kullanıcı Adı</th><th>Email</th></tr></thead>
+    <thead>
+        <tr><th>Kullanıcı Adı</th><th>Email</th><th></th></tr>
+    </thead>
     <tbody>
-        @foreach (var a in Model)
-        {
-            <tr>
-                <td>@a.UserName</td>
-                <td>@a.Email</td>
-            </tr>
-        }
+    @foreach (var a in Model)
+    {
+        <tr>
+            <td>@a.UserName</td>
+            <td>@a.Email</td>
+            <td>
+                <!-- Şifre Güncelle -->
+                <a asp-action="UpdatePassword" asp-route-id="@a.Id"
+                   class="btn btn-sm btn-warning">
+                    🔑 Şifre
+                </a>
+
+                <!-- Sil -->
+                <form asp-action="Delete" asp-route-id="@a.Id"
+                      method="post" class="d-inline"
+                      onsubmit="return confirm('Silinsin mi?');">
+                    <button class="btn btn-sm btn-danger">🗑 Sil</button>
+                </form>
+            </td>
+        </tr>
+    }
     </tbody>
 </table>

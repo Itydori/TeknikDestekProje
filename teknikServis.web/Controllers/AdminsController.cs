@@ -57,11 +57,55 @@ public class AdminsController : Controller
         return View(m);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> UpdatePassword(string id)
+    {
+        var user = await _userMgr.FindByIdAsync(id);
+        if (user == null) return NotFound();
+
+        var vm = new UpdatePasswordViewModel
+        {
+            Id = user.Id,
+            Email = user.Email!
+        };
+        return View(vm);              // Views/Admins/UpdatePassword.cshtml
+    }
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel m)
+    {
+        if (!ModelState.IsValid) return View(m);
+
+        var user = await _userMgr.FindByIdAsync(m.Id);
+        if (user == null) return NotFound();
+
+        // Önce reset token üret → sonra ResetPasswordAsync
+        var token = await _userMgr.GeneratePasswordResetTokenAsync(user);
+        var res = await _userMgr.ResetPasswordAsync(user, token, m.NewPassword);
+
+        if (res.Succeeded)
+        {
+            TempData["ok"] = "Şifre güncellendi.";
+            return RedirectToAction(nameof(Index));
+        }
+        foreach (var e in res.Errors)
+            ModelState.AddModelError("", e.Description);
+
+        return View(m);
+    }
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(string id)
     {
+        var me = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (id == me)
+        {
+            TempData["err"] = "Kendi hesabını silemezsin.";
+            return RedirectToAction(nameof(Index));
+        }
+
         var user = await _userMgr.FindByIdAsync(id);
         if (user != null) await _userMgr.DeleteAsync(user);
+
+        TempData["ok"] = "Admin silindi.";
         return RedirectToAction(nameof(Index));
     }
 }

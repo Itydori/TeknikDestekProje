@@ -28,36 +28,40 @@ public class AccountController : Controller
         });
     }
 
-    // POST: /Account/Login
-    [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginViewModel model,
-                                           string returnUrl = null)
+    [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginViewModel m, string? returnUrl = null)
     {
-        if (!ModelState.IsValid)
-            return View(model);
+        if (!ModelState.IsValid) return View(m);
 
-        var user = await _userManager.FindByNameAsync(model.UserName);   // KALSIN
+        // 1. Kullanıcı adını e-posta da olabilir
+        var user = await _userManager.FindByNameAsync(m.UserName)
+                   ?? await _userManager.FindByEmailAsync(m.UserName);
+
         if (user == null)
         {
-            ModelState.AddModelError(string.Empty, "Kullanıcı bulunamadı");
-            return View(model);
+            ModelState.AddModelError("", "Kullanıcı bulunamadı");
+            return View(m);
         }
 
-        var result = await _signInManager.PasswordSignInAsync(
-                         user, model.Password, model.RememberMe, lockoutOnFailure: false);
-
-        if (result.Succeeded)
+        // 2. Parola doğrula
+        var res = await _signInManager.PasswordSignInAsync(user, m.Password,
+                                                       m.RememberMe, lockoutOnFailure: false);
+        if (!res.Succeeded)
         {
-            // Güvenli local redirect
-            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
-                return LocalRedirect(returnUrl);
-
-            return RedirectToAction("Index", "Panel");   // yedek
+            ModelState.AddModelError("", "Şifre hatalı");
+            return View(m);
         }
 
-        ModelState.AddModelError(string.Empty, "Hatalı giriş denemesi");
-        return View(model);
+        // 3. YÖNLENDİRME ↓
+        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return Redirect(returnUrl);
+
+        // Admin ise direk admin paneline; değilse Panel ana sayfası
+        return await _userManager.IsInRoleAsync(user, "Admin")
+               ? RedirectToAction("Index", "Admins")
+               : RedirectToAction("Index", "Panel");
     }
+
 
     // Çıkış
     [HttpPost]
