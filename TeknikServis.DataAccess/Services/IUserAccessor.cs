@@ -1,4 +1,4 @@
-﻿namespace TeknikServis.DataAccess.Interceptors
+﻿namespace TeknikServis.DataAccess.Services
 {
     public interface IUserAccessor
     {

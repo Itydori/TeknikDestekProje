@@ -1,18 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using TeknikServis.DataAccess.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
 using TeknikServis.Business.Abstract;
 using TeknikServis.Business.Concrete;
 using TeknikServis.DataAccess;
-using TeknikServis.DataAccess.Interceptors;
-using TeknikServis.DataAccess.Services;
 using TeknikServis.Entities;
-using TeknikServis.Entities.Auth;
 using TeknikServis.Entities.Servis;
 
-
+    
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 builder.Services.AddScoped<AuditSaveChangesInterceptor>();
 
@@ -54,6 +52,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<LoginAuditService>();
 
 
+
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 // ▶ MVC / Razor
@@ -76,11 +76,16 @@ app.UseStaticFiles();
 app.UseRouting();          // 1
 app.UseAuthentication();   // 2
 app.UseAuthorization();    // 3
-
+app.MapControllers();
 // ▶ Varsayılan route
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+	name: "areas",
+	pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+);
+app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 app.MapRazorPages();
 
 // ▶ İlk kez Elasticsearch indexleme (mevcut kodun)

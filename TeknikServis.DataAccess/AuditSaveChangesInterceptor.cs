@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using teknikServis.Entities;          // AuditLog
+using teknikServis.Entities;
+using TeknikServis.DataAccess.Services;
 
 public class AuditSaveChangesInterceptor : SaveChangesInterceptor
 {

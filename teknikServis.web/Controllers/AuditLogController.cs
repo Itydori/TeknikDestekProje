@@ -85,7 +85,32 @@ namespace teknikServis.web.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Details(int id)
+		[Area("Admin")]
+		public class AuditLogsController : Controller
+		{
+			private readonly TeknikServisDbContext _ctx;
+
+			public AuditLogsController(TeknikServisDbContext ctx)
+			{
+				_ctx = ctx;
+			}
+
+			[HttpGet("")]
+			public IActionResult Index()
+			{
+				// var logs = _auditLogService.GetAllLogs();
+				// return View(logs);
+				return View();
+			}
+			public async Task<IActionResult> Details(int id)
+			{
+				var log = await _ctx.AuditLogs.FindAsync(id);
+				if (log is null) return NotFound();
+				return View(log);
+			}
+		}
+
+		public async Task<IActionResult> Details(int id)
         {
             var auditLog = await _context.AuditLogs
                 .Include(a => a.Admin)
