@@ -4,52 +4,58 @@ using TeknikServis.DataAccess;
 using System.IO;
 using Microsoft.Reporting.NETCore;
 using teknikServis.Entities.Fatura;
+using TeknikServis.Business.Abstract;
+using AspNetCore.Reporting;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
-
-namespace teknikServis.web.Controllers
+[Authorize]
+public class FaturaController : Controller
 {
-	public class FaturaController : Controller
+	private readonly IIslemRepository _islemRepository;
+	private readonly TeknikServisDbContext _context;
+
+	public FaturaController(IIslemRepository islemRepository, TeknikServisDbContext context)
 	{
-		private readonly TeknikServisDbContext _context; // 🔥 bu tam burada olacak
+		_islemRepository = islemRepository;
+		_context = context;
 
-		// 💉 Dependency Injection burada
-		public FaturaController(TeknikServisDbContext context)
-		{
-			_context = context;
-		}
+		// Encoding ayarı constructor'da da olabilir
+		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+	}
 
-		public IActionResult Index()
-		{
-			return View();
-		}
+	public IActionResult Index()
+	{
+		return View();
+	}
 
-		public IActionResult FaturaYazdir(int id)
-		{
-			var veri = _context.Islemler
-				.Include(x => x.IsEmriTeslim)
-				.ThenInclude(x => x.Musteri)
-				.Where(x => x.IsEmriTeslimId == id)
-				.Select(x => new IslemRaporViewModel
-				{
-					YapilanIslemler = x.YapilanIslemler,
-					Ucret = x.Ucret,
-					OnarimYapan = x.OnarimYapan,
-					OnarimTarihi = x.OnarimTarihi,
-					StokYeri = x.StokYeri,
-					Aciklama = x.Aciklama,
-					Ad = x.IsEmriTeslim.Musteri.Ad,
-					TeslimTarihi = x.IsEmriTeslim.KapatmaTarihi
-				}).ToList();
+	public IActionResult FaturaYazdir(int id)
+	{
 
-			var rapor = new LocalReport();
-			rapor.ReportPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Rapor", "Fatura.rdlc"); // Yol doğruysa burası
+		System.Diagnostics.Debug.WriteLine("Gelen ID: " + id);
+		var veri = _islemRepository.GetAllReport(id);
 
-			rapor.DataSources.Add(new ReportDataSource("FaturaDataSet", veri)); // Dataset adı RDLC'deki ile aynı olmalı
+		if (!veri.Any())
+			return Content("Rapor verisi bulunamadı.");
 
-			var sonuc = rapor.Render("PDF");
+		var header = veri.First();
+		string musteriAdi = header.Ad;      // viewmodel’ında varsa
+		string cihaz = header.Marka.Replace(" ", "_");
+		string model = header.Marka.Replace(" ", "_") + "_" + header.Model.Replace(" ", "_");
+		string tarih = DateTime.Now.ToString("dd/MM/yyyy");
+		string fileName = $"{musteriAdi}_{cihaz}_{model}_{tarih}.pdf";
+		
 
-			return File(sonuc, "application/pdf", "fatura.pdf");
-		}
+		// Raporu oluşturmak için gerekli olan dosya yolu
+		string path = Path.Combine(Directory.GetCurrentDirectory(), "Rapor", "Fatura.rdlc");
+		var rapor = new AspNetCore.Reporting.LocalReport(path);
+		rapor.AddDataSource("FaturaDataset", veri);
 
+
+		rapor.AddDataSource("FaturaDataset", veri); // Dataset adı .rdlc dosyasındakiyle birebir aynı
+
+		var result = rapor.Execute(RenderType.Pdf, 1, null, "");
+
+		return File(result.MainStream, "application/pdf", fileName);
 	}
 }

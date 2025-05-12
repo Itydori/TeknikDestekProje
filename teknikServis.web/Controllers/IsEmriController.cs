@@ -5,288 +5,218 @@ using TeknikServis.Entities.Servis;
 using System.Linq;
 using TeknikServis.DataAccess;
 using System.Collections.Generic;
+using TeknikServis.Web.Models;
+using TeknikServis.Business;
+using Microsoft.AspNetCore.Authorization;
 
 namespace teknikServis.web.Controllers
 {
+	[Authorize]
 	public class IsEmriController : Controller
 	{
-		private readonly IRepository<Musteri> repository;
-		private readonly IRepository<IsEmriTeslim> isEmriTeslimRepository;
-		private readonly IRepository<Islem> isEmriIslemRepository;
-		public IsEmriController(IRepository<Musteri> repository, IRepository<IsEmriTeslim> isEmriTeslimRepository, IRepository<Islem> isEmriIslemRepository)
+		private readonly IIsEmriService _service;
+		public IsEmriController(IIsEmriService service) => _service = service;
+		public async ValueTask<IActionResult> Index(string ara)
 		{
-			this.repository = repository;
-			this.isEmriTeslimRepository = isEmriTeslimRepository;
-			this.isEmriIslemRepository = isEmriIslemRepository;
+			IEnumerable<Musteri> model;
+			if (string.IsNullOrWhiteSpace(ara))
+				model = _service.GetRecentCustomersAsync(20).Result.Data;
+			else
+				model = await _service.SearchCustomersAsync(ara);
+			return View(model);
 		}
-		public IActionResult Index(string ara)
+		public async Task<IActionResult> IsEmriOlustur(int musteriId)
 		{
-			if (ara == "" || ara == null)
-			{
+			var musteri = await _service.GetCustomerByIdAsync(musteriId);
+			if (musteri == null) return RedirectToAction(nameof(AcikIsEmirleri));
 
-				var musteri = repository.Get().OrderByDescending(i => i.MusteriId).Take(20).ToList();
-				return View(musteri);
-			}
-			var musteriAra = repository.Get(i => i.Ad.StartsWith(ara)).ToList();
-			return View(musteriAra);
+			var vm = new IsEmriOlusturViewModel
+			{
+				Musteri = musteri,
+				AcikIsEmirleri = await _service.GetOpenOrdersByCustomerAsync(musteriId),
+				KapaliIsEmirleri = await _service.GetClosedOrdersAsync(musteriId),
+				NewIsEmri = new IsEmriTeslim { MusteriId = musteriId, GelisTarih = DateTime.Today }
+			};
+
+			return View(vm);
 		}
-		public IActionResult IsEmriOlustur(int MusteriId)
-		{
-			try
-			{
-				var musteri = repository.GetById(MusteriId);
-				if (musteri == null)
-				{
-					return RedirectToAction("Index");
-				}
-
-				TempData["MusteriId"] = MusteriId;
-				ViewBag.MusteriId = MusteriId;
-
-				try
-				{
-					// Açık iş emirlerini getir
-					ViewBag.AcikIsEmirleri = isEmriTeslimRepository.Get(
-						i => i.MusteriId == MusteriId && i.Kapali == false).ToList();
-				}
-				catch (Exception ex)
-				{
-					// Hata durumunda boş liste kullan
-					ViewBag.AcikIsEmirleri = new List<IsEmriTeslim>();
-				}
-
-				ViewBag.Title = "İş Emri Oluştur -" + musteri.Ad;
-
-				try
-				{
-					// Kapalı iş emirlerini getir ve view'e gönder
-					return View(isEmriTeslimRepository.Get(
-						i => i.Kapali == true && i.MusteriId == MusteriId)
-						.OrderByDescending(i => i.GelisTarih)
-						.ToList());
-				}
-				catch (Exception ex)
-				{
-					// Hata durumunda boş liste gönder
-					return View(new List<IsEmriTeslim>());
-				}
-			}
-			catch (Exception ex)
-			{
-				return RedirectToAction("Index");
-			}
-		}
-
 		[HttpPost]
-		public IActionResult IsEmriKaydet(IsEmriTeslim isEmriTeslim)
+		public async Task<IActionResult> IsEmriKaydet(IsEmriOlusturViewModel model)
 		{
-			try
+			if (!ModelState.IsValid)
 			{
-				var deger = TempData["MusteriId"];
-				if (deger == null)
+				model.Musteri = await _service.GetCustomerByIdAsync(model.NewIsEmri.MusteriId);
+				model.AcikIsEmirleri = await _service.GetOpenOrdersByCustomerAsync(model.NewIsEmri.MusteriId);
+				model.KapaliIsEmirleri = await _service.GetClosedOrdersAsync(model.NewIsEmri.MusteriId);
+				await _service.CreateOrderAsync(model.NewIsEmri);
+				return RedirectToAction(nameof(IsEmriOlustur), new { musteriId = model.Musteri.MusteriId });
+			}
+
+
+			return RedirectToAction(nameof(IsEmriOlustur), new { musteriId = model.NewIsEmri.MusteriId });
+		}
+		public async Task<IActionResult> AcikIsEmirleri()
+		{
+			var tumAC = await _service.GetAllOpenOrdersAsync();
+			return View(tumAC);  // Model: IEnumerable<IsEmriTeslim>
+		}
+		public async Task<IActionResult> IslemYap(int isEmriTeslimId)
+		{
+			var islemler = await _service.GetOperationsAsync(isEmriTeslimId);
+			var teslim = await _service.GetOrderByIdAsync(isEmriTeslimId);
+
+			var vm = new IslemYapViewModel
+			{
+				YeniIslem = new Islem
 				{
-					return RedirectToAction("Index");
+					IsEmriTeslimId = isEmriTeslimId,
+					OnarimTarihi = DateTime.Today // 👈 BURAYA EKLEDİK!
+				},
+				MevcutIslemler = islemler,
+
+				
+				TeslimBilgisi = teslim
+			};
+
+			ViewBag.IsEmriTeslimId = isEmriTeslimId;
+
+			return View(vm);
+		}
+		[HttpPost("/IsEmri/IslemKaydet")]
+		[ActionName("IslemKaydet")]
+		public async Task<IActionResult> IslemKaydetPost(IslemYapViewModel model)
+		{
+			Console.WriteLine("🔥 FORM POST GELDİ");
+
+			if (!ModelState.IsValid)
+			{
+				Console.WriteLine("❌ ModelState geçersiz!");
+
+				var errors = ModelState.AddModelStateExtension();
+
+				//ModelState.AddModelStateExtension();
+
+
+				foreach (var error in ModelState)
+				{
+					foreach (var e in error.Value.Errors)
+					{
+						Console.WriteLine($"🔴 {error.Key}: {e.ErrorMessage}");
+					}
 				}
 
-				isEmriTeslim.MusteriId = Convert.ToInt32(deger);
-				isEmriTeslim.GelisTarih = DateTime.Now;
-				isEmriTeslim.KapatmaTarihi = null; // Nullable olduğu için null atıyoruz
-				isEmriTeslim.Kapali = false;
-
-				// Diğer gerekli alanları doldur
-				if (string.IsNullOrEmpty(isEmriTeslim.Marka))
-					isEmriTeslim.Marka = "Belirtilmedi";
-
-				if (string.IsNullOrEmpty(isEmriTeslim.Model))
-					isEmriTeslim.Model = "Belirtilmedi";
-
-				if (string.IsNullOrEmpty(isEmriTeslim.ArizaDurumu))
-					isEmriTeslim.ArizaDurumu = "Belirtilmedi";
-
-				if (string.IsNullOrEmpty(isEmriTeslim.FisNo))
-					isEmriTeslim.FisNo = "FN" + DateTime.Now.ToString("yyyyMMddHHmmss");
-
-				isEmriTeslimRepository.Create(isEmriTeslim);
-				return RedirectToAction("AcikIsEmirleri");
+				model.MevcutIslemler = await _service.GetOperationsAsync(model.YeniIslem.IsEmriTeslimId);
+				model.TeslimBilgisi = await _service.GetOrderByIdAsync(model.YeniIslem.IsEmriTeslimId);
+				return View("IslemYap", model);
 			}
-			catch (Exception ex)
-			{
-				// Hata mesajını TempData ile sakla
-				TempData["Hata"] = "İş emri kaydedilirken hata oluştu: " + ex.Message;
-				return RedirectToAction("IsEmriOlustur", new { MusteriId = isEmriTeslim.MusteriId });
-			}
+
+			Console.WriteLine("✅ ModelState OK. Kayıt ediliyor...");
+			await _service.AddOperationAsync(model.YeniIslem);
+			return RedirectToAction(nameof(IslemYap), new { isEmriTeslimId = model.YeniIslem.IsEmriTeslimId });
 		}
-		public IActionResult AcikIsEmirleri()
-		{
-			try
-			{
-				// Sorgunuzun direkt olarak ihtiyaç duyduğunuz alanları seçtiğinden emin olun
-
-
-				var acikIsEmirleri1 = isEmriTeslimRepository.Get(null, null, "Musteri").ToList();
-				var acikIsEmirleri = isEmriTeslimRepository.Get()
-					// Kapalı olmayan iş emirlerini filtreleyin
-					.Where(i => i.Kapali == false)
-					// Musteri ilişkisini include edin
-
-					.ToList();
-
-				// Verileri doğrudan görünüme gönderin
-				return View(acikIsEmirleri);
-			}
-			catch (Exception ex)
-			{
-				// Hata yönetimi
-				// Örneğin: TempData["Error"] = ex.Message;
-				return View(new List<IsEmriTeslim>()); // Boş liste dönün
-			}
-			//return View(isEmriTeslimRepository.Get(i => i.Kapali == false, includeProperties: "Musteri").ToList());
-		}
-		public IActionResult IslemYap(int isEmriTeslim)
-		{
-			//var baslik = isEmriTeslimRepository.Get(x => x.IsEmriTeslimId == isEmriTeslim, includeProperties: "Musteri").FirstOrDefault();
-
-			////if (baslik == null || baslik.Musteri == null)
-			////{
-			////	// Redirect to AcikIsEmirleri if data is null
-			////	return RedirectToAction("AcikIsEmirleri");
-			////}
-			//ViewBag.Title = "İş Emri İşlem Yap -" + baslik.Musteri.Ad + " " + baslik.Marka + " " + baslik.Model + " " + baslik.GelisTarih.ToString("dd/MM/yyyy") + " " + baslik.FisNo;
-			//ViewBag.IsEmriTeslimId = isEmriTeslim;
-			//return View(isEmriIslemRepository.Get(x => x.IsEmriId == isEmriTeslim).OrderByDescending(x => x.IslemId).ToList());
-			var baslik = isEmriTeslimRepository.Get(x => x.IsEmriTeslimId == isEmriTeslim, includeProperties: "Musteri").FirstOrDefault();
-
-			if (baslik == null || baslik.Musteri == null)
-			{
-				// Redirect to AcikIsEmirleri if data is null
-				return RedirectToAction("AcikIsEmirleri");
-			}
-
-			ViewBag.Title = "İş Emri İşlem Yap -" + baslik.Musteri.Ad + " " + baslik.Marka + " " + baslik.Model + " " + baslik.GelisTarih.ToString("dd/MM/yyyy") + " " + baslik.FisNo;
-			ViewBag.IsEmriTeslimId = isEmriTeslim;
-			return View(isEmriIslemRepository.Get(x => x.IsEmriId == isEmriTeslim).OrderByDescending(x => x.IslemId).ToList());
-
-		}
-		public IActionResult IslemKaydet(Islem islem)
-		{
-			//// IsEmriTeslimId değerinin işlem nesnesine aktarılması
-
-			//islem.IsEmriTeslimId = islem.IsEmriId;
-			//isEmriIslemRepository.Create(islem);
-			//return RedirectToAction(nameof(IslemYap), new { isEmriTeslim = islem.IsEmriId });
-			if (islem.IsEmriId <= 0)
-			{
-				// Handle invalid IsEmriId
-				return RedirectToAction("AcikIsEmirleri");
-			}
-
-			isEmriIslemRepository.Create(islem);
-			return RedirectToAction(nameof(IslemYap), new { isEmriTeslim = islem.IsEmriId });
-		}
-
 		[HttpPost]
-		public IActionResult Delete(int islemId)
+		public async Task<IActionResult> Delete(int islemId, int isEmriTeslimId)
 		{
-			var islem = isEmriIslemRepository.GetById(islemId); // Burada doğru repository olmalı
-			if (islem == null)
-			{
-				return NotFound();
-			}
-
-			var isEmriId = islem.IsEmriId; // Geri dönüşte aynı sayfaya gidebilmek için saklıyoruz
-
-			isEmriIslemRepository.Delete(islem);
-			TempData["Ok"] = "İşlem başarıyla silindi.";
-
-			return RedirectToAction(nameof(IslemYap), new { isEmriTeslim = isEmriId });
+			await _service.DeleteOperationAsync(islemId);
+			return RedirectToAction(nameof(IslemYap), new { isEmriTeslimId });
 		}
-		//[HttpGet]
-		//public IActionResult Delete(int isEmriTeslimId)
+		//[HttpPost]
+		//[ValidateAntiForgeryToken]
+		//public async Task<IActionResult> IsEmriKapat(IslemYapViewModel model)
 		//{
-		//	var isEmriTeslim = isEmriIslemRepository.GetById(isEmriTeslimId);
-		//	if (isEmriTeslim == null)
+		//	Console.WriteLine("🚀 [IsEmriKapat] POST edildi.");
+		//	Console.WriteLine($"📦 Teslim ID: {model.YeniTeslimBilgisi?.IsEmriTeslimId}");
+		//	Console.WriteLine($"💰 Alınan Ödeme: {model.YeniTeslimBilgisi?.AlinanOdeme}");
+		//	Console.WriteLine($"🕒 Tarih/Saat:  {model.YeniTeslimBilgisi?.KapatmaGunu:d} {model.YeniTeslimBilgisi?.KapatmaSaati}");
+		//	Console.WriteLine($"📦 Sipariş Durumu: {model.YeniTeslimBilgisi?.SiparisDurumu}");
+
+		//	// 1) Basit validasyon: ID gelmemişse devam etmeyelim
+		//	if (model.YeniTeslimBilgisi?.IsEmriTeslimId is null or 0)
+		//		return BadRequest("Teslim ID gelmedi.");
+		//	// kaydetme islemi ekle 
+		//	if (!ModelState.IsValid)
 		//	{
-		//		return NotFound();
+		//		Console.WriteLine("❌ ModelState geçersiz!");
+		//		// Hataları loglayıp sayfayı geri döndür.
+		//		model.MevcutIslemler = await _service.GetOperationsAsync(model.YeniTeslimBilgisi.IsEmriTeslimId);
+		//		model.TeslimBilgisi = await _service.GetOrderByIdAsync(model.YeniTeslimBilgisi.IsEmriTeslimId);
+		//		return View("IslemYap", model);
 		//	}
 
-		//	// Silmeden önce IsEmriId değerini saklayın
-		//	var isEmriId = isEmriTeslim.IsEmriId;
+		//	Console.WriteLine("✅ ModelState OK → Servise devrediliyor...");
 
-		//	isEmriIslemRepository.Delete(isEmriTeslim);
-		//	TempData["Ok"] = "İş Emri başarıyla silindi.";
+		//	await _service.CloseOrderAsync(
+		//		model.YeniTeslimBilgisi.IsEmriTeslimId,
+		//		model.YeniTeslimBilgisi.KapatmaGunu,
+		//		model.YeniTeslimBilgisi.KapatmaSaati,
+		//		model.YeniTeslimBilgisi.AlinanOdeme,
+		//		model.YeniTeslimBilgisi.OdemeSekli,
+		//		model.YeniTeslimBilgisi.TeslimatAciklama,
+		//		model.YeniTeslimBilgisi.SiparisDurumu);
 
-		//	// Parametre adı "isEmriTeslim" olmalı, "isEmriId" değil
-		//	return RedirectToAction(nameof(IslemYap), new { isEmriTeslim = isEmriId });
-		//}
-		//public IActionResult IsEmriKapat(int isEmriTeslimId,string OdemeSekli,string TeslimatAciklama,int AlinanOdeme,string KapatmaSaati, DateTime KapatmaGunu)
-		//{
-		//	var isEmri = isEmriTeslimRepository.GetById(isEmriTeslimId);
-		//	if (isEmri == null)
-		//	{
-		//		return NotFound();
-		//	}
-		//	// Kapatma işlemi için gerekli alanları güncelleyin
-		//	isEmri.KapatmaGunu = KapatmaGunu;
-		//	isEmri.KapatmaSaati = TimeSpan.Parse(KapatmaSaati);
-		//	isEmri.AlinanOdeme = AlinanOdeme;
-		//	isEmri.OdemeSekli = OdemeSekli;
-		//	isEmri.KapatmaTarihi = isEmri.KapatmaGunu + isEmri.KapatmaSaati;
-		//	isEmri.TeslimatAciklama = TeslimatAciklama;
-		//	isEmri.Kapali = true;
-		//	isEmri.IsEmriTeslimId = isEmriTeslimId;
-		//	isEmriTeslimRepository.Update(isEmri);
-		//	TempData["Ok"] = "İş Emri başarıyla kapatıldı.";
+		//	Console.WriteLine("✅ Güncelleme tamamlandı.");
 		//	return RedirectToAction(nameof(AcikIsEmirleri));
 		//}
-		public IActionResult IsEmriKapat(int isEmriTeslimId, string OdemeSekli, string TeslimatAciklama,
-	decimal AlinanOdeme, string KapatmaSaati, DateTime KapatmaGunu, string SiparisDurumu)
-		{
-			var isEmri = isEmriTeslimRepository.GetById(isEmriTeslimId);
-			if (isEmri == null)
-			{
-				return NotFound();
-			}
+		// Controllers/IsEmriController.cs
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> IsEmriKapat(IslemYapViewModel model)
+{
+			ModelState.Remove("YeniIslem.OnarimYapan");
+			ModelState.Remove("YeniIslem.OnarimTarihi");
+			ModelState.Remove("YeniIslem.StokYeri");
+			ModelState.Remove("YeniIslem.YapilanIslemler");
+			ModelState.Remove("YeniIslem.Ucret");
+			ModelState.Remove("YeniIslem.Aciklama");
+			Console.WriteLine("🚀 [IsEmriKapat] POST başladı.");
+    // ModelState kontrolü
+    if (!ModelState.IsValid)
+    {
+        Console.WriteLine("❌ ModelState geçersiz!");
+        foreach (var kv in ModelState)
+            foreach (var err in kv.Value.Errors)
+                Console.WriteLine($"🔴 {kv.Key}: {err.ErrorMessage}");
+        return View("IslemYap", model);
+    }
 
-			// Kapatma işlemi için gerekli alanları güncelleyin
-			isEmri.KapatmaGunu = KapatmaGunu;
-			isEmri.KapatmaSaati = TimeSpan.Parse(KapatmaSaati);
-			isEmri.AlinanOdeme = Convert.ToInt32(AlinanOdeme);
-			isEmri.OdemeSekli = OdemeSekli;
-			isEmri.SiparisDurumu = SiparisDurumu; // Make sure to add this field to your model
-			//isEmri.KapatmaTarihi =  KapatmaGunu + isEmri.KapatmaSaati;
-			isEmri.TeslimatAciklama = TeslimatAciklama;
-			isEmri.Kapali = true;
+    try
+    {
+        // Service metodunu çağır
+        await _service.CloseOrderAsync(
+            model.YeniTeslimBilgisi.IsEmriTeslimId,
+            model.YeniTeslimBilgisi.KapatmaGunu,
+            model.YeniTeslimBilgisi.KapatmaSaati,
+            model.YeniTeslimBilgisi.AlinanOdeme,
+            model.YeniTeslimBilgisi.OdemeSekli,
+            model.YeniTeslimBilgisi.TeslimatAciklama,
+            model.YeniTeslimBilgisi.SiparisDurumu
+        );
 
-			isEmriTeslimRepository.Update(isEmri);
-			TempData["Ok"] = "İş Emri başarıyla kapatıldı.";
-			return RedirectToAction(nameof(AcikIsEmirleri));
-		}
-
-        [HttpPost]
-        public IActionResult IsEmriSil(int id)
-        {
-            try
-            {
-                var isEmri = isEmriTeslimRepository.GetById(id);
-                if (isEmri == null)
-                {
-                    TempData["Hata"] = "İş emri bulunamadı.";
-                    return RedirectToAction(nameof(AcikIsEmirleri));
-                }
-
-                isEmriTeslimRepository.Delete(isEmri);
-                TempData["Ok"] = "İş emri başarıyla silindi.";
-            }
-            catch (Exception ex)
-            {
-                TempData["Hata"] = "İş emri silinirken bir hata oluştu: " + ex.Message;
-            }
-
-            return RedirectToAction(nameof(AcikIsEmirleri));
-        }
-		
-
-
-	}
+        // Başarı mesajı ve yönlendirme
+        TempData["Success"] = "İş emri başarıyla kapatıldı.";
+        return RedirectToAction("IslemYap", new { MusteriId = model.YeniTeslimBilgisi.IsEmriTeslimId });
+    }
+    catch (InvalidOperationException ex)
+    {
+        Console.WriteLine($"❌ Serviste hata: {ex.Message}");
+        ModelState.AddModelError("", "Kapanma işlemi başarısız: " + ex.Message);
+        return View("IslemYap", model);
+    }
+    catch (Exception ex)
+    {
+				Console.WriteLine($"❌ Beklenmedik hata: {ex}");
+				ModelState.AddModelError("", "Beklenmedik bir hata oluştu.");
+        return View("IslemYap", model);
+    }
 }
 
+
+
+		[HttpPost]
+		public async Task<IActionResult> IsEmriSil(int id)
+		{
+			await _service.DeleteOrderAsync(id);
+			return RedirectToAction(nameof(AcikIsEmirleri));
+		}
+	}
+}

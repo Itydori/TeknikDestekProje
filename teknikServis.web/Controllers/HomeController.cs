@@ -1,28 +1,30 @@
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using teknikServis.web.Models;
+using TeknikServis.Entities.Servis;
 
 namespace teknikServis.web.Controllers
 {
-    public class HomeController : Controller
+	
+	public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
+        // test
+  
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
-
         public IActionResult Index()
         {
             return View();
         }
-
         public IActionResult Privacy()
         {
             return View();
         }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -31,7 +33,6 @@ namespace teknikServis.web.Controllers
          public ActionResult Admin()
         {
             ViewBag.Message = "Your Admin page.";
-
             return View();
         }
     }

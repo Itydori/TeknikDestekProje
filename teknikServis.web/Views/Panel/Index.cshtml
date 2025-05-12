@@ -1,8 +1,156 @@
-﻿
-@{
-    ViewBag.Title = "Panel";
-    Layout = "_LayoutAdmin";
-}
+﻿    @model PanelReportViewModel
+    @{
+        Layout = "_LayoutAdmin";
+    }
 
-<h2>Panel</h2>
 
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">📊 Panel Raporu</h4>
+            <button id="toggleTableBtn" class="btn btn-sm btn-light text-dark">Tabloyu Gizle</button>
+
+        </div>
+        <div class="card-body">
+            <div class="mb-3 d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setToday()">Bugün</button>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setThisWeek()">Bu Hafta</button>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setThisMonth()">Bu Ay</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearDates()">Temizle</button>
+            </div>
+            <button class="btn btn-outline-info mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterArea" aria-expanded="false">
+                🔍 Filtreyi Aç / Kapat
+            </button>
+            <div class="collapse show" id="filterArea">
+
+            <form method="get" class="row g-3 mb-4">
+                <div class="col-md-2">
+                    <label asp-for="Tarihten" class="form-label">Başlangıç</label>
+                    <input type="date" asp-for="Tarihten" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="Tarihe" class="form-label">Bitiş</label>
+                    <input type="date" asp-for="Tarihe" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="MusteriAd" class="form-label">Müşteri</label>
+                    <input asp-for="MusteriAd" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="Marka" class="form-label">Marka</label>
+                    <input asp-for="Marka" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="Model" class="form-label">Model</label>
+                    <input asp-for="Model" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="FisNo" class="form-label">Fiş No</label>
+                    <input asp-for="FisNo" class="form-control" />
+                </div>
+
+                <div class="col-12 d-flex justify-content-end">
+                    <button class="btn btn-success me-2">
+                        <i class="bi bi-search"></i> Ara
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        Temizle
+                    </a>
+                </div>
+            </form>
+            </div>
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>@Model.ToplamIs</strong> işlem bulundu |
+                    Toplam Ücret: <strong>@Model.ToplamUcret.ToString("N2") ₺</strong> |
+                    Garanti Kapsamı: <strong>@Model.ToplamGarantiKapsamıIs</strong>
+                    <p class="text-danger">
+                        Gerçek Toplam (raw): @Model.ToplamUcret.ToString("C", new System.Globalization.CultureInfo("tr-TR"))
+                    </p>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle text-center" id="example">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Tarih</th>
+                            <th scope="col">Müşteri</th>
+                            <th scope="col">Marka</th>
+                            <th scope="col">Model</th>
+                            <th scope="col">Garanti</th>
+                            <th scope="col">Fiş No</th>
+                            <th scope="col" class="text-end">Ücret (₺)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model.Rows)
+                        {
+                            <tr>
+                                <td>@r.Tarih.ToShortDateString()</td>
+                                <td>@r.MusteriAd</td>
+                                <td>@r.Marka</td>
+                                <td>@r.Model</td>
+                                <td>
+                                    <span class="badge @(r.Garanti == "Garantili" ? "bg-success" : "bg-danger")" data-bs-toggle="tooltip" title="@r.Garanti">
+                                        @r.Garanti
+                                    </span>
+                                </td>
+                                <td>@r.FisNo</td>
+                                <td class="text-end">@r.Ucret.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+    function setToday() {
+        const today = new Date().toISOString().slice(0, 10);
+        document.querySelector('[name="Tarihten"]').value = today;
+        document.querySelector('[name="Tarihe"]').value = today;
+    }
+    function setThisWeek() {
+        const today = new Date();
+        const first = today.getDate() - today.getDay() + 1; // Pazartesi
+        const last = first + 6; // Pazar
+        const monday = new Date(today.setDate(first)).toISOString().slice(0, 10);
+        const sunday = new Date(today.setDate(last)).toISOString().slice(0, 10);
+        document.querySelector('[name="Tarihten"]').value = monday;
+        document.querySelector('[name="Tarihe"]').value = sunday;
+    }
+    function setThisMonth() {
+        const today = new Date();
+        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0, 10);
+        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().slice(0, 10);
+        document.querySelector('[name="Tarihten"]').value = firstDay;
+        document.querySelector('[name="Tarihe"]').value = lastDay;
+    }
+    function clearDates() {
+        document.querySelector('[name="Tarihten"]').value = '';
+        document.querySelector('[name="Tarihe"]').value = '';
+    }
+
+    document.getElementById("toggleTableBtn").addEventListener("click", function () {
+        const table = document.querySelector(".table-responsive");
+        if (table.style.display === "none") {
+            table.style.display = "block";
+            this.innerText = "Tabloyu Gizle";
+        } else {
+            table.style.display = "none";
+            this.innerText = "Tabloyu Göster";
+        }
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link rel = "stylesheet" href = "https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+            <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js" ></script>
+
+            <script>
+    new DataTable('#example');
+            </script>

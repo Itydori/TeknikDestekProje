@@ -1,154 +1,149 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using TeknikServis.Entities
+@using TeknikServis.Entities.Auth      @* ← AppUser burada *@
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @*@Styles.Render("~/Content/css")
-        @Scripts.Render("~/bundles/modernizr")*@
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Bootstrap ve FontAwesome -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap & FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <style>
         body {
             padding-top: 56px;
-            background-color: #1e1e2f;
-            margin: 0;
+            background: #1e1e2f;
             color: #FFF2F2;
+            margin: 0
         }
 
         .navbar {
-            background-color: #1e1e2f; /* Yalnızca bir kez background-color tanımlandı */
-            padding: 0; /* Navbar'ın etrafındaki ekstra padding'i kaldırdım */
-            margin: 0;
+            background: #1e1e2f;
+            padding: 0
         }
 
         .navbar-brand {
             font-size: 1.4rem;
             font-weight: bold;
-            color: #f8f9fa;
+            color: #f8f9fa
         }
 
         .navbar-nav .nav-link {
             color: #ddd;
-            transition: 0.3s;
+            transition: .3s
         }
 
             .navbar-nav .nav-link:hover {
-                color: #fff;
+                color: #fff
             }
-
     </style>
+    <title>@ViewData["Title"] - Teknik Servis</title>
 </head>
+
 <body>
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="/Home/Index">Teknik Servis</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav" aria-controls="navbarNav"
+                    aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Sol menü -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/Home/#mainCarousel"><i class="fa-solid fa-house"></i> Anasayfa</a>
+                        <a class="nav-link" href="/Home/#mainCarousel">
+                            <i class="fa-solid fa-house"></i> Anasayfa
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/Home/#about"><i class="fa-solid fa-box"></i> Hakkımızda</a>
+                        <a class="nav-link" href="/Home/#about">
+                            <i class="fa-solid fa-box"></i> Hakkımızda
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/Home/#referance"><i class="fa-solid fa-users"></i> Referanslar</a>
+                        <a class="nav-link" href="/Home/#referance">
+                            <i class="fa-solid fa-users"></i> Referanslar
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/Home/#services"><i class="fa-solid fa-wrench"></i> Servisler</a>
+                        <a class="nav-link" href="/Home/#services">
+                            <i class="fa-solid fa-wrench"></i> Servisler
+                        </a>
                     </li>
-                    
-                        <li class="nav-item"><a href="/Panel/" class="nav-link text-danger">Panel</a></li>
-                    
+
+                    @* PANEL linki: oturum kontrolü *@
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item">
+                            <a href="/Panel/" class="nav-link text-danger">Panel</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a asp-controller="Account"
+                               asp-action="Login"
+                               asp-route-returnUrl="/Panel"
+                               class="nav-link text-danger">
+                                Panel
+                            </a>
+                        </li>
+                    }
                 </ul>
-                <ul class="navbar-nav ml-auto ">
+
+                <!-- Sağ menü (giriş/çıkış) -->
+                <ul class="navbar-nav ms-auto">
                     @Html.Partial("_LoginPartial")
                 </ul>
             </div>
         </div>
     </nav>
-    @RenderBody()
+
     <!-- ANA İÇERİK -->
+    @RenderBody()
+
     <div class="container body-content">
-
         <hr />
-        <footer>
-            <p class="text-center">&copy; @DateTime.Now.Date.Year -- The World Is Yours --</p>
-            <address class="text-center">
-                Teknik Servis Caddesi, No:123 İstanbul/Türkiye  <br />
-                +90 212 123 45 67 <br /> info@teknikservis.com
-
-                <br /> Pazartesi - Cumartesi: 09:00 - 18:00
-
-
+        <footer class="text-center">
+            <p>&copy; @DateTime.Now.Year&nbsp;--&nbsp;The World Is Yours&nbsp;--</p>
+            <address>
+                Teknik Servis Caddesi No:123&nbsp;İstanbul/Türkiye<br />
+                +90 212 123 45 67&nbsp;&nbsp;|&nbsp;&nbsp;info@teknikservis.com<br />
+                Pazartesi-Cumartesi&nbsp;09:00-18:00
             </address>
         </footer>
     </div>
 
-    <!-- JavaScript Bağlantıları - BİRDEN FAZLA JQUERY VE BOOTSTRAP YÜKLEMESİ KALDIRILDI -->
-    <!-- Sadece bir set jQuery ve Bootstrap kullanın, çakışmaları önlemek için -->
+    <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- VEYA CDN kullanıyorsanız, bunları kullanın (yukarıdakileri yoruma alın): -->
-    <!--
-
-
-    -->
-    <!-- Bootstrap 5 için özel toggle script -->
+    <!-- Navbar toggle log (isteğe bağlı) -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const navbarToggler = document.querySelector('.navbar-toggler');
-            const navbarCollapse = document.getElementById('navbarNav');
+        console.log("Navbar debug başladı");
+        const toggler = document.querySelector('.navbar-toggler');
+        const collapse = document.getElementById('navbarNav');
+        console.log("Toggler:", toggler);
+        console.log("Collapse:", collapse);
 
-            navbarToggler.addEventListener('click', function () {
-                if (navbarCollapse.classList.contains('show')) {
-                    navbarCollapse.classList.remove('show');
-                } else {
-                    navbarCollapse.classList.add('show');
-                }
+        if (toggler) {
+            toggler.addEventListener('click', () => {
+                setTimeout(() => console.log("Class list:", collapse.classList), 100);
             });
-        });
+        }
+        console.log("Yüklü script’ler:");
+        document.querySelectorAll('script').forEach(s => console.log(s.src || "Inline script"));
     </script>
 
     @RenderSection("scripts", required: false)
 </body>
 </html>
-<script>
-    // Bu kodu sayfanın en altına ekle
-    console.log("Navbar debug başladı");
-
-    // Toggler ve collapse elementlerini bul
-    const toggler = document.querySelector('.navbar-toggler');
-    const collapse = document.querySelector('.navbar-collapse');
-
-    // Elementlerin var olup olmadığını kontrol et
-    console.log("Toggler elementi:", toggler);
-    console.log("Collapse elementi:", collapse);
-
-    // Toggle işlemini takip et
-    if (toggler) {
-        toggler.addEventListener('click', function () {
-            console.log("Toggler'a tıklandı");
-            console.log("Toggle öncesi class listesi:", collapse.classList);
-
-            // 100ms sonra class listesini tekrar kontrol et
-            setTimeout(() => {
-                console.log("Toggle sonrası class listesi:", collapse.classList);
-            }, 100);
-        });
-    }
-
-    // Sayfadaki tüm JavaScript kütüphanelerini listele
-    console.log("Yüklü JavaScript kütüphaneleri:");
-    document.querySelectorAll('script').forEach(script => {
-        console.log(script.src || "Inline script");
-    });
-</script>

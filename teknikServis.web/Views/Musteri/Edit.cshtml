@@ -1,19 +1,21 @@
-﻿@model TeknikServis.Entities.Servis.Musteri
+﻿<link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+@model TeknikServis.Entities.Servis.Musteri
 @{
-    ViewBag.title = "Müşteri ";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-
-
-
-
 }
 
 @if (TempData["Ok"] != null)
 {
-    <div class="alert alert-success">@TempData["Ok"]</div>
+    <script>
+        $(document).ready(function () {
+            toastr.success('@TempData["Ok"]');
+        });
+    </script>
 }
 
-@using (Html.BeginForm("Update", "Musteri", FormMethod.Post))
+@using (Html.BeginForm("Edit", "Musteri", FormMethod.Post))
 {
     <div class="form-horizontal mt-4 mb-4">
         <h4>Müşteri Düzenle</h4>
@@ -64,7 +66,6 @@
             </div>
             <div>
               @*   <a href="@Url.Action("Index", "Musteri")" class="btn btn-secondary">Listeye Geri Dön</a> *@
-
                 <a class="btn btn-secondary" onclick="history.back()">Listeye Geri Dön</a>
             </div>
         </div>
