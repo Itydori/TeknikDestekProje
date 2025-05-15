@@ -43,10 +43,10 @@ public class AccountController : Controller
             return View(m);
         }
 
-        // 2. Parola doğrula
-        var res = await _signInManager.PasswordSignInAsync(user, m.Password,
-                                                       m.RememberMe, lockoutOnFailure: false);
-        if (!res.Succeeded)
+		// 2. Parola doğrula
+		var res = await _signInManager.PasswordSignInAsync(user, m.Password, isPersistent: false, lockoutOnFailure: false);
+
+		if (!res.Succeeded)
         {
             ModelState.AddModelError("", "Şifre hatalı");
             return View(m);

@@ -7,7 +7,7 @@
 
 <h2>Admin Kullanıcılar</h2>
 
-<table class="table table-striped">
+<table class="table table-bordered">
     <thead>
         <tr>
             <th>#</th>
@@ -24,8 +24,9 @@
                 <td>@u.val.UserName</td>
                 <td>@u.val.Email</td>
                 <td>
-                    <form asp-action="Delete" method="post" asp-route-id="@u.val.Id" onsubmit="return confirm('Silinsin mi?')">
-                        <button class="btn btn-sm btn-danger">Sil</button>
+                    <form asp-action="Delete" method="post" asp-route-id="@u.val.Id" onsubmit="returnconfirm('‘@u.val.UserName’ silinecek. Emin misiniz?');">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-sm">Sil</button>
                     </form>
                 </td>
             </tr>

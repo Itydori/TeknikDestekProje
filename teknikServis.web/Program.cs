@@ -12,15 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
-builder.Services.AddScoped<AuditSaveChangesInterceptor>();
 
 // ▶ DbContext
 builder.Services.AddDbContext<TeknikServisDbContext>((sp, opt) =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
        .EnableSensitiveDataLogging()
-       .LogTo(Console.WriteLine, LogLevel.Information)
-       .AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
+       .LogTo(Console.WriteLine, LogLevel.Information);
 });
 
 // ▶ Identity  (AppUser + IdentityRole)
@@ -38,6 +36,16 @@ builder.Services
 
     })
     .AddEntityFrameworkStores<TeknikServisDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+	options.Cookie.HttpOnly = true;
+	options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Gerekirse düşürebilirsin
+	options.SlidingExpiration = false;
+	options.Cookie.IsEssential = true;
+	// ❌ IsPersistent BURADA OLMAZ
+});
+
 
 // ▶ DI kayıtları (senin servislerin)
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

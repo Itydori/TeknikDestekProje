@@ -43,7 +43,8 @@ namespace teknikServis.web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> IsEmriKaydet(IsEmriOlusturViewModel model)
 		{
-			if (!ModelState.IsValid)
+            ModelState.Remove("NewIsEmri.FisNo");
+            if (!ModelState.IsValid)
 			{
 				model.Musteri = await _service.GetCustomerByIdAsync(model.NewIsEmri.MusteriId);
 				model.AcikIsEmirleri = await _service.GetOpenOrdersByCustomerAsync(model.NewIsEmri.MusteriId);
@@ -51,11 +52,18 @@ namespace teknikServis.web.Controllers
 				await _service.CreateOrderAsync(model.NewIsEmri);
 				return RedirectToAction(nameof(IsEmriOlustur), new { musteriId = model.Musteri.MusteriId });
 			}
+            var son = await _service.GetLastOrderAsync();        // ➕ (IIsEmriService’e zaten erişimin var)
+            int yeniFis = 1;
+            if (son != null && int.TryParse(son.FisNo, out var s))
+                yeniFis = s + 1;
 
+            model.NewIsEmri.FisNo = yeniFis.ToString();
 
-			return RedirectToAction(nameof(IsEmriOlustur), new { musteriId = model.NewIsEmri.MusteriId });
-		}
-		public async Task<IActionResult> AcikIsEmirleri()
+            await _service.CreateOrderAsync(model.NewIsEmri);    // 🔄  (artık yalnızca burada çağrılıyor)
+
+            return RedirectToAction(nameof(IsEmriOlustur), new { musteriId = model.NewIsEmri.MusteriId });
+        }
+        public async Task<IActionResult> AcikIsEmirleri()
 		{
 			var tumAC = await _service.GetAllOpenOrdersAsync();
 			return View(tumAC);  // Model: IEnumerable<IsEmriTeslim>

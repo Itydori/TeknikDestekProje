@@ -161,5 +161,17 @@ namespace TeknikServis.Business.Concrete
 			if (i != null) _islemRepo.Delete(i);
 			await Task.CompletedTask;
 		}
-	}
+        public Task<IsEmriTeslim?> GetLastOrderAsync()
+        {
+            // En büyük (yani en yeni) kaydı PRIMARY KEY’e göre çekiyoruz.
+            // Primary key alanın adı sende “IsEmriTeslimId” ise onu kullan;
+            // eğer “Id” ise aşağıdaki satırı buna göre değiştir.
+            var last = _orderRepo
+                       .Get()                                     // IQueryable<IsEmriTeslim>
+                       .OrderByDescending(x => x.IsEmriTeslimId)  // veya x.Id
+                       .FirstOrDefault();
+
+            return Task.FromResult(last);
+        }
+    }
 }

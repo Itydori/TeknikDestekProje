@@ -42,6 +42,8 @@ namespace TeknikServis.DataAccess.Configuration
 				   .IsRequired(false);
 			// Diğer default değerler
 			builder.Ignore(x => x.KapatmaTarihi);
+
+			//builder.Property(x=>x.FisNo).HasComputedColumnSql("[]");
 			//builder.HasQueryFilter(i => !i.Kapali);
 		}
 	}

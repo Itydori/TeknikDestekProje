@@ -31,21 +31,38 @@ public class AdminsController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(YeniAdminViewModel m)
     {
+        // 1) Önce input doğrulaması
         if (!ModelState.IsValid) return View(m);
 
+        /* 2) Kullanıcı adı veya e-posta daha önce alınmış mı? */
+        var existingByName = await _userMgr.FindByNameAsync(m.UserName);
+        if (existingByName is not null)
+        {
+            ModelState.AddModelError(nameof(m.UserName), "Bu kullanıcı adı zaten kullanımda.");
+            return View(m);
+        }
+
+        var existingByEmail = await _userMgr.FindByEmailAsync(m.Email);
+        if (existingByEmail is not null)
+        {
+            ModelState.AddModelError(nameof(m.Email), "Bu e-posta adresi zaten kayıtlı.");
+            return View(m);
+        }
+
+        /* 3) Yeni Admin kullanıcısını oluştur */
         var user = new AppUser
         {
             Id = Guid.NewGuid().ToString(),
             UserName = m.UserName,
             Email = m.Email,
-            Name = m.Name, // 👈 eklendi
+            Name = m.Name,
             EmailConfirmed = true
-
         };
 
         var res = await _userMgr.CreateAsync(user, m.Password);
         if (res.Succeeded)
         {
+            // Rol yoksa önce oluştur
             if (!await _roleMgr.RoleExistsAsync("Admin"))
                 await _roleMgr.CreateAsync(new IdentityRole { Name = "Admin" });
 
@@ -53,7 +70,10 @@ public class AdminsController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        foreach (var e in res.Errors) ModelState.AddModelError("", e.Description);
+        /* 4) Diğer Identity hataları */
+        foreach (var e in res.Errors)
+            ModelState.AddModelError("", e.Description);
+
         return View(m);
     }
 
@@ -78,7 +98,16 @@ public class AdminsController : Controller
         var user = await _userMgr.FindByIdAsync(m.Id);
         if (user == null) return NotFound();
 
-        // Önce reset token üret → sonra ResetPasswordAsync
+        // Mevcut şifreyi getiriyoruz (güvenli değil ama kıyas için gerekli değil)
+        var passwordHasher = new PasswordHasher<AppUser>();
+        var verification = passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, m.NewPassword);
+
+        if (verification == PasswordVerificationResult.Success)
+        {
+            ModelState.AddModelError(nameof(m.NewPassword), "Yeni şifre mevcut şifreyle aynı olamaz.");
+            return View(m);
+        }
+
         var token = await _userMgr.GeneratePasswordResetTokenAsync(user);
         var res = await _userMgr.ResetPasswordAsync(user, token, m.NewPassword);
 
@@ -87,11 +116,13 @@ public class AdminsController : Controller
             TempData["ok"] = "Şifre güncellendi.";
             return RedirectToAction(nameof(Index));
         }
+
         foreach (var e in res.Errors)
             ModelState.AddModelError("", e.Description);
 
         return View(m);
     }
+
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(string id)
     {
